@@ -1,0 +1,241 @@
+<%- include('../user/layout/userHeader') %>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+
+    body {
+        background-color: #f9f9f9;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 5%;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #ff4444;
+    }
+
+    .nav-icons {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+    }
+
+    .search-bar {
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
+        border: 1px solid #ddd;
+        background: #f0f0f0;
+        width: 200px;
+        outline: none;
+        transition: width 0.3s;
+    }
+
+    .search-bar:focus {
+        width: 300px;
+    }
+
+    .products-section {
+        padding: 3rem 5%;
+    }
+
+    .section-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .section-header p {
+        color: #ff4444;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .section-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    .product-info {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+    }
+
+    .rating {
+        color: #ffd700;
+        margin-bottom: 1rem;
+    }
+
+    .product-price {
+        color: #ff4444;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .add-to-cart {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.8rem 1.2rem;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .add-to-cart:hover {
+        background: #e03838;
+    }
+
+    footer {
+        background: #333;
+        color: white;
+        padding: 3rem 5%;
+        margin-top: 4rem;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    footer h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #ff4444;
+    }
+
+    footer p {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    footer input[type="email"] {
+        width: 100%;
+        padding: 0.7rem;
+        border: none;
+        border-radius: 25px;
+        margin-top: 0.5rem;
+    }
+    .logout-button {
+            background: #DB4444;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+</style>
+
+<section class="products-section">
+    <div class="section-header">
+        <p>Our Products</p>
+        <h1>Explore Our SmartWatch Products</h1>
+    </div>
+
+    <div class="products-grid">
+        <!-- Product cards will be injected here by JavaScript -->
+    </div>
+</section>
+<script>
+    const products = [
+        { title: 'CANON EOS DSLR Camera', price: 360, rating: 4, image: '/api/placeholder/280/240' },
+        { title: 'Nikon D7500 DSLR', price: 900, rating: 5, image: '/api/placeholder/280/240' },
+        { title: 'Sony Alpha A6000', price: 550, rating: 4, image: '/api/placeholder/280/240' },
+    ];
+
+    function createProductCard(product) {
+        return `
+            <div class="product-card">
+                <img src="${product.image}" alt="${product.title}" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">${product.title}</h3>
+                    <div class="rating">${'★'.repeat(product.rating)}${'☆'.repeat(5 - product.rating)}</div>
+                    <p class="product-price">$${product.price}</p>
+                    <button class="add-to-cart">Add To Cart</button>
+                </div>
+            </div>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const productsGrid = document.querySelector('.products-grid');
+        let productCards = '';
+        products.forEach(product => {
+            productCards += createProductCard(product);
+        });
+        productsGrid.innerHTML = productCards;
+    });
+
+    document.querySelector('.products-grid').addEventListener('click', (event) => {
+        if (event.target.classList.contains('add-to-cart')) {
+            alert('Product added to cart!');
+        }
+    });
+</script>
+<%- include('../user/layout/userFooter') %>

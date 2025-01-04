@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.promo-banner {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.shop-now-btn {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.language-selector {
+    float: right;
+    color: white;
+    margin-right: 20px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: black;
+}
+
+.auth-buttons {
+    color: #ff4d4d;
+}
+
+.auth-buttons a {
+    text-decoration: none;
+    color: #ff4d4d;
+}
+</style>
+</head>
+<body>
+    <!-- Promotional Banner -->
+    <div class="promo-banner">
+        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! 
+        <a href="#" class="shop-now-btn">ShopNow</a>
+        <span class="language-selector">English ▼</span>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-container">
+        <div class="logo">Volt Craft</div>
+        
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Contact</a>
+            <a href="#">About</a>
+            <a href="#">Sign Up</a>
+        </div>
+
+        <div class="auth-buttons">
+            <a href="/signup">LOGIN / SIGNUP</a>
+        </div>
+    </div>
+
+<!-- banner -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.banner-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    background-color: #000;
+    overflow: hidden;
+}
+
+.banner-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    height: 100%;
+}
+
+.left-content {
+    color: white;
+    z-index: 2;
+}
+
+.apple-logo {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 16px;
+}
+
+.product-name {
+    font-size: 16px;
+    margin-bottom: 16px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.offer-text {
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 32px;
+}
+
+.shop-now {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    border-bottom: 2px solid white;
+    padding-bottom: 4px;
+    font-size: 16px;
+    transition: opacity 0.3s;
+}
+
+.shop-now:hover {
+    opacity: 0.8;
+}
+
+.shop-now::after {
+    content: "→";
+    margin-left: 8px;
+}
+
+.right-content {
+    position: relative;
+    width: 50%;
+    height: 100%;
+}
+
+.phone-image {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 600px;
+    height: auto;
+}
+
+.dots-container {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ffffff33;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dot.active {
+    width: 24px;
+    border-radius: 6px;
+    background-color: white;
+}
+
+@media (max-width: 768px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .offer-text {
+        font-size: 36px;
+    }
+
+    .right-content {
+        width: 100%;
+        height: 300px;
+        margin-top: 32px;
+    }
+
+    .phone-image {
+        right: 50%;
+        transform: translate(50%, -50%);
+        width: 400px;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="banner-container">
+        <div class="banner-content">
+            <div class="left-content">
+                <svg class="apple-logo" viewBox="0 0 14 14" fill="currentColor">
+                    <path d="M13.623 11.075c-.313.625-.688 1.187-1.125 1.688-.575.65-.987 1.1-1.238 1.337-.494.454-.987.688-1.478.7-.375 0-.838-.106-1.363-.325-.527-.217-.962-.325-1.3-.325-.425 0-.875.108-1.413.325-.537.218-.963.331-1.287.337-.488.02-.988-.216-1.5-.712-.275-.25-.7-.713-1.275-1.388-.612-.738-1.112-1.587-1.5-2.55-.413-1.037-.625-2.037-.625-3 0-1.112.238-2.075.713-2.875.375-.65.875-1.162 1.5-1.537.625-.375 1.3-.562 2.025-.575.4 0 .925.125 1.575.362.65.238 1.063.363 1.238.363.137 0 .6-.144 1.387-.425.738-.262 1.363-.375 1.875-.337 1.388.112 2.425.662 3.125 1.65-1.238.75-1.85 1.8-1.838 3.15.013 1.05.388 1.925 1.125 2.613.338.325.713.575 1.138.75-.088.262-.188.513-.3.75zM10.41.288c0 .825-.3 1.6-.887 2.313-.713.85-1.575 1.337-2.513 1.262-.013-.1-.025-.2-.025-.3 0-.775.337-1.6 1-2.287.325-.35.738-.637 1.238-.862C9.723.188 10.223.075 10.71.025c.013.087.013.175.013.262z"/>
+                </svg>
+                <p class="product-name">iPhone 14 Series</p>
+                <h1 class="offer-text">Up to 10%<br>off Voucher</h1>
+                <a href="#" class="shop-now">Shop Now</a>
+            </div>
+            <div class="right-content">
+                <img src="/images/iph.png" alt="iPhone 14" class="phone-image">
+            </div>
+        </div>
+        <div class="dots-container">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+</body>
+</html>
+<!-- products -->
+
+    <!DOCTYPE html>
+<html>
+<head>
+<style>
+/* Global Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #F9F9F9;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 16px;
+}
+
+/* Today's Badge */
+.today-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.red-line {
+    width: 20px;
+    height: 32px;
+    background-color: #DB4444;
+    border-radius: 4px;
+}
+
+.today-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #DB4444;
+}
+
+/* Header and Timer */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+}
+
+.timer {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #DB4444;
+}
+
+.time-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.timer-separator {
+    font-size: 28px;
+    color: #666;
+}
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product-image-container {
+    position: relative;
+    background: #F5F5F5;
+    padding: 16px;
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #DB4444;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.action-buttons {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.action-button {
+    width: 32px;
+    height: 32px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #DB4444;
+    border-color: #DB4444;
+    color: white;
+}
+
+.product-info {
+    padding: 16px;
+    text-align: center;
+}
+
+.product-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.price-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.current-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #DB4444;
+}
+
+.original-price {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.stars {
+    color: #FFD700;
+}
+
+.review-count {
+    font-size: 14px;
+    color: #666;
+}
+
+/* View All Button */
+.view-all-button {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 12px 36px;
+    background: #DB4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.view-all-button:hover {
+    background-color: #B73232;
+}
+
+@media (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <!-- Today's Badge -->
+        <div class="today-badge">
+            <div class="red-line"></div>
+            <span class="today-text">Today's</span>
+        </div>
+
+        <!-- Header with Timer -->
+        <div class="header">
+            <h2 class="title">Flash Sales</h2>
+            <div class="timer">
+                <div class="time-block">
+                    <span class="time-number">03</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <span class="timer-separator">:</span>
+                <div class="time-block">
+                    <span class="time-number">23</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <span class="timer-separator">:</span>
+                <div class="time-block">
+                    <span class="time-number">19</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <span class="timer-separator">:</span>
+                <div class="time-block">
+                    <span class="time-number">56</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="/images/image.png" alt="HAVIT Gamepad" class="product-image">
+                    <span class="discount-badge">-40%</span>
+                    <div class="action-buttons">
+                        <button class="action-button">♡</button>
+                        <button class="action-button">👁</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">HAVIT HV-G92 Gamepad</h3>
+                    <div class="price-container">
+                        <span class="current-price">$120</span>
+                        <span class="original-price">$160</span>
+                    </div>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="review-count">(88)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="keyboard.jpg" alt="Gaming Keyboard" class="product-image">
+                    <span class="discount-badge">-35%</span>
+                    <div class="action-buttons">
+                        <button class="action-button">♡</button>
+                        <button class="action-button">👁</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">AK-900 Wired Keyboard</h3>
+                    <div class="price-container">
+                        <span class="current-price">$960</span>
+                        <span class="original-price">$1160</span>
+                    </div>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="review-count">(75)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="monitor.jpg" alt="Gaming Monitor" class="product-image">
+                    <span class="discount-badge">-30%</span>
+                    <div class="action-buttons">
+                        <button class="action-button">♡</button>
+                        <button class="action-button">👁</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">IPS LCD Gaming Monitor</h3>
+                    <div class="price-container">
+                        <span class="current-price">$370</span>
+                        <span class="original-price">$470</span>
+                    </div>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="review-count">(99)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View All Button -->
+        <button class="view-all-button">View All</button>
+    </div>
+</body>
+</html>
+
+</body>
+</html>
+
+<!-- catagories -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #F9F9F9;
+            color: #333;
+        }
+
+        .categories-section {
+            padding: 40px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-label {
+            color: #DB4444;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: #333;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .category-card {
+            background-color: white;
+            border: 1px solid #E5E5E5;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+            color: #DB4444;
+        }
+
+        .category-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="categories-section">
+        <div class="category-label">Categories</div>
+        <h2 class="section-title">Browse by Category</h2>
+        
+        <div class="category-grid">
+            <!-- Category: Phones -->
+            <div class="category-card">
+                <div class="category-icon">📱</div>
+                <div class="category-name">Phones</div>
+            </div>
+
+            <!-- Category: Computers -->
+            <div class="category-card">
+                <div class="category-icon">💻</div>
+                <div class="category-name">Computers</div>
+            </div>
+
+            <!-- Category: Smartwatch -->
+            <div class="category-card">
+                <div class="category-icon">⌚</div>
+                <div class="category-name">Smartwatches</div>
+            </div>
+
+            <!-- Category: Gaming -->
+            <div class="category-card">
+                <div class="category-icon">🎧</div>
+                <div class="category-name">Gaming</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!--best selling products  -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #F9F9F9;
+            color: #333;
+        }
+
+        .container {
+            padding: 40px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .month-label {
+            color: #DB4444;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .view-all {
+            background-color: #DB4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-all:hover {
+            background-color: #C23232;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border: 1px solid #E5E5E5;
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card.highlighted {
+            border: 2px solid #8A2BE2;
+        }
+
+        /* Product Image */
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        /* Icon Buttons */
+        .icon-buttons {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .icon-button {
+            background: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .icon-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Product Name */
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            text-transform: capitalize;
+        }
+
+        /* Price Section */
+        .price-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .current-price {
+            color: #DB4444;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 14px;
+        }
+
+        /* Rating Section */
+        .rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #FFD700;
+        }
+
+        .review-count {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="month-label">This Month</div>
+        <div class="header">
+            <h2 class="title">Best Selling Products</h2>
+            <a href="#" class="view-all">View All</a>
+        </div>
+        
+        <div class="products-grid">
+            <!-- Highlighted Product -->
+            <div class="product-card highlighted">
+                <img src="/images/image.png" alt="Samsung Galaxy S23 Ultra" class="product-image">
+                <div class="icon-buttons">
+                    <button class="icon-button">♡</button>
+                    <button class="icon-button">👁️</button>
+                </div>
+                <h3 class="product-name">Samsung Galaxy S23 Ultra</h3>
+                <div class="price-container">
+                    <span class="current-price">$260</span>
+                    <span class="original-price">$360</span>
+                </div>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">(65)</span>
+                </div>
+            </div>
+
+            <!-- Additional Products -->
+            <div class="product-card">
+                <img src="/images/image-2.png" alt="Computer" class="product-image">
+                <div class="icon-buttons">
+                    <button class="icon-button">♡</button>
+                    <button class="icon-button">👁️</button>
+                </div>
+                <h3 class="product-name">Computer</h3>
+                <div class="price-container">
+                    <span class="current-price">$960</span>
+                    <span class="original-price">$1160</span>
+                </div>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">(65)</span>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="/api/placeholder/200/200" alt="RGB Liquid CPU Cooler" class="product-image">
+                <div class="icon-buttons">
+                    <button class="icon-button">♡</button>
+                    <button class="icon-button">👁️</button>
+                </div>
+                <h3 class="product-name">RGB Liquid CPU Cooler</h3>
+                <div class="price-container">
+                    <span class="current-price">$160</span>
+                    <span class="original-price">$170</span>
+                </div>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">(65)</span>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="/api/placeholder/200/200" alt="Flip Flop Phone" class="product-image">
+                <div class="icon-buttons">
+                    <button class="icon-button">♡</button>
+                    <button class="icon-button">👁️</button>
+                </div>
+                <h3 class="product-name">Flip Flop Phone</h3>
+                <div class="price-container">
+                    <span class="current-price">$360</span>
+                </div>
+                <div class="rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">(65)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- banner -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Watch7 Banner</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+            z-index: 1;
+        }
+
+        .banner-content {
+            z-index: 2;
+            max-width: 50%;
+            text-align: left;
+        }
+
+        .category {
+            font-size: 18px;
+            color: #4CAF50;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 64px;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .countdown-item {
+            background: #1a1a1a;
+            border: 1px solid #4CAF50;
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .countdown-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            color: #4CAF50;
+            text-transform: uppercase;
+        }
+
+        .buy-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buy-button:hover {
+            background: #45a049;
+        }
+
+        .banner-image {
+            z-index: 2;
+            max-width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .banner-image img {
+            max-width: 100%;
+            height: auto;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .banner-content {
+                max-width: 100%;
+            }
+
+            .title {
+                font-size: 48px;
+            }
+
+            .banner-image {
+                margin-top: 20px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="banner-content">
+            <div class="category">Limited Edition</div>
+            <h1 class="title">Galaxy Watch7</h1>
+            
+            <div class="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-number">23</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number">05</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number">59</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number">35</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+            <button class="buy-button">Buy Now!</button>
+        </div>
+        <div class="banner-image">
+            <img src="/images/image-4.png" alt="Galaxy Watch7">
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- explore our products -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Our Products</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-label {
+            font-size: 16px;
+            color: #dc3545;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-content {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 14px;
+        }
+
+        .review-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .icon-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .icon-button {
+            background-color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .icon-button:hover {
+            background-color: #f4f4f4;
+        }
+
+        .add-to-cart {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: #000;
+            color: white;
+            padding: 10px 0;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background-color: #333;
+        }
+
+        .view-all {
+            display: inline-block;
+            margin: 30px auto;
+            padding: 12px 24px;
+            background-color: #dc3545;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-all:hover {
+            background-color: #a71d2a;
+        }
+
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Top Picks</div>
+            <h1 class="title">Explore Our Products</h1>
+        </div>
+
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="https://via.placeholder.com/200" alt="Samsung Flip Flop Phone">
+                <div class="product-content">
+                    <h3 class="product-name">Samsung Flip Flop Phone</h3>
+                    <span class="price">$100</span>
+                    <div class="rating">
+                        <span class="stars">★★★☆☆</span>
+                        <span class="review-count">(35)</span>
+                    </div>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://via.placeholder.com/200" alt="CANON EOS DSLR Camera">
+                <div class="product-content">
+                    <h3 class="product-name">CANON EOS DSLR Camera</h3>
+                    <span class="price">$360</span>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="review-count">(95)</span>
+                    </div>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://via.placeholder.com/200" alt="ASUS Gaming Laptop">
+                <div class="product-content">
+                    <h3 class="product-name">ASUS Gaming Laptop</h3>
+                    <span class="price">$700</span>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="review-count">(325)</span>
+                    </div>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://via.placeholder.com/200" alt="Rolex Watch">
+                <div class="product-content">
+                    <h3 class="product-name">Rolex Watch</h3>
+                    <span class="price">$960</span>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="review-count">(65)</span>
+                    </div>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+        <a href="#" class="view-all">View All Products</a>
+    </div>
+</body>
+
+
+<footer>
+    <style>
+        .footer-text {
+            text-align: center;
+            color: #666666;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .footer-text a {
+            color: #DB4444;
+            text-decoration: underline;
+        }
+
+        .bg-header {
+            background-color: #1C1C1C;
+            color: white;
+        }
+
+        .bg-header .banner-text {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .bg-header .banner-text a {
+            color: #DB4444;
+            text-decoration: underline;
+        }
+
+        header .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        footer {
+            background-color: #1C1C1C;
+            color: white;
+            padding: 40px 16px;
+        }
+
+        footer .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 40px;
+        }
+
+        footer h3 {
+            font-weight: 500;
+            color: #f8f8f8;
+        }
+
+        footer p {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+
+        footer .social-icons i {
+            color: #b0b0b0;
+            font-size: 20px;
+            margin-right: 16px;
+            transition: color 0.3s;
+        }
+
+        footer .social-icons i:hover {
+            color: #DB4444;
+        }
+
+        .qr-code img {
+            width: 100px;
+            height: 100px;
+        }
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #E8E8E8;
+            border-radius: 4px;
+            font-size: 16px;
+            gap: 10px;
+            margin-bottom: 24px;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+
+        .google-btn:hover {
+            background-color: #f8f8f8;
+            border-color: #DB4444;
+        }
+    </style>
+    <div class="grid">
+        <!-- Column 1 -->
+        <div>
+            <h2>Volt Craft</h2>
+            <p>Subscribe for a 10% off your first order</p>
+            <div class="flex">
+                <input type="email" placeholder="Enter your email" class="subscribe-input">
+                <button class="submit-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Column 2 -->
+        <div>
+            <h3>Support</h3>
+            <p>111 Bijoy Sarani, Dhaka,</p>
+            <p>DH 1515, Bangladesh.</p>
+            <p>exclusive@gmail.com</p>
+            <p>+88015-88888-9999</p>
+        </div>
+
+        <!-- Column 3 -->
+        <div>
+            <h3>Account</h3>
+            <p>My Account</p>
+            <p>Login / Register</p>
+            <p>Cart</p>
+            <p>Wishlist</p>
+            <p>Shop</p>
+        </div>
+
+        <!-- Column 4 -->
+        <div>
+            <h3>Quick Link</h3>
+            <p>Privacy Policy</p>
+            <p>Terms Of Use</p>
+            <p>FAQ</p>
+            <p>Contact</p>
+        </div>
+
+        <!-- Column 5 -->
+        <div>
+            <h3>Download App</h3>
+            <p class="text-gray-400 text-sm">Save $3 with App New User Only</p>
+            <div class="flex gap-4">
+                <div class="qr-code">
+                    <img src="/path-to-qr-code.png" alt="QR Code">
+                </div>
+                <div>
+                    <img src="" alt="Google Play" class="h-4">
+                    <img src="/path-to-appstore.png" alt="App Store" class="h-10">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Links -->
+    <div class="social-icons flex gap-6 mt-8 justify-center">
+        <i class="fab fa-facebook"></i>
+        <i class="fab fa-twitter"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-linkedin"></i>
+    </div>
+
+    <!-- Copyright -->
+    <div class="text-center mt-4">
+        <p>&copy; 2024 VoltCraft, All Rights Reserved.</p>
+    </div>
+</footer>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,493 @@
+<%- include('../user/layout/userHeader') %>
+<head>
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
+</head>
+<style>
+    .action-buttons {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-button {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .action-button:hover {
+        background-color: #DB4444;
+        border-color: #DB4444;
+        color: white;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+
+    body {
+        background-color: #f9f9f9;
+    }
+
+    .all-products-section {
+        padding: 3rem 5%;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .section-header p {
+        color: #ff4444;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .section-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    .sort-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .sort-options label {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #555;
+        margin-right: 0.5rem;
+    }
+
+    .sort-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    .product-info {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+    }
+
+    .price-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .current-price {
+        font-size: 1.2rem;
+        color: #ff4444;
+        font-weight: bold;
+    }
+
+    .original-price {
+        font-size: 1rem;
+        color: #888;
+        text-decoration: line-through;
+    }
+
+    .rating {
+        color: #ffd700;
+        font-size: 1rem;
+    }
+
+    footer {
+        background: #333;
+        color: white;
+        padding: 3rem 5%;
+        margin-top: 4rem;
+    }
+
+    footer h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #ff4444;
+    }
+
+    footer p {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .add-to-cart-button {
+        background-color: #f10707; /* Red color for attention */
+        color: white;
+        padding: 15px 0; /* Top and bottom padding for height */
+        border: none;
+        border-radius: 8px; /* Subtle rounding for a boxy look */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-size: 16px;
+        text-align: center;
+        width: 100%; /* Makes the button span the entire width of its container */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a raised effect */
+    }
+
+    /* Add hover effects for interactivity */
+    .add-to-cart-button:hover {
+        background-color: #b00505; /* Darker red for hover state */
+        transform: translateY(-2px); /* Slightly raise the button on hover */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Optional: Add a clicked effect */
+    .add-to-cart-button:active {
+        background-color: #900404; /* Even darker red for active state */
+        transform: translateY(1px); /* Push the button slightly down on click */
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .add-to-cart-button.clicked {
+        background-color: #28a745; /* Green for success */
+        cursor: not-allowed;
+    }
+    .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.pagination a {
+    padding: 0.5rem 1rem;
+    background-color: #f1f1f1;
+    color: #333;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #ff4444;
+    color: white;
+}
+
+.pagination .active {
+    background-color: #ff4444;
+    color: white;
+    pointer-events: none;
+}
+
+.pagination .prev-page, .pagination .next-page {
+    font-weight: bold;
+}
+
+</style>
+
+<section class="all-products-section">
+    <div class="section-header">
+        <p>Discover More</p>
+        <h1>All Products</h1>
+    </div>
+
+    <div class="sort-options">
+        <div>
+            <label for="sort-select">Sort By:</label>
+            <select id="sort-select" class="sort-select" onchange="handleSort(event)">
+                <option value="a-z">A-Z</option>
+                <option value="z-a">Z-A</option>
+                <option value="low-to-high">Price: Low to High</option>
+                <option value="high-to-low">Price: High to Low</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="products-grid">
+        <% products.forEach(product => { %>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="/uploads/<%= product.productImage[0] %>" alt="<%= product.productName %>" class="product-image">
+                    <span class="discount-badge">-40%</span>
+                    <div class="action-buttons">
+                        <button class="action-button add-to-wishlist" data-product-id="<%= product._id %>">♡</button>
+                        <button class="action-button add-to-wishlist" data-product-id="<%= product._id %>">👁</button>
+                    </div>
+                </div>
+                <a href="/product/<%= product._id %>" class="product-link" aria-label="View details for <%= product.productName %>">
+                    <div class="product-info">
+                        <h3 class="product-title"><%= product.productName %></h3>
+                        <div class="price-container">
+                            <span class="current-price">$<%= product.salePrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) %></span>
+                            <span class="original-price">$<%= product.regularPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) %></span>
+                        </div>
+                        <div class="rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="review-count">(88)</span>
+                        </div>
+                    </div>
+                </a>
+                <div class="add-to-cart-section">
+                    <input type="hidden" name="quantity" id="quantity-input" value="1">
+                    <button 
+                        class="add-to-cart-button" 
+                        data-product-id="<%= product._id %>" 
+                        data-added="false" 
+                        aria-label="Add <%= product.productName %> to cart">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+    <div class="pagination">
+        <% if (!query && currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>" class="prev-page">Previous</a>
+        <% } %>
+    
+        <% if (!query) { %>
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>" class="page-number <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+        <% } %>
+    
+        <% if (!query && currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %>" class="next-page">Next</a>
+        <% } %>
+    </div>
+    
+    
+
+    
+    
+</section>
+
+<%- include('../user/layout/userFooter') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.js"></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    let currentPage = 1;
+    const limit = 10; // Items per page
+    const productsGrid = document.getElementById('products-grid');
+    const loadingIndicator = document.getElementById('loading');
+    let isLoading = false;
+
+    // Fetch and render products
+    async function fetchProducts() {
+        if (isLoading) return;
+        isLoading = true;
+        loadingIndicator.style.display = 'block';
+
+        try {
+            const response = await fetch(`/products?page=${currentPage}&limit=${limit}`);
+            const data = await response.json();
+
+            if (data.success) {
+                data.products.forEach(product => {
+                    const productCard = `
+                        <div class="product-card">
+                            <div class="product-image-container">
+                                <img src="/uploads/${product.productImage[0]}" alt="${product.productName}" class="product-image">
+                                <div class="action-buttons">
+                                    <button class="action-button add-to-wishlist" data-product-id="${product._id}">♡</button>
+                                    <button class="action-button view-details" data-product-id="${product._id}">👁</button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">${product.productName}</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$${product.salePrice}</span>
+                                    <span class="original-price">$${product.regularPrice}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productsGrid.insertAdjacentHTML('beforeend', productCard);
+                });
+
+                if (!data.hasMore) {
+                    // Hide loading indicator if no more products
+                    window.removeEventListener('scroll', handleScroll);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        } finally {
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+        }
+    }
+
+    // Infinite scroll logic
+    function handleScroll() {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+        if (scrollTop + clientHeight >= scrollHeight - 50 && !isLoading) {
+            currentPage++;
+            fetchProducts();
+        }
+    }
+
+    // Initial fetch
+    fetchProducts();
+
+    // Attach scroll event listener
+    window.addEventListener('scroll', handleScroll);
+});
+
+    function handleSort(event) {
+        const sortValue = event.target.value;
+        window.location.href = `/productss?sort=${sortValue}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener("click", async event => {
+                const productId = button.getAttribute("data-product-id");
+
+                if (button.classList.contains("clicked")) {
+                    console.warn("Product already added to cart.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/addToCarts/${productId}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ quantity: 1 }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        button.classList.add("clicked");
+                        button.textContent = "Added";
+                        button.disabled = true;
+                    } else {
+                        console.error("Error adding to cart:", result.message);
+                        alert("Failed to add to cart: " + result.message);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
+
+        addToWishlistButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                
+                fetch('/addToWishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId: productId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Product added to wishlist!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (data.alreadyExists) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Product is already in your wishlist!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (data.outOfStock) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Product is out of stock!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'An error occurred while adding to the wishlist.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'An error occurred while adding to the wishlist.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+            });
+        });
+    });
+
+
+
+    
+    
+</script>

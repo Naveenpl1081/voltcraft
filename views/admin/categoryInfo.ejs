@@ -1,0 +1,217 @@
+<%- include('../layouts/adminHeader') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Categories</h2>
+            <p>Here are the categories.</p>
+            <form class="search-form">
+                <input type="text" placeholder="Search" name="search" id="search" class="search-input">
+                <button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <div>
+            <a href="/admin/addCategory" class="btn btn-primary">Add Category</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S no</th>
+                                    <th scope="col">Category Name</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Edit</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                                <% if (cat.length > 0) { %>
+                                    <% cat.forEach((category, index) => { %>
+                                        <tr>
+                                            <td><%= index + 1 %></td>
+                                            <td><%= category.name %></td>
+                                            <td class="text-center">
+                                                <% if (category.isDeleted === true) { %>
+                                                   Blocked
+                                                <% } else { %>
+                                                    unBlocked
+                                            </td>
+                                            <% } %>
+                                            <td class="text-center">
+                                                <a href="/admin/editcategory?id=<%= category._id %>">
+                                                    <button type="button" class="btn btn-primary">Edit</button>
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                <% if (category.isDeleted) { %>
+                                                    <button 
+                                                        type="button" 
+                                                        class="btn btn-warning restore-category-btn" 
+                                                        data-category-id="<%= category._id %>"
+                                                        onclick="restoreCategory(this)">
+                                                        Restore
+                                                    </button>
+                                                <% } else { %>
+                                                    <button 
+                                                        type="button" 
+                                                        class="btn btn-danger delete-category-btn" 
+                                                        data-category-id="<%= category._id %>"
+                                                        onclick="deleteCategory(this)">
+                                                        Delete
+                                                    </button>
+                                                <% } %>
+                                            </td>
+                                            
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center">No categories found</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/AdminFooter') %>  
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search');
+    const categoriesTableBody = document.getElementById('categoriesTableBody');
+    
+    if (searchInput && categoriesTableBody) {
+        const allCategoryRows = categoriesTableBody.getElementsByTagName('tr');
+
+        searchInput.addEventListener('input', function () {
+            const searchText = searchInput.value.toLowerCase();
+
+            for (let i = 0; i < allCategoryRows.length; i++) {
+                const categoryRow = allCategoryRows[i];
+                const categoryName = categoryRow.getElementsByTagName('td')[1].innerText.toLowerCase();
+
+                if (categoryName.includes(searchText)) {
+                    categoryRow.style.display = '';
+                } else {
+                    categoryRow.style.display = 'none';
+                }
+            }
+        });
+    }
+});
+
+async function toggleBlockUnblock(element) {
+    var categoryId = element.getAttribute('data-category-id');
+    var action = element.getAttribute('data-action');
+
+    try {
+        const response = await fetch(`/admin/catblock/${categoryId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: action })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update category');
+        }
+
+        const responseData = await response.json();
+        if (responseData.success) {
+            if (action === "unblock") {
+                element.setAttribute('data-action', 'block');
+                element.innerText = "Block";
+                element.style.color = "red";
+            } else {
+                element.setAttribute('data-action', 'unblock');
+                element.innerText = "Unblock";
+                element.style.color = "green";
+            }
+        } else {
+            throw new Error(responseData.error || 'Unknown error occurred');
+        }
+    } catch (error) {
+        console.error('Error updating category:', error);
+        alert('Failed to update category status. Please try again.');
+    }
+}
+
+async function deleteCategory(button) {
+    const categoryId = button.getAttribute('data-category-id');
+
+    if (confirm('Are you sure you want to delete this category?')) {
+        try {
+            const response = await fetch(`/admin/deleteCategory/${categoryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete category');
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Remove the row from the table
+                button.closest('tr').remove();
+                alert('Category deleted successfully');
+                window.location.reload();
+            } else {
+                alert(result.error || 'An error occurred while deleting the category');
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            alert('Failed to delete the category. Please try again.');
+        }
+    }
+}
+
+async function restoreCategory(button) {
+    const categoryId = button.getAttribute("data-category-id");
+
+    if (confirm("Are you sure you want to restore this category?")) {
+        try {
+            const response = await fetch(`/admin/restoreCategory/${categoryId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to restore category");
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Optionally reload the page or update the row
+                location.reload(); // Reload to reflect changes
+                alert("Category restored successfully");
+            } else {
+                alert(result.error || "An error occurred while restoring the category");
+            }
+        } catch (error) {
+            console.error("Error restoring category:", error);
+            alert("Failed to restore the category. Please try again.");
+        }
+    }
+}
+
+
+</script>

@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.promo-banner {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.shop-now-btn {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.language-selector {
+    float: right;
+    color: white;
+    margin-right: 20px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: black;
+}
+
+.auth-buttons {
+    color: #ff4d4d;
+}
+
+.auth-buttons a {
+    text-decoration: none;
+    color: #ff4d4d;
+}
+</style>
+</head>
+<body>
+    <!-- Promotional Banner -->
+    <div class="promo-banner">
+        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! 
+        <a href="#" class="shop-now-btn">ShopNow</a>
+        <span class="language-selector">English ▼</span>
+    </div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volt Craft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff4444;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .search-bar {
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            background: #f0f0f0;
+            width: 200px;
+            outline: none;
+            transition: width 0.3s;
+        }
+
+        .search-bar:focus {
+            width: 300px;
+        }
+
+        .products-section {
+            padding: 3rem 5%;
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .section-header p {
+            color: #ff4444;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .section-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .rating {
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            color: #ff4444;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .add-to-cart {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: #e03838;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 3rem 5%;
+            margin-top: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        footer h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #ff4444;
+        }
+
+        footer p {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        footer input[type="email"] {
+            width: 100%;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 25px;
+            margin-top: 0.5rem;
+        }
+        .logout-button {
+                background: #DB4444;
+                color: white;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+            /* General styling for the search form */
+.search-form {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+/* Input group styling */
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Search input field styling */
+.search-input {
+    width: 250px;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Search button styling */
+.search-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+/* Clear search button styling */
+.clear-search-button {
+    margin-left: 10px;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.clear-search-button:hover {
+    background-color: #5a6268;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">Volt Craft</div>
+        <div class="nav-links">
+            <a href="/homePage">Home</a>
+            <a href="#">Contact</a>
+            <a href="#">About</a>
+            <a href="/wallet">Wallet</a>
+        </div>
+        <div class="nav-icons">
+            <form class="search-form" action="/search" method="get">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        placeholder="Search products" 
+                        name="query" 
+                        id="search" 
+                        class="form-control search-input" 
+                        value="<%= typeof query !== 'undefined' ? query : '' %>">
+                    <!-- <button type="submit" class="btn btn-primary search-button">
+                        <i class="fa fa-search"></i>
+                    </button> -->
+                    <% if (typeof query !== 'undefined' && query.length > 0) { %>
+                        <button 
+                            type="button" 
+                            class="btn btn-secondary clear-search-button" 
+                            onclick="window.location.href='/products'">
+                            Clear Search
+                        </button>
+                    <% } %>
+                </div>
+            </form>
+            
+            <a href="/wishlist" aria-label="Wishlist" style="text-decoration: none; color: inherit;">❤️</a>
+
+            <a href="/cart" aria-label="Wishlist" style="text-decoration: none; color: inherit;">🛒</a>
+
+            <a href="/profile" aria-label="User Profile" style="text-decoration: none; color: inherit; font-size: 20px;">
+                👤 
+            </a>
+            
+            <a href="/logout" class="logout-button">Logout</a>
+        </div>
+
+        <script>
+           document.addEventListener('DOMContentLoaded', function () {
+    const clearSearchButton = document.querySelector('.clear-search-button');
+    if (clearSearchButton) {
+        clearSearchButton.addEventListener('click', () => {
+            window.location.href = '/viewAllProductPage'; // Redirect to all products page
+        });
+    }
+});
+
+        </script>
+    </nav>

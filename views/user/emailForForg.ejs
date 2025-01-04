@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volt Craft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .announcement-bar {
+            background: black;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .image-section {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding-top: 40px;
+        }
+
+        .main-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+
+        .send-button {
+            background: #d65454;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            cursor: pointer;
+        }
+
+        .footer {
+            background: black;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .subscribe-form {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .subscribe-input {
+            padding: 8px;
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+        }
+
+        .subscribe-button {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .app-download {
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            margin: 10px auto;
+        }
+
+        .store-buttons img {
+            height: 40px;
+            margin: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="announcement-bar">
+        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! ShopNow
+    </div>
+
+    <header class="header">
+        <a href="#" class="logo">Volt Craft</a>
+    </header>
+
+    <main class="main-content">
+        <div class="image-section">
+            <img src="/api/placeholder/500/500" alt="Shopping cart with smartphone" class="main-image">
+        </div>
+        <div class="form-section">
+            <h2>Enter your email</h2>
+            <input type="text" placeholder="Email or Phone Number" class="email-input">
+            <button class="send-button">send</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Volt Craft</h3>
+                <p>Subscribe</p>
+                <p>Get 10% off your first order</p>
+                <div class="subscribe-form">
+                    <input type="email" placeholder="Enter your email" class="subscribe-input">
+                    <button class="subscribe-button">></button>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li>111 Bijoy sarani, Dhaka,</li>
+                    <li>DH 1515, Bangladesh.</li>
+                    <li>exclusive@gmail.com</li>
+                    <li>+88015-88888-9999</li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Account</h3>
+                <ul>
+                    <li><a href="#">My Account</a></li>
+                    <li><a href="#">Login / Register</a></li>
+                    <li><a href="#">Cart</a></li>
+                    <li><a href="#">Wishlist</a></li>
+                    <li><a href="#">Shop</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Link</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms Of Use</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Download App</h3>
+                <p>Save $3 with App New User Only</p>
+                <div class="qr-code">
+                    <img src="/api/placeholder/100/100" alt="QR Code">
+                </div>
+                <div class="store-buttons">
+                    <img src="/api/placeholder/120/40" alt="Google Play">
+                    <img src="/api/placeholder/120/40" alt="App Store">
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © Copyright Rimel 2022. All right reserved
+        </div>
+    </footer>
+</body>
+</html>

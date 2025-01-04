@@ -1,0 +1,219 @@
+<%- include('../layouts/adminHeader') %>
+
+<h1>Cancel and Return Orders</h1>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Cancel & Return Orders</h2>
+            <p>Manage all canceled and returned orders here.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <% if (cancelOrders.length > 0) { %>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User Name</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                        <th>Payment Method</th>
+                                        <th>Total Refund</th>
+                                        <th>Cancel Date</th>
+                                        <th>Reason</th>
+                                        <th>Products</th> <!-- New column for products -->
+                                        <th>Admin Action</th> <!-- Column for admin actions -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% cancelOrders.forEach((order, i) => { %>
+                                        <tr>
+                                            <td><%= i + 1 %></td>
+                                            <td><%= order.userId ? order.userId.name : 'N/A' %></td>
+                                            <td><%= order.userId ? order.userId.email : 'N/A' %></td>
+                                            <td><%= order.action %></td>
+                                            <td><%= order.paymentMethod || 'N/A' %></td>
+                                            <td>
+                                                <% if (order.refundStatus === 'No Refund') { %>
+                                                    <%= order.refundStatus %>
+                                                <% } else { %>
+                                                    ₹<%= order.totalRefund.toFixed(2) %>
+                                                <% } %>
+                                            </td>
+                                            <td><%= new Date(order.cancelDate).toLocaleDateString() %></td>
+                                            <td><%= order.reason || 'Cancelled so No reason' %></td>
+                                            <td>
+                                                <% order.canceledItems.forEach(item => { %>
+                                                    <div>
+                                                        <strong><%= item.productName %></strong> - Quantity: <%= item.productQuantity %>
+                                                    </div>
+                                                <% }) %>
+                                            </td>
+                                            <td>
+                                                <!-- Buttons to approve or reject the order -->
+                                                <% if (order.action === 'return' || order.paymentMethod==='paypal') { %>
+                                                    <button class="btn btn-success" onclick="approveOrder('<%= order._id %>')">Approve</button>
+                                                    <button class="btn btn-danger" onclick="rejectOrder('<%= order._id %>')">Reject</button>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="10" class="text-center">No canceled or returned orders to display</td>
+                                </tr>
+                            <% } %>
+                        </table>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/AdminFooter') %>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const detailButtons = document.querySelectorAll('.viewDetails');
+
+        detailButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const orderId = this.getAttribute('data-order-id');
+
+                // Fetch and display order details
+                axios.get(`/admin/cancelOrderDetails/${orderId}`)
+                    .then(res => {
+                        if (res.data.success) {
+                            const { order } = res.data;
+                            let detailsHtml = `
+                                <strong>Order ID:</strong> ${order._id}<br>
+                                <strong>User Name:</strong> ${order.userId.name}<br>
+                                <strong>Email:</strong> ${order.userId.email}<br>
+                                <strong>Action:</strong> ${order.action}<br>
+                                <strong>Payment Method:</strong> ${order.paymentMethod}<br>
+                                <strong>Total Refund:</strong> ₹${order.totalRefund.toFixed(2)}<br>
+                                <strong>Reason:</strong> ${order.reason || 'N/A'}<br>
+                                <strong>Items:</strong>
+                                <ul>
+                                    ${order.canceledItems.map(item => `
+                                        <li>
+                                            Product ID: ${item.productId}, 
+                                            Quantity: ${item.quantity}, 
+                                            Price: ₹${item.price.toFixed(2)}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            `;
+
+                            Swal.fire({
+                                title: "Order Details",
+                                html: detailsHtml,
+                                icon: "info",
+                                confirmButtonText: "Close"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Unable to fetch order details.",
+                                icon: "error"
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error fetching order details:', err);
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Something went wrong.",
+                            icon: "error"
+                        });
+                    });
+            });
+        });
+    });
+
+    function approveOrder(orderId) {
+        console.log("orfer",orderId)
+    fetch(`/admin/approve/${orderId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Optional if token-based auth is implemented
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(error => {
+                throw new Error(error.message || 'Failed to approve order');
+            });
+        }
+        return response.json();
+    })
+    .then(result => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Order Approved',
+            text: result.message,
+        }).then(() => {
+            window.location.reload();
+        });
+    })
+    .catch(error => {
+        console.error('Error approving order:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'An error occurred while processing your request.',
+        });
+    });
+}
+
+function rejectOrder(orderId) {
+    fetch(`/admin/reject/${orderId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Rejected',
+                text: result.message,
+            }).then(() => {
+                window.location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Reject Order',
+                text: result.message,
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error rejecting order:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'An error occurred',
+            text: 'An error occurred while processing your request.',
+        });
+    });
+}
+
+</script>

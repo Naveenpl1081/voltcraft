@@ -1,0 +1,124 @@
+
+<%- include('../layouts/adminHeader') %>   
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Customers List</h2>
+        </div>
+    </div>
+    <form class="search-form">
+        <input type="text" placeholder="Search" name="search" id="search" class="search-input">
+        <button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+    </form>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="table" id="reloadDiv">
+                <thead>
+                    <tr>
+                        <th>S No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <% if (users.length > 0) { %>
+                        <% users.forEach((user, i) => { %>
+                            <tr data-user-id="<%= user._id %>">
+                                <td><%= i + 1 %></td>
+                                <td><%= user.name %></td>
+                                <td><b><%= user.email %></b></td>
+                                <td><%= user.mobile %></td>
+                                <td>
+                                    <span class="badge rounded-pill status-badge <%= user.isBlocked ? 'alert-warning' : 'alert-success' %>">
+                                        <%= user.is_blocked ? 'not verified' : 'verified' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a 
+                                    style="color: <%= user.isBlocked ? 'green' : 'red' %>" 
+                                    class="block-unblock" 
+                                    data-user-id="<%= user._id %>" 
+                                    onclick="UserStatusConfirmation('<%= user._id %>')">
+                                    <%= user.isBlocked? 'Unblock' : 'Block' %>
+                                </a>
+                                
+                                </td>
+                                
+                                
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="text-center">No users found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <% if (totalPages > 1) { %>
+        <div class="pagination-area mt-30 mb-50" >
+            <ul class="pagination justify-content-start">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="/admin/users?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+      
+    <% } %>
+    
+</section>
+
+<%- include('../layouts/AdminFooter') %>  
+
+<script>
+    function UserStatusConfirmation(userId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to change this user's status?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Change It!",
+            cancelButtonText: "Cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send a request to toggle the block/unblock status
+                axios
+                    .post(`/admin/blockAndUnblock/${userId}`)
+                    .then((response) => {
+                        Swal.fire(
+                            "Success!",
+                            response.data.message,
+                            "success"
+                        ).then(() => {
+                            // Reload the page to reflect the change
+                            location.reload();
+                        });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Swal.fire(
+                            "Error!",
+                            "Failed to update the user's status.",
+                            "error"
+                        );
+                    });
+            }
+        });
+    }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

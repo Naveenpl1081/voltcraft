@@ -1,0 +1,116 @@
+<%- include('../layouts/adminHeader') %>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<h1 class="text-center my-4">Sales Report</h1>
+
+<div class="container">
+    <!-- Filter Options -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Generate Custom Date Report</h4>
+            <form action="/admin/customDateReport" method="GET" class="border p-3 rounded">
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate" required>
+                </div>
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Generate Report</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h4>Quick Filters</h4>
+            <div class="d-flex flex-column border p-3 rounded">
+                <a href="/admin/salesDaily" class="btn btn-outline-info mb-2">Daily Report</a>
+                <a href="/admin/salesWeekly" class="btn btn-outline-info mb-2">Weekly Report</a>
+                <a href="/admin/salesMonthly" class="btn btn-outline-info mb-2">Monthly Report</a>
+                <a href="/admin/salesYearly" class="btn btn-outline-info">Yearly Report</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Report Table -->
+    <div class="card mb-4">
+        <header class="card-header">
+            <h4 class="card-title">Sales Report</h4>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">ID</th>
+                            <th>Order Number</th>
+                            <th>Order Status</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let i = 0; i < orderDetails.length; i++) { %>
+                            <% const order = orderDetails[i]; %>
+                            <tr>
+                                <td><%= i + 1 %></td>
+                                <td style="color: green;"><%= order._id %></td>
+                                <td style="color: 
+                                    <% if (order.orderStatus === 'Cancelled') { %> red; 
+                                    <% } else if (order.orderStatus === 'Ordered') { %> blue; 
+                                    <% } else if (order.orderStatus === 'Delivered') { %> green; 
+                                    <% } else { %> black; <% } %>">
+                                    <%= order.orderStatus %>
+                                </td>
+                                <td><%= order.formattedCreatedAt %></td>
+                                <td><%= order.deliveryAddress ? order.deliveryAddress.fullName : 'N/A' %></td>
+                                <td>₹<%= order.totalAmount.toFixed(2) %></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-area mt-4">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                    </li>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+    
+</div>
+<style>
+    .pagination-area {
+        margin-top: 20px;
+        position: relative; /* Ensures proper stacking context */
+        z-index: 1; /* Ensures it is above other elements */
+    }
+    .pagination .page-link {
+        cursor: pointer;
+    }
+</style>
+
+<%- include('../layouts/AdminFooter') %>

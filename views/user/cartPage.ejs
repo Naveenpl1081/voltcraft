@@ -1,0 +1,516 @@
+<%- include('../user/layout/userHeader.ejs') %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    nav span {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Cart Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-size: 16px;
+      color: #333;
+    }
+
+    td img {
+      width: 50px;
+      height: auto;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    td input[type="number"] {
+      width: 60px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    /* Cart Actions */
+    .cart-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background-color: #D9534F;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #C9302C;
+    }
+
+    /* Remove Button */
+    .btn-remove {
+      background-color: #FF5722;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-remove:hover {
+      background-color: #E64A19;
+    }
+
+    /* Cart Summary */
+    .cart-summary {
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-summary h3 {
+      margin: 0 0 15px;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .cart-summary p {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .cart-summary .total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .cart-summary .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px 0;
+    }
+    .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quantity-controls button {
+    background-color: #D9534F;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .quantity-controls button:hover {
+    background-color: #C9302C;
+  }
+
+  .quantity-controls input {
+    width: 60px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 5px;
+  }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div id="cart-container" data-cart-id="<%= cart._id %>" data-user-id="<%= userId %>"></div>
+  </header>
+
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+  <% if (cart && cart.items.length > 0) { %>
+    <% cart.items.forEach(item => { %>
+      <tr data-product-id="<%= item.productId._id %>" data-stock="<%= item.productId.stock %>">
+        <td>
+          <img 
+            src="/uploads/<%= item.productId.productImage[0] %>" 
+            alt="<%= item.productId.productName %>" 
+            style="width: 100px; height: auto;">
+        </td>
+        <td>₹ <%= item.productId.salePrice %></td>
+        <td class="quantity">
+          <div class="quantity-controls">
+            <button class="decrement" data-product-id="<%= item.productId._id %>">-</button>
+            <input 
+              type="number" 
+              value="<%= item.quantity %>" 
+              min="1"
+              data-product-id="<%= item.productId._id %>" 
+              class="update-quantity">
+            <button class="increment" data-product-id="<%= item.productId._id %>">+</button>
+          </div>
+        </td>
+        
+        <td class="subtotal">₹ <%= item.totalPrice %></td>
+        <td>
+          <button class="btn-remove" data-product-id="<%= item.productId._id %>">Remove</button>
+        </td>
+      </tr>
+    <% }); %>
+  <% } else { %>
+    <tr>
+      <td colspan="5">
+        <h2 style="text-align: center;">Nothing in the cart</h2>
+      </td>
+    </tr>
+  <% } %>
+</tbody>
+
+    </table>
+  
+    <div class="cart-summary">
+      <h3>Cart Summary</h3>
+      <!-- Display subtotal and total price -->
+      <p>Subtotal: ₹<%= cart.totalPrice %></p>  <!-- Display total price from cart -->
+      <p>Shipping: Free</p>
+      <p class="total">Total: ₹<%= cart.totalPrice %></p>  <!-- Display total price again -->
+      <button id="checkout-btn" class="btn">Proceed to Checkout</button>
+
+  </div>
+   
+    
+    <div class="cart-actions">
+      <a href="/" class="btn">Return To Shop</a>
+     
+    </div>
+  
+  </main>
+
+  <script>
+document.querySelectorAll('.increment').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const productId = e.target.getAttribute('data-product-id');
+    const input = document.querySelector(`input[data-product-id="${productId}"]`);
+    const currentQuantity = parseInt(input.value, 10);
+    const newQuantity = (currentQuantity + 1);
+
+    
+    // Update quantity in the input field
+    input.value = newQuantity;
+
+    // Update subtotal and total
+    updateSubtotal(productId, newQuantity);
+
+    // Sync with the server
+    syncQuantityWithServer(productId, newQuantity);
+  });
+});
+
+document.querySelectorAll('.decrement').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const productId = e.target.getAttribute('data-product-id');
+    const input = document.querySelector(`input[data-product-id="${productId}"]`);
+    const currentQuantity = parseInt(input.value, 10);
+    const newQuantity = Math.max(currentQuantity - 1, 1); // Ensure quantity is at least 1
+
+    // Update quantity in the input field
+    input.value = newQuantity;
+
+    // Update subtotal and total
+    updateSubtotal(productId, newQuantity);
+
+    // Sync with the server
+    syncQuantityWithServer(productId, newQuantity);
+  });
+});
+
+document.querySelectorAll('.btn-remove').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const productId = e.target.getAttribute('data-product-id');
+
+    // Show SweetAlert2 confirmation dialog
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This item will be removed from your cart.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, remove it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Remove the item row from the table
+        const productRow = document.querySelector(`tr[data-product-id="${productId}"]`);
+        if (productRow) productRow.remove();
+
+        // Sync removal with the server using DELETE method
+        fetch(`/removeCartItem/${productId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+        }).then(response => {
+          if (!response.ok) {
+            console.error('Failed to remove item from server');
+            return;
+          }
+
+          // Optionally update the UI with the updated cart total
+          response.json().then(data => {
+            if (data.removed) {
+              updateTotalPrice(data.cart.totalPrice);  // Update the total price based on the server response
+            }
+          });
+        }).catch(error => {
+          console.error('Error removing item from server:', error);
+        });
+
+        // Show success message
+        Swal.fire(
+          'Removed!',
+          'The item has been removed from your cart.',
+          'success'
+        ).then(() => {
+          // Reload the page after showing the success message
+          location.reload();
+        });
+      } else {
+        // Show cancellation message (optional)
+        Swal.fire(
+          'Cancelled',
+          'The item was not removed from your cart.',
+          'info'
+        );
+      }
+    });
+  });
+});
+
+// Function to update the total price on the frontend
+function updateTotalPrice(newTotal) {
+  const totalPriceElement = document.getElementById('cart-total-price');
+  if (totalPriceElement) {
+    totalPriceElement.textContent = `$${newTotal.toFixed(2)}`;  // Update with new total
+  }
+}
+
+// Function to update the total price on the frontend
+function updateTotalPrice(newTotal) {
+  const totalPriceElement = document.getElementById('cart-total-price');
+  if (totalPriceElement) {
+    totalPriceElement.textContent = `$${newTotal.toFixed(2)}`;  // Update with new total
+  }
+}
+
+
+function updateSubtotal(productId, newQuantity) {
+  const productRow = document.querySelector(`tr[data-product-id="${productId}"]`);
+  const pricePerUnit = parseFloat(productRow.querySelector('td:nth-child(2)').innerText.replace('₹', '').trim());
+  const newSubtotal = pricePerUnit * newQuantity;
+  productRow.querySelector('.subtotal').innerText = `₹ ${newSubtotal.toFixed(2)}`;
+
+  // Recalculate total
+  updateTotalPrice();
+}
+
+function updateTotalPrice() {
+  let totalPrice = 0;
+  document.querySelectorAll('.subtotal').forEach(subtotalCell => {
+    const subtotal = parseFloat(subtotalCell.innerText.replace('₹', '').trim());
+    totalPrice += subtotal;
+  });
+
+  document.querySelector('.total').innerText = `₹ ${totalPrice.toFixed(2)}`;
+  document.querySelector('.cart-summary p:nth-child(2)').innerText = `Subtotal: ₹${totalPrice.toFixed(2)}`;
+}
+
+function syncQuantityWithServer(productId, newQuantity) {
+  fetch(`/updateCartQuantity/${productId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quantity: newQuantity }),
+  }).then(response => {
+    if (!response.ok) {
+      location.reload()
+      console.error('Failed to sync with server');
+    }
+  }).catch(error => {
+    console.error('Error syncing with server:', error);
+  });
+}
+
+
+
+document.getElementById('checkout-btn').addEventListener('click', (e) => {
+  e.preventDefault();  
+
+  const cartContainer = document.getElementById('cart-container');
+  const userId = cartContainer.dataset.userId;
+  
+  fetch('/confirmOrder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userId
+    }),
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(data => {
+        // If the response is not OK, throw an error with the server message
+        throw new Error(data.message || 'Something went wrong on the server');
+      });
+    }
+    return response.json(); // Parse JSON if the response is OK
+  })
+  .then(data => {
+    if (data.success) {
+      Swal.fire({
+        title: 'Success!',
+        text: 'Your order is being processed.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        window.location.href = data.redirectUrl;
+      });
+    } else {
+      Swal.fire('Error', data.message || 'There was an issue with your order.', 'error');
+    }
+  })
+  .catch(error => {
+    // Handle both network errors and thrown errors
+    console.error('Error during checkout:', error);
+    Swal.fire('Error', error.message || 'Something went wrong. Please try again.', 'error');
+  });
+});
+
+
+
+
+function syncQuantityWithServer(productId, newQuantity) {
+  fetch(`/updateCartQuantity/${productId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quantity: newQuantity }), // Send the quantity in the request body
+  })
+    .then(response => {
+      if (!response.ok) {
+        location.reload();
+        return response.json().then(data => {
+          throw new Error(data.message || 'Failed to sync with server');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        
+        // Show success alert
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Quantity Updated',
+        //   text: 'The quantity was updated successfully!',
+        //   timer: 2000, // Auto-close after 2 seconds
+        //   showConfirmButton: false,
+        // });
+      } else {
+        // Show error alert
+       // Show error alert
+Swal.fire({
+  icon: 'error',
+  title: 'Update Failed',
+  text: data.message || 'There was an issue updating the quantity.',
+}).then(() => {
+  // Reload the page after the user clicks "OK"
+  
+});
+
+      }
+    })
+    .catch(error => {
+      // Show error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'An unexpected error occurred.',
+      });
+    });
+}
+
+
+
+
+  </script>
+  
+</body>
+</html>
+<%- include('../user/layout/userFooter.ejs') %>

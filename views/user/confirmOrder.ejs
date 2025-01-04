@@ -1,0 +1,769 @@
+
+<%- include('../user/layout/userHeader.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <style>
+    /* Reset some default styles */
+    body, h1, h2, h3, p, form, input, button, table, th, td {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* Layout and Styling */
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .billing-details, .payment-summary {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .billing-details h2, .payment-summary h2 {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    /* Billing Details Styling */
+    .billing-details input, .billing-details select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .billing-details input:focus, .billing-details select:focus {
+      border-color: #e53935;
+      outline: none;
+    }
+
+    .cart-summary {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-summary h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .cart-item img {
+      width: 80px;
+      height: auto;
+      margin-right: 15px;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+    }
+
+    .cart-item-price, .cart-item-quantity, .cart-item-total {
+      text-align: right;
+    }
+
+    .cart-summary table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    .cart-summary th, .cart-summary td {
+      padding: 12px;
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .cart-summary th {
+      background-color: #f9f9f9;
+      font-weight: normal;
+    }
+
+    .cart-summary td {
+      background-color: #fafafa;
+    }
+
+    .cart-summary tfoot th, .cart-summary tfoot td {
+      font-weight: bold;
+    }
+
+    .payment-methods input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .payment-methods label {
+      margin-bottom: 10px;
+      display: block;
+      font-size: 1rem;
+    }
+
+    .coupon-section {
+      display: flex;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    .coupon-section input {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .coupon-section button {
+      background-color: #e53935;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .coupon-section button:hover {
+      background-color: #c92727;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .actions button {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .actions button:hover {
+      background-color: #d32f2f;
+    }
+
+    .save-info {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .save-info label {
+      font-size: 0.9rem;
+      margin-left: 8px;
+    }
+
+    .address-select {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fafafa;
+      box-sizing: border-box;
+    }
+
+    .address-select:focus {
+      border-color: #e53935;
+      outline: none;
+    }
+
+    .confirm-address {
+      background-color: #e53935;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .confirm-address:hover {
+      background-color: #d02f2f;
+    }
+
+    body, h1, h2, h3, p, form, input, button, table, th, td {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* Layout and Styling */
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .billing-details, .payment-summary {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .billing-details h2, .payment-summary h2 {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .billing-details input, .billing-details select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .billing-details input:focus, .billing-details select:focus {
+      border-color: #e53935;
+      outline: none;
+    }
+
+    .cart-summary {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-summary h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .cart-item img {
+      width: 80px;
+      height: auto;
+      margin-right: 15px;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+    }
+
+    .cart-item-price, .cart-item-quantity, .cart-item-total {
+      text-align: right;
+    }
+
+    .cart-summary table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    .cart-summary th, .cart-summary td {
+      padding: 12px;
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .cart-summary th {
+      background-color: #f9f9f9;
+      font-weight: normal;
+    }
+
+    .cart-summary td {
+      background-color: #fafafa;
+    }
+
+    .cart-summary tfoot th, .cart-summary tfoot td {
+      font-weight: bold;
+    }
+
+    .payment-methods input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .payment-methods label {
+      margin-bottom: 10px;
+      display: block;
+      font-size: 1rem;
+    }
+
+    .coupon-section {
+      display: flex;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    .coupon-section input {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .coupon-section button {
+      background-color: #e53935;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .coupon-section button:hover {
+      background-color: #c92727;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .actions button {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .actions button:hover {
+      background-color: #d32f2f;
+    }
+
+    .save-info {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .save-info label {
+      font-size: 0.9rem;
+      margin-left: 8px;
+    }
+
+    .address-select {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fafafa;
+      box-sizing: border-box;
+    }
+
+    .address-select:focus {
+      border-color: #e53935;
+      outline: none;
+    }
+
+    .confirm-address {
+      background-color: #e53935;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .confirm-address:hover {
+      background-color: #d02f2f;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <div class="container">
+      <!-- Billing Details Section -->
+      <div class="billing-details">
+        <h2>Billing Details</h2>
+        <!-- Address Selector -->
+        <select class="address-select" name="selectedAddressId" id="addressSelect">
+          <option value="" disabled selected>Select a Saved Address</option>
+          <% userAddress.forEach(address => { %>
+            <option value="<%= address._id %>">
+              <strong><%= address.fullName %></strong><br>
+              <span><%= address.phone %></span><br>
+              <span><%= address.addressLine1 %>, <%= address.addressLine2 %></span><br>
+              <span><%= address.city %>, <%= address.state %> - <%= address.country %></span><br>
+              <span><%= address.email %></span>
+            </option>
+          <% }) %>
+        </select>
+        <h3> Add a New Address</h3>
+        <!-- New Address Fields -->
+        <form id="new-address-form" action="/addressConfirm" method="POST">
+          <input type="text" name="name" placeholder="First Name*" required>
+          <input type="text" name="number" placeholder="Number" required>
+          <input type="text" name="addressone" placeholder="Street Address*" required>
+          <input type="text" name="addresstwo" placeholder="Apartment (optional)">
+          <input type="text" name="city" placeholder="City*" required>
+          <input type="tel" name="state" placeholder="State*" required>
+          <input type="email" name="email" placeholder="Email*" required>
+          <input type="text" name="country" placeholder="Country*" required>
+          <button type="submit">Add Address</button>
+        </form>
+      </div>
+
+      <!-- Payment Method and Cart Summary Section -->
+      <div class="payment-summary">
+        <h2>Payment Method</h2>
+        <div class="payment-methods">
+          <label><input type="radio" name="paymentMethod" value="cod" required> Cash on Delivery</label>
+          <label><input type="radio" name="paymentMethod" value="paypal" required> paypal</label>
+          <label><input type="radio" name="paymentMethod" value="creditCard" required> Credit Card</label>
+          <label><input type="radio" name="paymentMethod" value="debitCard" required> Debit Card</label>
+        </div>
+        
+        <div class="coupon-section">
+          <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code">
+          <button type="button" id="applyCouponButton">Apply Coupon</button>
+          <p id="couponSuccessMessage" style="display: none;"></p>
+        </div>
+        <div>
+          <p id="discountAmount"></p>
+          <p id="updatedTotal"></p>
+      </div>
+        
+
+        <div class="cart-summary">
+          <h2>Cart Summary</h2>
+          <div class="cart-items">
+            <% cart.items.forEach((item, index) => { %>
+              <div class="cart-item" data-product-id="<%= item.productId._id %>" data-quantity="<%= item.quantity %>" data-price="<%= item.productId.salePrice %>">
+                <input type="hidden" name="items[<%= index %>][productId]" value="<%= item.productId._id %>">
+                <input type="hidden" name="items[<%= index %>][quantity]" value="<%= item.quantity %>">
+                <input type="hidden" name="items[<%= index %>][price]" value="<%= item.productId.salePrice %>">
+                <img src="/uploads/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+                <strong><%= item.productId.productName %></strong>
+                <span>Quantity: <%= item.quantity %></span>
+                <span>Price: $<%= item.productId.salePrice %></span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+
+          <!-- Cart Summary and Pricing -->
+          <div class="cart-summary">
+            <div class="cart-summary-pricing">
+              <table>
+                <tfoot>
+                  <!-- Subtotal Row -->
+                  <tr>
+                    <th>Subtotal:</th>
+                    <td>
+                      $<%= cart.totalPrice %>
+                    </td>
+                  </tr>
+                  <!-- Shipping Row -->
+                  <tr>
+                    <th>Shipping:</th>
+                    <td>Free</td>
+                  </tr>
+                  <!-- Total Row -->
+                  <tr>
+                    <th>Total:</th>
+                    <td>
+                      $<%= cart.totalPrice %>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div>
+              <!-- <p id="discountAmount">Discount: $0.00</p>
+              <p id="updatedTotal">Updated Total: $0.00</p> -->
+          </div>
+            <div class="actions">
+              <!-- Return to Shop Button -->
+              <button type="button" onclick="window.location.href='/shop'">
+                Return to Shop
+              </button>
+          
+              <!-- Place Order Button -->
+              <button id="placeOrderButton" type="button">
+                Place Order
+              </button>
+            </div>
+          </div>
+          
+
+       
+      </div>
+    </div>
+
+    <script>
+     document.getElementById("placeOrderButton").addEventListener("click", async () => {
+  try {
+    const selectedAddressId = document.getElementById("addressSelect").value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const appliedCouponCode = document.getElementById("couponCodeInput").value.trim();
+    console.log("sel", selectedAddressId);
+    console.log("payment", paymentMethod);
+    console.log("cou",appliedCouponCode)
+
+
+
+
+    
+
+
+    if (!selectedAddressId || !paymentMethod) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please select an address and payment method!',
+      });
+      return;
+    }
+
+    const cartItems = Array.from(document.querySelectorAll('.cart-item')).map(item => ({
+      productId: item.dataset.productId,
+      quantity: parseInt(item.dataset.quantity, 10),
+      price: parseFloat(item.dataset.price),
+    }));
+    console.log("//", cartItems);
+
+    if (cartItems.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Cart is empty',
+        text: 'Please add items to your cart before placing an order.',
+      });
+      return;
+    }
+
+
+    const orderData = {
+      selectedAddressId,
+      paymentMethod,
+      cartItems,
+      couponCode: appliedCouponCode || null, // Include coupon code if applied
+    };
+
+    if (paymentMethod === "paypal") {
+      // Start PayPal payment process
+      console.log("hello");
+      const response = await fetch('/createPayPalPayment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+
+      const result = await response.json();
+      console.log("result",result);
+      if (response.ok) {
+        // Redirect to PayPal approval URL
+        console.log("re",result.approvalUrl)
+        window.location.href = result.approvalUrl;
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: result.error || 'Failed to initiate PayPal payment.',
+        });
+      }
+    } else {
+      // Handle other payment methods (like COD)
+      const response = await fetch('/placeOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData ),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Order placed!',
+          text: result.message,
+        }).then(() => {
+          window.location.href = "/orderSuccess";
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: result.error || 'Failed to place the order.',
+        });
+      }
+    }
+  } catch (err) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An error occurred. Please try again.',
+    });
+    console.error("Error placing order:", err);
+  }
+});
+
+document.getElementById('applyCouponButton').addEventListener('click', async () => {
+    const couponCode = document.getElementById('couponCodeInput').value.trim();
+
+    let removeButton = document.getElementById('removeCouponButton');
+    if (!removeButton) {
+        // Create the remove button
+        removeButton = document.createElement('button');
+        removeButton.id = 'removeCouponButton';
+        removeButton.textContent = 'Remove Coupon';
+        removeButton.type = 'button';
+
+        // Append the remove button below the coupon section
+        document.querySelector('.coupon-section').appendChild(removeButton);
+
+        // Add event listener to refresh the page when the remove button is clicked
+        removeButton.addEventListener('click', () => {
+            location.reload();
+        });
+    }
+
+    if (!couponCode) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Coupon Code',
+            text: 'Please enter a coupon code.',
+        }).then(()=>{
+          location.reload()
+        });
+        return;
+    }
+
+    try {
+        const response = await fetch('/applycoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                couponCode: couponCode,
+                cartTotal: 500 // Pass the cart total (example: 500)
+            })
+        });
+
+        const result = await response.json();
+        
+
+
+
+        if (response.ok) {
+            document.getElementById('discountAmount').textContent = `Discount: $${result.discount}`;
+            document.getElementById('updatedTotal').textContent = `Updated Total: $${result.discountedTotal}`;
+
+            // Show green success message below the coupon input
+            const successMessage = document.getElementById('couponSuccessMessage');
+            successMessage.textContent = 'Coupon applied successfully!';
+            successMessage.style.color = 'green';
+            successMessage.style.display = 'block';
+
+            // Hide the "Apply Coupon" button and show the "Remove Coupon" button
+            document.getElementById('applyCouponButton').style.display = 'none';
+            removeButton.style.display = 'inline-block';
+
+            // SweetAlert success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Coupon Applied',
+                text: `Discount: $${result.discount}. Updated Total: $${result.discountedTotal}`,
+            });
+        }  else {
+    Swal.fire({
+        icon: 'error',
+        title: 'Coupon Failed',
+        text: result.message || 'Failed to apply coupon.',
+    }).then(() => {
+        // Reload the page after the SweetAlert closes
+        location.reload();
+    });
+}
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while applying the coupon.',
+        });
+    }
+});
+
+
+
+
+    </script>
+
+</body>
+</html>
+
+<%- include('../user/layout/userFooter.ejs') %>

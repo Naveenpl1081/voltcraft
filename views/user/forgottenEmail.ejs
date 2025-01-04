@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Announcement Bar */
+        .announcement-bar {
+            background: #000;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .announcement-bar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Header */
+        .header {
+            padding: 24px 60px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 80px;
+            align-items: center;
+            min-height: calc(100vh - 400px);
+        }
+
+        .image-container {
+            flex: 1;
+            background: #ebf8ff;
+            padding: 40px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .form-title {
+            font-size: 36px;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-bottom-color: #666;
+        }
+
+        .send-button {
+            background: #DB4444;
+            color: white;
+            padding: 16px 48px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: lowercase;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            color: white;
+            padding: 80px 60px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 40px;
+        }
+
+        .footer-section {
+            margin-bottom: 20px;
+        }
+
+        .footer-title {
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+
+        .subscribe-text {
+            margin: 24px 0;
+            opacity: 0.7;
+        }
+
+        .subscribe-form {
+            display: flex;
+            border: 1px solid #333;
+            margin-top: 16px;
+        }
+
+        .subscribe-input {
+            flex: 1;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: white;
+        }
+
+        .subscribe-button {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .footer-links {
+            list-style: none;
+            opacity: 0.7;
+        }
+
+        .footer-links li {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .download-section img {
+            height: 40px;
+            margin: 8px 0;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .social-icons a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            margin-top: 40px;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <span></span>
+        <div>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! <a href="#">ShopNow</a></div>
+        <div>English</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="brand">Volt Craft</a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="image-container">
+            <img src="/api/placeholder/600/600" alt="Shopping Cart and Mobile">
+        </div>
+        <div class="form-container">
+            <h2 class="form-title">Enter your email</h2>
+            <form>
+                <input type="text" placeholder="Email or Phone Number" class="input-field">
+                <button type="submit" class="send-button">send</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 class="footer-title">Volt Craft</h3>
+                <p class="subscribe-text">Subscribe</p>
+                <p>Get 10% off your first order</p>
+                <div class="subscribe-form">
+                    <input type="email" placeholder="Enter your email" class="subscribe-input">
+                    <button class="subscribe-button">→</button>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Support</h3>
+                <ul class="footer-links">
+                    <li>111 Bijoy sarani, Dhaka,</li>
+                    <li>DH 1515, Bangladesh.</li>
+                    <li>exclusive@gmail.com</li>
+                    <li>+88015-88888-9999</li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Account</h3>
+                <ul class="footer-links">
+                    <li><a href="#">My Account</a></li>
+                    <li><a href="#">Login / Register</a></li>
+                    <li><a href="#">Cart</a></li>
+                    <li><a href="#">Wishlist</a></li>
+                    <li><a href="#">Shop</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Quick Link</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms Of Use</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Download App</h3>
+                <p>Save $3 with App New User Only</p>
+                <div class="download-section">
+                    <img src="/api/placeholder/120/40" alt="QR Code">
+                    <div>
+                        <img src="/api/placeholder/120/40" alt="Google Play">
+                        <img src="/api/placeholder/120/40" alt="App Store">
+                    </div>
+                </div>
+                <div class="social-icons">
+                    <a href="#">f</a>
+                    <a href="#">t</a>
+                    <a href="#">i</a>
+                    <a href="#">l</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            © Copyright Rimel 2022. All right reserved
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">  
+    <head>
+        <meta charset="utf-8" />
+        <title>Volt Craft</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        
+        <!-- Template CSS -->
+        <link href="/asset/css/main.css" rel="stylesheet" type="text/css" />
+      
+        <style>
+            /* Add this CSS to your stylesheet */
+            #time {
+                width: 100px;
+                /* Adjust the width as needed */
+            }
+
+            #yearlyBtn,
+            #monthlyBtn {
+                padding: 0.375rem 0.75rem;
+                /* Adjust the padding as needed */
+            }
+        </style>
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"
+              integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+              <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+              
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+             
+    </head>
+
+    <body>
+        <div class="screen-overlay"></div>
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <div class="aside-top">
+                <a href="/admin" class="brand-wrap">
+                    <p>Volt Craft</p>
+                </a>
+                <div>
+                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+                </div>
+            </div>
+            <nav>
+                <ul class="menu-aside">
+                    <li class="menu-item active">
+                        <a class="menu-link" href="/admin/dashboard">
+                            <i class="icon material-icons md-home"></i>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="">
+                            <i class="icon material-icons md-shopping_bag"></i>
+                            <span class="text">Category</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="/admin/categoryInfo">All Categories</a>
+                            <a href="/admin/addCategory"> Add Category </a>
+                        </div>
+                    </li>
+                    
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="">
+                            <i class="icon material-icons md-add_box"></i>
+                            <span class="text"> Products</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="/admin/allProduct">All products</a>
+                            <a href="/admin/addProduct">Add products</a>
+                        
+                          
+                          
+                        </div>
+                    </li>
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="">
+                            <i class="icon material-icons md-monetization_on"></i>
+                            <span class="text">Coupons</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="/admin/coupon">All coupons</a>
+                            <a href="/admin/addcoupon">Add coupons</a>
+                           
+                        </div>
+                    </li>
+                  
+                  
+                     <li class="menu-item has-submenu">
+                        <a class="menu-link" href="">
+                            <i class="icon material-icons md-add_box"></i>
+                            <span class="text"> User and Orders</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="/admin/users">All User List</a>
+                            <a href="/admin/orders">All Order Details</a>
+                          
+                          
+                        </div>
+                    </li>
+                   
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-local_offer"></i>
+
+                            <span class="text">Offers</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="/admin/offer">All Offers</a>
+                            <a href="/admin/addoffer">Add  Offer</a>
+                            
+                        </div>
+                    </li>
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-local_offer"></i>
+
+                            <span class="text">Cancellation and Return</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="/admin/cancelPage">cancel</a>
+                            <a href="/admin/addoffer">Return</a>
+                            
+                        </div>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link"   href="salesreport">
+                            <i class="icon material-icons md-pie_chart"></i>
+                            <span class="text">Sales  Report</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr />
+           
+                <br />
+                <br />
+            </nav>
+        </aside>
+        <main class="main-wrap">
+            <header class="main-header navbar">
+                <div class="col-search">
+                    <!-- <form class="searchform">
+                        
+                        <datalist id="search_terms">
+                            <option value="Products"></option>
+                            <option value="New orders"></option>
+                            <option value="Apple iphone"></option>
+                            <option value="Ahmed Hassan"></option>
+                        </datalist>
+                    </form> -->
+                </div>
+                <div class="col-nav">
+                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon" href="#">
+                                <i class="material-icons md-notifications animation-shake"></i>
+                                <span class="badge rounded-pill">3</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        </li>
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                                <a class="dropdown-item text-brand" href="#"><img src="asset/imgs/theme/flag-us.png" alt="English" />English</a>
+                                <a class="dropdown-item" href="#"><img src="asset/img/theme/flag-fr.png" alt="Français" />Français</a>
+                                <a class="dropdown-item" href="#"><img src="asset/imgs/theme/flag-jp.png" alt="Français" />日本語</a>
+                                <a class="dropdown-item" href="#"><img src="asset/imgs/theme/flag-cn.png" alt="Français" />中国人</a>
+                            </div>
+                        </li>
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="asset/imgs/people/avatar-2.png" alt="User" /></a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                                <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="/admin/logoout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        // Ensure submenu toggling works
+                        const submenuItems = document.querySelectorAll(".menu-item.has-submenu > .menu-link");
+                        submenuItems.forEach(link => {
+                            link.addEventListener("click", (e) => {
+                                e.preventDefault();
+                                const parent = link.parentElement;
+                
+                                // Toggle 'active' state for the menu item
+                                parent.classList.toggle("active");
+                            });
+                        });
+                
+                        // Check for disabled buttons and provide feedback
+                        const disabledLinks = document.querySelectorAll("[disabled]");
+                        disabledLinks.forEach(link => {
+                            link.addEventListener("click", (e) => {
+                                e.preventDefault();
+                                alert("This feature is currently disabled.");
+                            });
+                        });
+                    });
+                </script>
+                
+            </header>
+
+
+    
+            

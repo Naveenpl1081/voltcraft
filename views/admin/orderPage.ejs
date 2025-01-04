@@ -1,0 +1,128 @@
+<%- include('../layouts/adminHeader') %>
+
+<section class="content-main">
+    <div class="content-header mb-4">
+        <div>
+            <h2 class="content-title card-title">Order List</h2>
+            <p class="text-muted">Manage and view all user orders</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <!-- Placeholder for future search or filter -->
+                </div>
+            </div>
+
+            
+        </header>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 10%;">ID</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Total Price</th>
+                            <th style="width: 15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (orders.length > 0) { %>
+                            <% orders.forEach(orderItem => { %>
+                                <tr>
+                                    <td><%= orderItem._id %></td>
+                                    <td><span class="badge bg-<%= orderItem.orderStatus === 'Completed' ? 'success' : 'warning' %>">
+                                        <%= orderItem.orderStatus %>
+                                    </span></td>
+                                    <td><%= new Date(orderItem.orderDate).toLocaleDateString() %></td>
+                                    <td><%= orderItem.userId.name %></td>
+                                    <td>₹<%= orderItem.totalAmount %></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm view-btn" data-id="<%= orderItem._id %>">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% orderItem.items.forEach(item => { %>
+                                    <tr class="bg-light">
+                                        <td colspan="6" class="px-3">
+                                            <div class="d-flex align-items-center">
+                                                <img src="/uploads/<%= item.productId.productImage[0] %>" 
+                                                    alt="Product" 
+                                                    class="img-fluid rounded me-3" 
+                                                    style="width: 50px; height: 50px;">
+                                                <div>
+                                                    <p class="mb-1 fw-bold"><%= item.productId.name %></p>
+                                                    <small>₹<%= item.price %> x <%= item.quantity %></small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-box"></i> No orders found.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <% if (totalPages > 1) { %>
+        <div class="pagination-area mt-4">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                    <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    <% } %>
+                    <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    <% } %>
+                </ul>
+            </nav>
+        </div>
+    <% } %>
+    
+
+</section>
+
+<%- include('../layouts/AdminFooter') %>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('view-btn')) {
+            const orderId = event.target.getAttribute('data-id');
+            console.log("Order ID:", orderId);
+            // Add a slash before the orderId
+            window.location.href = `/admin/singleorderview/${orderId}`;
+        }
+    });
+});
+
+
+</script>

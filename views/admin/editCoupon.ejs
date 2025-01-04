@@ -1,0 +1,87 @@
+<%- include('../layouts/adminHeader') %>
+
+<h1>Edit Coupon</h1>
+
+<main>
+    <div class="row">
+        <!-- Edit Coupon Form -->
+        <form id="editCouponForm" action="editcoupon" method="POST">
+            <div class="mb-3">
+                <label for="couponCode" class="form-label">Coupon Code</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    name="couponCode" 
+                    value="<%= coupons.couponCode %>" 
+                    required 
+                    pattern="^(?!\s)(?!.*\s$)(?!.*?\s\s)[A-Za-z\s]{1,}$" 
+                    title="Only spaces between characters are allowed, no leading or trailing spaces, and at least one character should be entered."
+                    style="background-color: #f9f9f9;">
+                <div class="invalid-feedback">
+                    Please enter a valid coupon code.
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="discountAmount" class="form-label">Discount Amount (₹)</label>
+                    <input 
+                        type="number" 
+                        class="form-control" 
+                        name="discountAmount" 
+                        value="<%= coupons.offerValue %>" 
+                        required 
+                        style="background-color: #f9f9f9;">
+                    <div class="invalid-feedback">
+                        Please enter a valid discount amount.
+                    </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="minimumAmount" class="form-label">Minimum Amount (₹)</label>
+                    <input 
+                        type="number" 
+                        class="form-control" 
+                        name="minimumAmount" 
+                        value="<%= coupons.minimumPrice %>" 
+                        required 
+                        style="background-color: #f9f9f9;">
+                    <div class="invalid-feedback">
+                        Please enter a valid minimum amount.
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea 
+                    class="form-control" 
+                    name="description" 
+                    rows="3" 
+                    required><%= coupons.description %></textarea>
+                <div class="invalid-feedback">
+                    Please enter a valid description.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="expiryDate" class="form-label">Expiry Date</label>
+                <input 
+                    type="date" 
+                    class="form-control" 
+                    name="expireDate" 
+                    value="<%= coupons.expiredOn ? coupons.expiredOn.toISOString().split('T')[0] : '' %>" 
+                    required 
+                    style="background-color: #f9f9f9;">
+                <div class="invalid-feedback">
+                    Please enter a valid expiry date.
+                </div>
+                <% if (typeof errorMessage !== 'undefined') { %>
+                    <p style="color: red;"><%= errorMessage %></p>
+                <% } %>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Coupon</button>
+            <input type="hidden" name="id" value="<%= coupons && coupons._id ? coupons._id : '' %>">
+
+        </form>
+    </div>
+</main>
+
+<br><br><br>
+<%- include('../layouts/AdminFooter') %>

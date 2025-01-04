@@ -1,0 +1,58 @@
+<%- include('../layouts/adminHeader') %>
+
+<main class="main-content container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 bg-white mt-5 p-4 shadow-sm">
+            <h2 class="text-center mb-4">EDIT CATEGORY</h2>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger text-center" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/admin/editCategory" method="post">
+                <input type="hidden" name="id" value="<%= category._id %>">
+
+                <div class="mb-3">
+                    <label for="catName" class="form-label">Category Name</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="catName" 
+                        name="catName" 
+                        placeholder="Enter category name" 
+                        value="<%= category.name %>" 
+                        required 
+                        maxlength="50"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Category Description</label>
+                    <textarea 
+                        class="form-control" 
+                        id="description" 
+                        name="description" 
+                        placeholder="Enter category description" 
+                        rows="3" 
+                        required 
+                        maxlength="250"
+                    ><%= category.description %></textarea>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Update Category</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="/admin/categoryInfo" class="btn btn-outline-secondary">
+                    Back to All Categories
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../layouts/AdminFooter') %>

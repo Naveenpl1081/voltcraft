@@ -1,0 +1,182 @@
+<%- include('../layouts/adminHeader') %>
+  
+<h1>Edit Offer !!!</h1>
+
+<div class="container">   
+    <form id="editOfferForm" action="editOffer" method="POST">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="offerName" class="form-label">Offer Name</label>
+                    <input type="text" class="form-control" name="offerName" value="<%=offer.offerName%>" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="discount" class="form-label">Discount</label>
+                    <input type="number" class="form-control" name="discount" value="<%=offer.discount%>" required min="1">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" name="startDate" value="<%=offer.startDate.toISOString().split('T')[0]%>" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" name="endDate" value="<%=offer.endDate.toISOString().split('T')[0]%>" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="offerType" class="form-label">Offer Type</label>
+                    <select class="form-select" name="offerType" id="offerType" required>
+                        <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
+                        <option value="Product" <%= offer.offerType === 'Product' ? 'selected' : '' %>>Product</option>
+                        <option value="Referral" <%= offer.offerType === 'Referral' ? 'selected' : '' %>>Referral</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3" id="productSelect">
+                    <label for="productId" class="form-label">Product</label>
+                    <select class="form-select" name="productId">
+                        <% products.forEach((item) => { %>
+                            <option value="<%=item._id%>" <%= offer.productId === item._id ? 'selected' : '' %>><%= item.productName %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="mb-3" id="categorySelect" style="display:none;">
+                    <label for="categoryId" class="form-label">Category</label>
+                    <select class="form-select" name="categoryId">
+                        <% categories.forEach((item) => { %>
+                            <option value="<%=item._id%>" <%= offer.categoryId === item._id ? 'selected' : '' %>><%= item.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Edit Offer</button>
+        <input type="hidden" name="id" value="<%=offer._id %>">
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const offerTypeSelect = document.getElementById('offerType');
+        const productSelect = document.getElementById('productSelect');
+        const categorySelect = document.getElementById('categorySelect');
+        const editOfferForm = document.getElementById('editOfferForm');
+
+        // Function to show/hide product or category select based on offer type
+        function toggleSelects() {
+            const selectedOfferType = offerTypeSelect.value;
+            if (selectedOfferType === 'Product') {
+                productSelect.style.display = 'block';
+                categorySelect.style.display = 'none';
+            } else if (selectedOfferType === 'Category') {
+                productSelect.style.display = 'none';
+                categorySelect.style.display = 'block';
+            } else {
+                productSelect.style.display = 'none';
+                categorySelect.style.display = 'none';
+            }
+        }
+
+        // Initial call to toggleSelects
+        toggleSelects();
+
+        // Event listener for offerType select change
+        offerTypeSelect.addEventListener('change', toggleSelects);
+
+        // Front-end validation on form submission
+        editOfferForm.addEventListener('submit', function (e) {
+            const offerName = document.querySelector('[name="offerName"]').value.trim();
+            const discount = parseFloat(document.querySelector('[name="discount"]').value);
+            const startDate = new Date(document.querySelector('[name="startDate"]').value);
+            const endDate = new Date(document.querySelector('[name="endDate"]').value);
+            const now = new Date();
+
+            if (offerName.length < 3) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Offer Name',
+                    text: 'Offer name must be at least 3 characters long.',
+                });
+                e.preventDefault();
+                return;
+            }
+
+            if (isNaN(discount) || discount <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Discount',
+                    text: 'Discount must be a positive number.',
+                });
+                e.preventDefault();
+                return;
+            }
+
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Dates',
+                    text: 'Please provide valid start and end dates.',
+                });
+                e.preventDefault();
+                return;
+            }
+
+            if (startDate < now) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Start Date',
+                    text: 'Start date cannot be in the past.',
+                });
+                e.preventDefault();
+                return;
+            }
+
+            if (startDate >= endDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Date Range',
+                    text: 'Start date must be before end date.',
+                });
+                e.preventDefault();
+                return;
+            }
+
+            if (offerTypeSelect.value === 'Product' && !document.querySelector('[name="productId"]').value) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Selection',
+                    text: 'Please select a product for Product offers.',
+                });
+                e.preventDefault();
+                return;
+            }
+
+            if (offerTypeSelect.value === 'Category' && !document.querySelector('[name="categoryId"]').value) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Selection',
+                    text: 'Please select a category for Category offers.',
+                });
+                e.preventDefault();
+                return;
+            }
+        });
+    });
+</script>
+
+<br><br><br>
+<%- include('../layouts/AdminFooter') %>

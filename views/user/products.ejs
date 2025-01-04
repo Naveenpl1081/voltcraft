@@ -1,0 +1,412 @@
+<%- include('../user/layout/userHeader') %>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+
+    body {
+        background-color: #f9f9f9;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 5%;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #ff4444;
+    }
+
+    .nav-icons {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+    }
+
+    .search-bar {
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
+        border: 1px solid #ddd;
+        background: #f0f0f0;
+        width: 200px;
+        outline: none;
+        transition: width 0.3s;
+    }
+
+    .search-bar:focus {
+        width: 300px;
+    }
+
+    .products-section {
+        padding: 3rem 5%;
+    }
+
+    .section-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .section-header p {
+        color: #ff4444;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .section-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    .product-info {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+    }
+
+    .rating {
+        color: #ffd700;
+        margin-bottom: 1rem;
+    }
+
+    .product-price {
+        color: #ff4444;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .add-to-cart {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.8rem 1.2rem;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .add-to-cart:hover {
+        background: #e03838;
+    }
+
+    footer {
+        background: #333;
+        color: white;
+        padding: 3rem 5%;
+        margin-top: 4rem;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    footer h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #ff4444;
+    }
+
+    footer p {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    footer input[type="email"] {
+        width: 100%;
+        padding: 0.7rem;
+        border: none;
+        border-radius: 25px;
+        margin-top: 0.5rem;
+    }
+    .logout-button {
+            background: #DB4444;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-to-cart-button:hover {
+    background-color: #b00505; /* Darker red for hover state */
+    transform: translateY(-2px); /* Slightly raise the button on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional: Add a clicked effect */
+.add-to-cart-button:active {
+    background-color: #900404; /* Even darker red for active state */
+    transform: translateY(1px); /* Push the button slightly down on click */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.add-to-cart-button.clicked {
+    background-color: #28a745; /* Green for success */
+    cursor: not-allowed;
+}
+.add-to-cart-button {
+    background-color: #f10707; /* Red color for attention */
+    color: white;
+    padding: 15px 0; /* Top and bottom padding for height */
+    border: none;
+    border-radius: 8px; /* Subtle rounding for a boxy look */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 16px;
+    text-align: center;
+    width: 100%; /* Makes the button span the entire width of its container */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a raised effect */
+}
+.action-buttons {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-button {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .action-button:hover {
+        background-color: #DB4444;
+        border-color: #DB4444;
+        color: white;
+    }
+
+</style>
+
+<section class="products-section">
+    <div class="section-header">
+        <p>Our Products</p>
+        <h1>Explore Our Mobile Products</h1>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+
+    <div class="products-grid">
+        <% product.forEach(product => { %>
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="/uploads/<%= product.productImage[0] %>" alt="<%= product.productName %>" class="product-image">
+                    <span class="discount-badge">-40%</span>
+                    <div class="action-buttons">
+                        <button class="action-button add-to-wishlist" data-product-id="<%= product._id %>">♡</button>
+                        <button class="action-button add-to-wishlist" data-product-id="<%= product._id %>">👁</button>
+                    </div>
+                </div>
+                <a href="/product/<%= product._id %>" class="product-link" aria-label="View details for <%= product.productName %>">
+                    <div class="product-info">
+                        <h3 class="product-title"><%= product.productName %></h3>
+                        <div class="price-container">
+                            <span class="current-price">$<%= product.salePrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) %></span>
+                            <span class="original-price">$<%= product.regularPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) %></span>
+                        </div>
+                        <div class="rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="review-count">(88)</span>
+                        </div>
+                    </div>
+                </a>
+                <div class="add-to-cart-section">
+                    <input type="hidden" name="quantity" id="quantity-input" value="1">
+                    <button 
+                        class="add-to-cart-button" 
+                        data-product-id="<%= product._id %>" 
+                        data-added="false" 
+                        aria-label="Add <%= product.productName %> to cart">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+    
+
+<script>
+
+
+
+
+     document.addEventListener("DOMContentLoaded", () => {
+    // Select all "Add to Cart" buttons
+    const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", async event => {
+            const productId = button.getAttribute("data-product-id");
+
+            // Disable button to prevent duplicate clicks
+            if (button.classList.contains("clicked")) {
+                console.warn("Product already added to cart.");
+                return; // Prevent duplicate requests
+            }
+
+            try {
+                // Send the Add to Cart request to the backend
+                const response = await fetch(`/addToCarts/${productId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ quantity: 1 }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Change button color to indicate success
+                    button.classList.add("clicked");
+                    button.textContent = "Added";
+                    button.disabled = true; // Disable the button
+                } else {
+                    console.error("Error adding to cart:", result.message);
+                    alert("Failed to add to cart: " + result.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+        const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
+
+        addToWishlistButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                
+                fetch('/addToWishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId: productId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Product added to wishlist!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (data.alreadyExists) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Product is already in your wishlist!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (data.outOfStock) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Product is out of stock!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'An error occurred while adding to the wishlist.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'An error occurred while adding to the wishlist.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+            });
+        });
+    });
+</script>
+
+</section>
+
+<%- include('../user/layout/userFooter') %>

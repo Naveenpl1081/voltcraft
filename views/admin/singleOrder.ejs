@@ -1,0 +1,142 @@
+<%- include('../layouts/adminHeader') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title card-title">Order Detail</h2>
+        <p>Details for Order ID: <%= orderDetails._id %></p>
+    </div>
+
+    <div class="card">
+        <header class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <span><i class="material-icons md-calendar_today"></i> <b><%= new Date(orderDetails.updatedAt).toLocaleString() %></b></span>
+                <br />
+                <small class="text-muted">Order ID: <%= orderDetails._id %></small>
+            </div>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#statusChangeModal">
+                Change Status
+            </button>
+
+            <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        </header>
+
+        <div class="card-body">
+            <!-- Customer Info -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <h6>Customer</h6>
+                    <p>
+                        Name: <%= orderDetails.userId.name %><br />
+                        Email: <%= orderDetails.userId.email %><br />
+                        Mobile: <%= orderDetails.userId.mobile %>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Order Info</h6>
+                    <p>
+                        Payment Method: <%= orderDetails.paymentMethod %><br />
+                        Status: <%= orderDetails.orderStatus %><br />
+                        Total Amount: ₹<%= orderDetails.totalAmount %>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Delivery Address</h6>
+                    <p>
+                        <%= orderDetails.deliveryAddress.fullName %><br />
+                        <%= orderDetails.deliveryAddress.addressLine1 %>, 
+                        <%= orderDetails.deliveryAddress.addressLine2 %>, 
+                        <%= orderDetails.deliveryAddress.city %>, 
+                        <%= orderDetails.deliveryAddress.state %>, 
+                        <%= orderDetails.deliveryAddress.country %>, 
+                        PIN: <%= orderDetails.deliveryAddress.pincode %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Order Details Table -->
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (orderDetails.items.length > 0) { %>
+                            <% orderDetails.items.forEach(item => { %>
+                                <tr>
+                                    <td>
+                                        <img src="/uploads/<%= item.productId.productImage[0] %>" alt="Product Image" width="50" class="rounded me-2" />
+                                        <%= item.productId.productName %>
+                                    </td>
+                                    <td>₹<%= item.price %></td>
+                                    <td><%= item.quantity %></td>
+                                    <td class="text-end">₹<%= item.price * item.quantity %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    No items found for this order.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Change Modal -->
+    <div class="modal fade" id="statusChangeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Order Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <select id="orderStatus" class="form-select">
+                        <option value="Ordered">Ordered</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Out For Delivery">Out For Delivery</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveStatusBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('saveStatusBtn').addEventListener('click', function() {
+        const orderId = '<%= orderDetails._id %>';
+        const status = document.getElementById('orderStatus').value;
+        
+
+        axios.post('/admin/changeStatus', { orderId, status })
+            .then(response => {
+                alert('Order status updated successfully.');
+                location.reload();
+            })
+            .catch(error => {
+                alert('Error updating order status.');
+                console.error(error);
+            });
+    });
+</script>
+
+<%- include('../layouts/AdminFooter') %>

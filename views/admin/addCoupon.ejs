@@ -1,0 +1,195 @@
+<%- include('../layouts/adminHeader', { pageTitle: 'Add Coupon' }) %>
+
+<h1>Add Coupon</h1>
+
+<main>
+    <style>
+        .center-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Or a specific height if you want vertical centering */
+        }
+        .form-control {
+            background-color: #f0f0f0;
+        }
+        .invalid-feedback {
+            display: none;
+        }
+        .was-validated .form-control:invalid ~ .invalid-feedback {
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <!-- Add Coupon Form -->
+        <!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <form id="addCouponForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="couponName" class="form-label">Coupon Name</label>
+                <input type="text" class="form-control" id="couponName" name="couponName" required 
+                 pattern="^[A-Za-z0-9]+$"  
+                    title="Only alphanumeric characters and spaces are allowed." 
+                    style="background-color: #f0f0f0;">
+                <div class="invalid-feedback">
+                    Please enter a valid coupon name.
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="couponCode" class="form-label">Coupon Code</label>
+                <input type="text" class="form-control" id="couponCode" name="couponCode" 
+                    required pattern="^[A-Za-z0-9]+$" 
+                    title="Only alphanumeric characters are allowed."
+                    style="background-color: #f0f0f0;">
+                <div class="invalid-feedback">
+                    Please enter a valid coupon code.
+                </div>
+            </div>
+            
+            
+            <div class="mb-3">
+                <label for="offerType" class="form-label">Offer Type</label>
+                <select class="form-control" id="offerType" name="offerType" required>
+                    <option value="">Select Offer Type</option>
+                    <option value="percentage">Percentage</option>
+                    <option value="flat">Flat</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select an offer type.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="offerValue" class="form-label">Offer Value</label>
+                    <input type="number" class="form-control" id="offerValue" name="offerValue" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid offer value.
+                    </div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="minimumPrice" class="form-label">Minimum Price (₹)</label>
+                    <input type="number" class="form-control" id="minimumPrice" name="minimumPrice" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid minimum price.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="usageLimit" class="form-label">Usage Limit</label>
+                <input type="number" class="form-control" id="usageLimit" name="usageLimit" required 
+                value="1"
+                    placeholder="Leave blank for unlimited">
+                    <div class="invalid-feedback">
+                        Please enter a valid usage limit .
+                    </div>
+            </div>
+            
+
+            <div class="mb-3">
+                <label for="usagePerUserLimit" class="form-label">Usage Per User Limit</label>
+                <input type="number" class="form-control" id="usagePerUserLimit" name="usagePerUserLimit" required 
+                    value="1">
+                <div class="invalid-feedback">
+                    Please enter a valid usage limit per user.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required ></textarea>
+                <div class="invalid-feedback">
+                    Please provide a description.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="createdOn" class="form-label">Created Date</label>
+                <input type="text" class="form-control" id="createdOn" name="createdOn" 
+                    value="<%= new Date().toISOString().split('T')[0] %>" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="expiryDate" class="form-label">Expiry Date</label>
+                <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
+                <div class="invalid-feedback">
+                    Please select a valid expiry date.
+                </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="isActive" name="isActive">
+                <label for="isActive" class="form-check-label">Is Active</label>
+            </div>
+            
+
+            <div class="center-button">
+                <button type="submit" id="Addbutton" class="btn btn-primary">Add Coupon</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+  document.getElementById('addCouponForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const form = document.getElementById('addCouponForm');
+    // Check if form is valid
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+    }
+
+    // Gather form data
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Check if couponName is empty
+    if (!data.couponName || !data.couponName.trim()) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Coupon name cannot be empty or just spaces.',
+    });
+    return;
+}
+
+
+    try {
+        const response = await fetch('/admin/addcoupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            throw new Error(result.message || 'Failed to add coupon.');
+        }
+
+        const result = await response.json();
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: result.message || 'Coupon added successfully!',
+        }).then(() => {
+            window.location.reload(); // Reload the page after success
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message || 'An unexpected error occurred.',
+        });
+    }
+});
+
+</script>
+
+<%- include('../layouts/AdminFooter') %>
