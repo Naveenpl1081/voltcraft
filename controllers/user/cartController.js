@@ -95,19 +95,19 @@ const addToCart = async (req, res) => {
     try {
         console.log("Add to Cart API Called");
 
-       
-        const { quantity } = req.body;
-        const { id } = req.params;
+        const { quantity } = req.body; // Quantity from the front-end input
+        const { id } = req.params; // Product ID from the URL
+
         console.log("Quantity:", quantity);
         console.log("Product ID:", id);
 
-        
+        // Parse and validate quantity
         const parsedQuantity = parseInt(quantity, 10);
         if (!parsedQuantity || isNaN(parsedQuantity) || parsedQuantity <= 0) {
             return res.status(400).json({ message: "Invalid quantity" });
         }
 
-        
+        // Find the product
         const product = await Product.findById(id);
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
@@ -115,24 +115,43 @@ const addToCart = async (req, res) => {
 
         console.log("Product found:", product);
 
-        
+        // Find or create the user's cart
         let userCart = await Cart.findOne({ userId: req.session.userId });
         if (!userCart) {
             userCart = new Cart({ userId: req.session.userId, items: [], totalPrice: 0 });
         }
 
-        
+        // Check if the product already exists in the cart
         const existingProduct = userCart.items.find(
             item => item.productId.toString() === product._id.toString()
         );
 
+        let updatedQuantity = parsedQuantity;
+
         if (existingProduct) {
-            
-            existingProduct.quantity += parsedQuantity;
+            // Calculate the updated quantity
+            updatedQuantity += existingProduct.quantity;
+
+            // Check if the updated quantity exceeds available stock
+            if (updatedQuantity > product.quantity) {
+                return res.status(400).json({
+                    message: `Cannot add more than available stock. Available: ${product.quantity}, Requested: ${updatedQuantity}`,
+                });
+            }
+
+            // Update the quantity and total price for the existing product
+            existingProduct.quantity = updatedQuantity;
             existingProduct.totalPrice = existingProduct.quantity * product.salePrice;
             console.log("Updated existing product in cart:", existingProduct);
         } else {
-            
+            // Check if the requested quantity exceeds available stock
+            if (parsedQuantity > product.quantity) {
+                return res.status(400).json({
+                    message: `Cannot add more than available stock. Available: ${product.quantity}, Requested: ${parsedQuantity}`,
+                });
+            }
+
+            // Add the new product to the cart
             userCart.items.push({
                 productId: product._id,
                 name: product.productName,
@@ -143,18 +162,13 @@ const addToCart = async (req, res) => {
             console.log("Added new product to cart");
         }
 
-        
-        userCart.totalPrice = userCart.items.reduce(
-            (sum, item) => sum + item.totalPrice,
-            0
-        );
+        // Recalculate the total cart price using the schema method
+        await userCart.updateCart();
 
-        
-        await userCart.save();
         console.log("Updated Cart with Total Price:", userCart);
 
-        
-        return res.redirect("/cart");
+        // Return a success response
+        return res.status(200).json({ message: "Cart updated successfully", cart: userCart });
     } catch (error) {
         console.error("Error adding to cart:", error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -162,13 +176,15 @@ const addToCart = async (req, res) => {
 };
 
 
+
 const addToCarts = async (req, res) => {
     try {
-        console.log("Add to Cart API Called");
+        console.log("Add to Cart API Calleddddddddddddd");
 
         
         const { quantity } = req.body;
         const { id } = req.params;
+        
 
         
         const parsedQuantity = parseInt(quantity, 10);
