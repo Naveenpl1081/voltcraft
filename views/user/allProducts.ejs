@@ -276,12 +276,12 @@
                 <div class="add-to-cart-section">
                     <input type="hidden" name="quantity" id="quantity-input" value="1">
                     <button 
-                        class="add-to-cart-button" 
-                        data-product-id="<%= product._id %>" 
-                        data-added="false" 
-                        aria-label="Add <%= product.productName %> to cart">
-                        Add to Cart
-                    </button>
+    class="add-to-cart-button" 
+    data-product-id="<%= product._id %>" 
+    aria-label="Add <%= product.productName %> to cart">
+    Add to Cart
+</button>
+
                 </div>
             </div>
         <% }) %>
@@ -311,6 +311,8 @@
 <%- include('../user/layout/userFooter') %>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <script>
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -389,43 +391,69 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
+    const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
 
-        addToCartButtons.forEach(button => {
-            button.addEventListener("click", async event => {
-                const productId = button.getAttribute("data-product-id");
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", async event => {
+            const productId = button.getAttribute("data-product-id");
 
-                if (button.classList.contains("clicked")) {
-                    console.warn("Product already added to cart.");
-                    return;
-                }
+            // Prevent duplicate additions
+            if (button.classList.contains("clicked")) {
+                swal({
+                    title: "Already Added!",
+                    text: "This product is already in your cart.",
+                    icon: "info",
+                    button: "OK",
+                });
+                return;
+            }
 
-                try {
-                    const response = await fetch(`/addToCarts/${productId}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ quantity: 1 }),
+            try {
+                const response = await fetch(`/addToCarts/${productId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ quantity: 1 }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Success SweetAlert
+                    swal({
+                        title: "Added to Cart!",
+                        text: `The product has been successfully added to your cart.`,
+                        icon: "success",
+                        button: "Continue Shopping",
                     });
 
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        button.classList.add("clicked");
-                        button.textContent = "Added";
-                        button.disabled = true;
-                    } else {
-                        console.error("Error adding to cart:", result.message);
-                        alert("Failed to add to cart: " + result.message);
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                    alert("An error occurred. Please try again.");
+                    // Update button UI
+                    button.classList.add("clicked");
+                    button.textContent = "Added";
+                    button.disabled = true;
+                } else {
+                    // Error SweetAlert for backend validation errors
+                    swal({
+                        title: "Failed to Add to Cart",
+                        text: result.message || "An error occurred while adding the product to your cart.",
+                        icon: "error",
+                        button: "Try Again",
+                    });
                 }
-            });
+            } catch (error) {
+                // General Error SweetAlert
+                swal({
+                    title: "Error",
+                    text: "An unexpected error occurred. Please try again later.",
+                    icon: "error",
+                    button: "OK",
+                });
+                console.error("Error:", error);
+            }
         });
     });
+});
 
     document.addEventListener('DOMContentLoaded', function() {
         const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');

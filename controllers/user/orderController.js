@@ -367,7 +367,7 @@ const handleOrderModification = async (req, res, action) => {
     const { canceledItems, reason } = req.body;
     const userId = req.session.userId;
 
-    // Fetch the order and populate necessary fields
+    
     const order = await Order.findOne({ _id: orderId, userId: userId })
       .populate('items.productId')
       .populate({
@@ -381,7 +381,7 @@ const handleOrderModification = async (req, res, action) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Ensure the order is eligible for the action
+    
     if (action === 'cancel' && order.orderStatus === 'Cancelled') {
       return res.status(400).json({ message: 'Order is already cancelled' });
     }
@@ -390,7 +390,7 @@ const handleOrderModification = async (req, res, action) => {
       return res.status(400).json({ message: 'Only delivered orders can be returned' });
     }
 
-    // Calculate the total refund amount and update order items
+    
     let totalRefund = 0;
     const updatedItems = [];
 
@@ -409,7 +409,7 @@ const handleOrderModification = async (req, res, action) => {
         });
       }
 
-      // Update item quantity and calculate refund for the item
+      
       orderItem.quantity -= canceledItem.quantity;
       const itemRefund = canceledItem.quantity * orderItem.price;
       updatedItems.push({
@@ -421,7 +421,7 @@ const handleOrderModification = async (req, res, action) => {
       totalRefund += itemRefund;
     }
 
-    // Adjust refund amount if a coupon was applied
+    
     if (order.couponApplied) {
       const coupon = await Coupon.findById(order.couponApplied);
       if (coupon) {
@@ -430,11 +430,11 @@ const handleOrderModification = async (req, res, action) => {
           : Math.min(coupon.offerValue, totalRefund);
 
         totalRefund -= discount;
-        totalRefund = Math.max(totalRefund, 0); // Ensure refund is not negative
+        totalRefund = Math.max(totalRefund, 0); 
       }
     }
 
-    // Save the canceled or returned items in the CancelOrder schema
+    
     const cancelOrder = new CancelOrder({
       orderId: order._id,
       userId,
@@ -442,14 +442,14 @@ const handleOrderModification = async (req, res, action) => {
       totalRefund,
       reason: reason || '',
       action,
-      paymentMethod: order.paymentMethod, // Include payment method
+      paymentMethod: order.paymentMethod, 
     });
 
     console.log("Saving CancelOrder:", cancelOrder);
 
-    await cancelOrder.save(); // Save the CancelOrder instance
+    await cancelOrder.save(); 
 
-    // Update the order to reference the cancelOrder
+   
     order.cancelOrder = cancelOrder._id;
     order.orderStatus = action === 'cancel' ? 'Cancelled' : 'Pending';
     await order.save();
@@ -488,7 +488,27 @@ const returnOrder = (req, res) => {
   handleOrderModification(req, res, 'return');
 };
 
+const getAllAvailableCoupons = async (req, res) => {
+  try {
+    const coupons = await Coupon.find({
+      isActive: true,
+      isDeleted: false,
+      expiredOn: { $gte: new Date() },
+    });
 
+    res.status(200).json({
+      success: true,
+      message: 'Available coupons fetched successfully.',
+      coupons,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching available coupons.',
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   placeOrder,
@@ -498,5 +518,6 @@ module.exports = {
   addressConfirm,
   applyCoupon,
   cancelOrder,
-  returnOrder
+  returnOrder,
+  getAllAvailableCoupons
 };

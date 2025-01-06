@@ -81,6 +81,7 @@ router.post("/addressConfirm",orderController.addressConfirm)
 
 
 router.post("/applycoupon",orderController.applyCoupon)
+router.get('/coupons', orderController.getAllAvailableCoupons);
 
 
 router.post("/createPayPalPayment",createPayPalPayment)

@@ -10,6 +10,7 @@ const wishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
         console.log("User ID:", userId);
+        
 
        
         const wishlist = await Wishlist.findOne({ userId })

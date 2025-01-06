@@ -3,6 +3,7 @@ const Order=require("../../models/orderSchema")
 const User=require("../../models/userSchema")
 const CancelOrder=require('../../models/cancelSchema')
 const Wallet=require('../../models/walletSchema')
+const Product=require('../../models/productSchema')
 
 
 
@@ -221,6 +222,20 @@ const approveOrder = async (req, res) => {
         }
 
         await wallet.save();
+
+        // if (cancelOrder.status === 'Approved' && cancelOrder.action === 'return') {
+        //     console.log("naveen")
+        //     for (const canceledItem of cancelOrder.canceledItems) {
+        //         const product = await Product.findById(canceledItem.productId); // Fetch the product directly
+        //         if (!product) {
+        //             return res.status(404).json({ success: false, message: `Product with ID ${canceledItem.productId} not found` });
+        //         }
+
+        //         const returnQuantity = canceledItem.quantity; // Use quantity from canceledItems
+        //         product.quantity += returnQuantity;
+        //         await product.save();
+        //     }
+        // }
 
         res.json({ success: true, message: 'Order has been approved and refund added to wallet successfully' });
     } catch (error) {

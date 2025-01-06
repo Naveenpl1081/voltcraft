@@ -1180,6 +1180,8 @@ body {
         }
     </style>
 </head>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <body>
     <div class="container">
         <div class="header">
@@ -1212,9 +1214,10 @@ body {
                     </a>
                     <!-- Add to Cart Button -->
                     <input type="hidden" name="quantity" id="quantity-input" value="1">
-                    <button class="add-to-cart-button" data-product-id="<%= product._id %>">
-                        Add to Cart
-                    </button>
+<button class="add-to-cart-button" data-product-id="<%= product._id %>">
+    Add to Cart
+</button>
+
                 </div>
             <% }) %>
         </div>
@@ -1226,7 +1229,7 @@ body {
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+       document.addEventListener("DOMContentLoaded", () => {
     // Select all "Add to Cart" buttons
     const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
 
@@ -1247,20 +1250,41 @@ body {
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Change button color to indicate success
+                    // Success SweetAlert
+                    swal({
+                        title: "Added to Cart!",
+                        text: `The product has been successfully added to your cart.`,
+                        icon: "success",
+                        button: "OK",
+                    });
+
+                    // Update button UI
                     button.classList.add("clicked");
                     button.textContent = "Added";
+                    button.disabled = true;
                 } else {
-                    console.error("Error adding to cart:", result.message);
-                    alert("Failed to add to cart: " + result.message);
+                    // SweetAlert for backend validation errors
+                    swal({
+                        title: "Failed to Add to Cart",
+                        text: result.message || "An error occurred while adding the product to your cart.",
+                        icon: "error",
+                        button: "Try Again",
+                    });
                 }
             } catch (error) {
+                // General Error SweetAlert
+                swal({
+                    title: "Error",
+                    text: "An unexpected error occurred. Please try again later.",
+                    icon: "error",
+                    button: "OK",
+                });
                 console.error("Error:", error);
-                alert("An error occurred. Please try again.");
             }
         });
     });
 });
+
 
 
 document.addEventListener('DOMContentLoaded', function() {

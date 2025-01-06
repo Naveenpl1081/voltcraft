@@ -446,7 +446,7 @@
                 </div>
 
                 <div class="text-3xl font-bold text-red-500 mb-4">
-                    $<%= product.salePrice %>
+                    ₹<%= product.salePrice %>
                 </div>
 
                 <div class="mb-4">
@@ -486,7 +486,7 @@
                             Status: 
                             <span class="status font-bold 
                                 <%= product.status.toLowerCase() === 'in stock' ? 'text-green-600' : 'text-red-600' %>">
-                                <%= product.quantity %>
+                                <%= product.status %>
                             </span>
                         </p>
                     </div>
