@@ -8,6 +8,8 @@ const Product = require('../../models/productSchema');
 const Coupon=require('../../models/couponSchema')
 const Wallet=require('../../models/walletSchema')
 const CancelOrder=require('../../models/cancelSchema')
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 const { findById } = require('../../models/orderSchema');
  
 
@@ -42,6 +44,8 @@ const placeOrder = async (req, res) => {
       }
       return acc + item.quantity * item.price;
     }, 0);
+    totalAmount=totalAmount*(18/100)+totalAmount+100
+    console.log(".....",totalAmount)
 
     let discount = 0;
     let couponDetails = null;
@@ -79,13 +83,18 @@ const placeOrder = async (req, res) => {
       } else if (coupon.offerType === "flat") {
         discount = coupon.offerValue;
       }
+      console.log("discount am",discount)
 
       
       coupon.couponUsed += 1;
       await coupon.save();
+      console.log("first",totalAmount)
 
       
       totalAmount = Math.max(totalAmount - discount, 0);
+      console.log("poiuytre",totalAmount)
+      
+      
 
       couponDetails = {
         couponId: coupon._id,
@@ -420,6 +429,8 @@ const handleOrderModification = async (req, res, action) => {
 
       totalRefund += itemRefund;
     }
+    totalRefund=totalRefund+totalRefund*(18/100)
+    console.log(".,.,.,..,.,..,..,.",totalRefund)
 
     
     if (order.couponApplied) {
@@ -510,6 +521,264 @@ const getAllAvailableCoupons = async (req, res) => {
   }
 };
 
+const downloadInvoice = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const order = await Order.findById(orderId)
+      .populate('items.productId', 'productName')
+      .populate('couponApplied')
+      .lean();
+    
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    if (order.orderStatus !== 'Delivered') {
+      return res.status(400).send('Invoice can only be downloaded for delivered orders.');
+    }
+    // Create PDF with slightly larger margins for better whitespace
+    const doc = new PDFDocument({ 
+      margin: 50,
+      size: 'A4',
+      bufferPages: true
+    });
+
+    // Define consistent spacing and alignment variables
+    const pageWidth = doc.page.width;
+    const contentWidth = pageWidth - 100; // 50px margin on each side
+    const leftMargin = 50;
+    const rightMargin = pageWidth - 50;
+    const rightColumnStart = pageWidth / 2 + 20;
+
+    const fileName = `voltcraft-invoice-${orderId}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    doc.pipe(res);
+
+    // Calculate amounts
+    const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const gstRate = 18;
+    const gstAmount = (gstRate / 100) * subtotal;
+    
+    let discountAmount = 0;
+    let discountText = "No Coupon Applied";
+    
+    if (order.couponApplied) {
+      if (order.couponApplied.offerType === 'percentage') {
+        discountAmount = (order.couponApplied.offerValue / 100) * subtotal;
+        discountText = `${order.couponApplied.offerValue}% Off (${order.couponApplied.couponCode})`;
+      } else {
+        discountAmount = order.couponApplied.offerValue;
+        discountText = `₹${discountAmount} Off (${order.couponApplied.couponCode})`;
+      }
+    }
+
+    // Header Section
+    doc
+      .rect(0, 0, pageWidth, 160)
+      .fill('#1a237e');
+
+    // Company Logo & Details
+    doc
+      .fontSize(32)
+      .font('Helvetica-Bold')
+      .fillColor('#ffffff')
+      .text('VOLT CRAFT', leftMargin, 50)
+      .fontSize(13)
+      .font('Helvetica')
+      .text('Your Electronics Destination', leftMargin, 90)
+      .text('www.voltcraft.com | support@voltcraft.com', leftMargin, 110);
+
+    // Invoice Details Box
+    doc
+      .rect(rightMargin - 190, 40, 170, 100)
+      .fill('#303f9f');
+
+    doc
+      .fillColor('#ffffff')
+      .fontSize(16)
+      .font('Helvetica-Bold')
+      .text('INVOICE', rightMargin - 170, 55)
+      .fontSize(11)
+      .font('Helvetica')
+      .text(`Invoice No: ${orderId}`, rightMargin - 170, 100)
+      .text(`Date: ${new Date(order.orderDate).toLocaleDateString()}`, rightMargin - 170, 150);
+
+    // Address Section
+    doc.y = 190;
+    const addressY = doc.y;
+
+    // Billing Address
+    doc
+      .fillColor('#000000')
+      .fontSize(14)
+      .font('Helvetica-Bold')
+      .text('BILL TO', leftMargin, addressY)
+      .moveDown(0.5)
+      .fontSize(11)
+      .font('Helvetica');
+
+    const billingDetails = [
+      order.deliveryAddress.fullName,
+      order.deliveryAddress.email,
+      order.deliveryAddress.phone,
+      order.deliveryAddress.addressLine1,
+      `${order.deliveryAddress.city}, ${order.deliveryAddress.state}`,
+      order.deliveryAddress.country
+    ];
+
+    billingDetails.forEach(detail => {
+      doc.text(detail, leftMargin, doc.y + 3);
+      doc.moveDown(0.5);
+    });
+
+    // Shipping Address
+    doc
+      .fontSize(14)
+      .font('Helvetica-Bold')
+      .text('SHIP TO', rightColumnStart, addressY)
+      .moveDown(0.5)
+      .fontSize(11)
+      .font('Helvetica');
+
+    const shippingY = addressY + 25;
+    const shippingDetails = [
+      order.deliveryAddress.fullName,
+      order.deliveryAddress.addressLine1,
+      `${order.deliveryAddress.city}, ${order.deliveryAddress.state}`,
+      order.deliveryAddress.country
+    ];
+
+    shippingDetails.forEach(detail => {
+      doc.text(detail, rightColumnStart, doc.y + 3);
+      doc.moveDown(0.5);
+    });
+
+    // Items Section
+    doc.y += 20;
+    const itemStart = doc.y;
+    const columnPositions = {
+      item: leftMargin + 10,
+      qty: pageWidth - 260,
+      price: pageWidth - 180,
+      total: pageWidth - 100
+    };
+
+    // Items Header
+    doc
+      .rect(leftMargin, itemStart - 10, contentWidth, 30)
+      .fill('#f5f5f5');
+
+    doc
+      .fillColor('#000000')
+      .fontSize(11)
+      .font('Helvetica-Bold')
+      .text('ITEM', columnPositions.item, itemStart)
+      .text('QTY', columnPositions.qty, itemStart, { width: 50, align: 'right' })
+      .text('PRICE', columnPositions.price, itemStart, { width: 70, align: 'right' })
+      .text('TOTAL', columnPositions.total, itemStart, { width: 80, align: 'right' });
+
+    // Items List
+    let currentY = itemStart + 40;
+    order.items.forEach((item, index) => {
+      if (index % 2 === 0) {
+        doc
+          .rect(leftMargin, currentY - 10, contentWidth, 30)
+          .fill('#fafafa');
+      }
+
+      doc
+        .fillColor('#000000')
+        .fontSize(10)
+        .font('Helvetica')
+        .text(item.productId.productName, columnPositions.item, currentY, { width: 250 })
+        .text(item.quantity.toString(), columnPositions.qty, currentY, { width: 50, align: 'right' })
+        .text(`₹${item.price.toFixed(2)}`, columnPositions.price, currentY, { width: 70, align: 'right' })
+        .text(`₹${(item.price * item.quantity).toFixed(2)}`, columnPositions.total, currentY, { width: 80, align: 'right' });
+
+      currentY += 40;
+    });
+
+    // Summary Section
+    currentY += 20;
+    const summaryWidth = 250;
+    const summaryX = rightMargin - summaryWidth;
+    
+    // Summary Box
+    doc
+      .rect(summaryX, currentY, summaryWidth, 180)
+      .fill('#f8f9fa');
+
+    // Summary Details
+    const summaryStartY = currentY + 15;
+    const summaryLeftX = summaryX + 20;
+    const summaryRightX = rightMargin - 20;
+
+    doc
+      .fillColor('#000000')
+      .fontSize(11)
+      .font('Helvetica');
+
+    // Subtotal
+    doc
+      .text('Subtotal:', summaryLeftX, summaryStartY)
+      .text(`₹${subtotal.toFixed(2)}`, summaryRightX - 80, summaryStartY, { width: 80, align: 'right' });
+
+    // Discount
+    doc
+      .text('Discount:', summaryLeftX, summaryStartY + 25)
+      .text(`₹${discountAmount.toFixed(2)}`, summaryRightX - 80, summaryStartY + 25, { width: 80, align: 'right' })
+      .fontSize(9)
+      .text(discountText, summaryLeftX, summaryStartY + 45, { width: 210 });
+
+    // GST
+    doc
+      .fontSize(11)
+      .text(`GST (${gstRate}%):`, summaryLeftX, summaryStartY + 70)
+      .text(`₹${gstAmount.toFixed(2)}`, summaryRightX - 80, summaryStartY + 70, { width: 80, align: 'right' });
+
+    // Total Box
+    doc
+      .rect(summaryX, summaryStartY + 100, summaryWidth, 65)
+      .fill('#1a237e');
+
+    // Total Amount
+    doc
+      .fillColor('#ffffff')
+      .fontSize(13)
+      .font('Helvetica-Bold')
+      .text('TOTAL AMOUNT:', summaryLeftX, summaryStartY + 120)
+      .fontSize(16)
+      .text(
+        `₹${(subtotal - discountAmount + gstAmount).toFixed(2)}`,
+        summaryRightX - 100,
+        summaryStartY + 120,
+        { width: 100, align: 'right' }
+      );
+
+    // Footer
+    doc
+      .rect(0, doc.page.height - 40, pageWidth, 40)
+      .fill('#f5f5f5');
+
+    doc
+      .fillColor('#666666')
+      .fontSize(9)
+      .font('Helvetica')
+      .text(
+        'Volt Craft Electronics Pvt. Ltd. | GST: XXXXXXXXXXXX | support@voltcraft.com | +91 XXXXXXXXXX',
+        0,
+        doc.page.height - 25,
+        { align: 'center' }
+      );
+
+    doc.end();
+  } catch (error) {
+    console.error('Error generating invoice:', error);
+    res.status(500).send('Unable to generate invoice');
+  }
+};
+
 module.exports = {
   placeOrder,
   orderSuccess,
@@ -519,5 +788,6 @@ module.exports = {
   applyCoupon,
   cancelOrder,
   returnOrder,
-  getAllAvailableCoupons
+  getAllAvailableCoupons,
+  downloadInvoice
 };

@@ -7,7 +7,7 @@ const orderController=require("../controllers/user/orderController")
 const wishlistController=require("../controllers/user/wishlistController")
 const walletController=require("../controllers/user/walletController")
 const auth=require("../middleware/userAuth");
-const { createPayPalPayment, paypalSuccess } = require("../controllers/user/paypalControlle");
+const { createPayPalPayment, paypalSuccess,paypalCancel,orderCancelled } = require("../controllers/user/paypalControlle");
 
 
 
@@ -86,6 +86,8 @@ router.get('/coupons', orderController.getAllAvailableCoupons);
 
 router.post("/createPayPalPayment",createPayPalPayment)
 router.get('/paypalSuccess', paypalSuccess)
+router.get("/paypalCancel", paypalCancel); 
+router.get("/paymentCancelled",orderCancelled)
 
 
 
@@ -96,6 +98,8 @@ router.delete('/removeFromWishlist/:productId', wishlistController.removeFromWis
 router.get("/wallet",walletController.walletPage)
 router.put('/cancel/:orderId', orderController.cancelOrder);
 router.put('/return/:orderId', orderController.returnOrder);
+
+router.get('/invoice/:orderId', orderController.downloadInvoice);
 
 
 

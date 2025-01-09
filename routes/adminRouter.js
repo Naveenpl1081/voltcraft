@@ -103,4 +103,6 @@ router.put('/reject/:orderId', orderController.rejectOrder);
 router.post('/graph',salesController.graphData)
 
 
+
+
 module.exports=router

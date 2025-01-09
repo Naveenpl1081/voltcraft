@@ -83,62 +83,152 @@ const verifyLogin = async (req, res) => {
     }
   }
 
+
+
+
+  
+  const calculateTimeBasedData = async (orders, period) => {
+    const result = {};
+    const now = new Date();
+  
+    orders.forEach(order => {
+      if (!order.createdAt) return;
+      const orderDate = new Date(order.createdAt);
+      let key;
+  
+      switch (period) {
+        case 'daily':
+          key = orderDate.toISOString().split('T')[0];
+          break;
+        case 'weekly':
+          // Get the Monday of the week
+          const day = orderDate.getDay();
+          const diff = orderDate.getDate() - day + (day === 0 ? -6 : 1);
+          const monday = new Date(orderDate.setDate(diff));
+          key = monday.toISOString().split('T')[0];
+          break;
+        case 'monthly':
+          key = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, '0')}`;
+          break;
+        case 'yearly':
+          key = orderDate.getFullYear().toString();
+          break;
+      }
+  
+      if (!result[key]) {
+        result[key] = {
+          revenue: 0,
+          orders: 0,
+          items: 0
+        };
+      }
+  
+      result[key].revenue += order.totalAmount || 0;
+      result[key].orders += 1;
+      result[key].items += order.items.length;
+    });
+  
+    return result;
+  };
+  
+  const calculateChartData = async () => {
+    try {
+      const categories = await Category.find({ isDeleted: false });
+      const deliveredOrders = await Order.find({ 
+        orderStatus: 'Delivered',
+        createdAt: { $gte: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) } // Last 365 days
+      }).populate({
+        path: 'items.productId',
+        select: 'category price',
+        populate: {
+          path: 'category',
+          model: 'Category'
+        }
+      });
+  
+      // Category-wise sales data
+      const salesByCategory = categories.reduce((acc, category) => {
+        acc[category.name] = 0;
+        return acc;
+      }, {});
+  
+      deliveredOrders.forEach(order => {
+        order.items.forEach(item => {
+          if (item.productId?.category?.name) {
+            salesByCategory[item.productId.category.name] += item.price * item.quantity;
+          }
+        });
+      });
+  
+      // Time-based analytics
+      const dailyData = await calculateTimeBasedData(deliveredOrders, 'daily');
+      const weeklyData = await calculateTimeBasedData(deliveredOrders, 'weekly');
+      const monthlyData = await calculateTimeBasedData(deliveredOrders, 'monthly');
+      const yearlyData = await calculateTimeBasedData(deliveredOrders, 'yearly');
+  
+      return {
+        categoryData: {
+          labels: Object.keys(salesByCategory),
+          data: Object.values(salesByCategory)
+        },
+        timeBasedData: {
+          daily: dailyData,
+          weekly: weeklyData,
+          monthly: monthlyData,
+          yearly: yearlyData
+        }
+      };
+    } catch (error) {
+      console.error('Error calculating chart data:', error);
+      throw error;
+    }
+  };
+  
   const loadDashboard = async (req, res) => {
     try {
-        // Fetch required data
-        const deliveredOrders = await Order.find({ orderStatus: 'Delivered' });
-        const categories = await Category.find({});
-        const products = await Product.find({});
-
-        // Calculate total revenue
-        const totalRevenue = deliveredOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
-
-        // Calculate total orders
-        const totalOrders = deliveredOrders.length;
-
-        // Calculate monthly earnings
-        const monthlyEarnings = {};
-        deliveredOrders.forEach(order => {
-            if (order.createdAt) {
-                const orderDate = new Date(order.createdAt);
-                const monthYear = `${orderDate.getMonth() + 1}-${orderDate.getFullYear()}`;
-                if (!monthlyEarnings[monthYear]) {
-                    monthlyEarnings[monthYear] = 0;
-                }
-                monthlyEarnings[monthYear] += order.totalAmount || 0;
-            } else {
-                console.warn('Order missing createdAt:', order);
-            }
-        });
-
-        // Retrieve current month's earnings
-        const now = new Date();
-        const currentMonthYear = `${now.getMonth() + 1}-${now.getFullYear()}`;
-        const currentMonthEarnings = monthlyEarnings[currentMonthYear] || 0;
-
-        // Debugging logs
-        console.log('Delivered Orders:', deliveredOrders);
-        console.log('Monthly Earnings:', monthlyEarnings);
-        console.log('Current Month Earnings:', currentMonthEarnings);
-        console.log('Total Revenue:', totalRevenue);
-        console.log('Total Orders:', totalOrders);
-
-        // Render dashboard
-        res.render('dashboard', {
-            orders: deliveredOrders,
-            categories,
-            products,
-            totalRevenue,
-            totalOrders,
-            monthlyEarning: currentMonthEarnings, // Ensure consistency with EJS file
-        });
+      const { categoryData, timeBasedData } = await calculateChartData();
+      const categories = await Category.find({});
+      const products = await Product.find({});
+      
+      // Calculate summary statistics
+      const deliveredOrders = await Order.find({ orderStatus: 'Delivered' });
+      const totalRevenue = deliveredOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
+      const totalOrders = deliveredOrders.length;
+  
+      // Get current period data
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const monthlyEarning = Object.values(timeBasedData.monthly[currentMonth] || { revenue: 0 })[0];
+  
+      res.render('dashboard', {
+        categories,
+        products,
+        totalRevenue,
+        totalOrders,
+        monthlyEarning,
+        chartLabels: categoryData.labels,
+        chartData: categoryData.data,
+        timeBasedData,
+        currentPeriod: {
+          daily: now.toISOString().split('T')[0],
+          weekly: (() => {
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(now.setDate(diff)).toISOString().split('T')[0];
+          })(),
+          monthly: currentMonth,
+          yearly: now.getFullYear().toString()
+        }
+      });
     } catch (error) {
-        console.error('Error rendering dashboards:', error);
-        res.status(500).send('Error loading dashboard');
+      console.error('Error rendering dashboard:', error);
+      res.status(500).send('Error loading dashboard');
     }
-};
-
-
+  };
+  
+  module.exports = {
+    loadDashboard
+  };
 
 
 
@@ -157,9 +247,15 @@ const logout=async(req,res)=>{
     }
 }
 
+
+
+// Helper function to calculate the sales for a specific time range
+
+
 module.exports={
     loadLogin,
     login,
     loadDashboard,
-    logout
+    logout,
+   
 }

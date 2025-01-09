@@ -639,13 +639,17 @@
                   <!-- Shipping Row -->
                   <tr>
                     <th>Shipping:</th>
-                    <td>Free</td>
+                    <td>₹100</td>
+                  </tr>
+                  <tr>
+                    <th>GST(18%):</th>
+                    <td>₹<%= cart.totalPrice*(18/100)%></td>
                   </tr>
                   <!-- Total Row -->
                   <tr>
                     <th>Total:</th>
                     <td>
-                      ₹<%= cart.totalPrice %>
+                      ₹<%= cart.totalPrice+cart.totalPrice*(18/100) +100%>
                     </td>
                   </tr>
                 </tfoot>

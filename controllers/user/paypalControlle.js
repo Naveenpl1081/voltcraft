@@ -18,6 +18,7 @@ const createPayPalPayment = async (req, res) => {
 
     let totalAmount = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
     let discount = 0;
+    totalAmount=totalAmount+(18/100)*totalAmount+100
 
     if (couponCode) {
       const coupon = await Coupon.findOne({ couponCode, isActive: true });
@@ -115,7 +116,15 @@ const paypalSuccess = async (req, res) => {
         return res.status(404).json({ error: "Address not found" });
       }
 
-      const totalAmount = payment.transactions[0].amount.total;
+   
+      let totalAmount = payment.transactions[0].amount.total;
+      // let totalWithGST = Number(totalAmount) * (18 / 100) + Number(totalAmount);
+      // totalWithGST = totalWithGST.toFixed(2);
+
+      
+
+       
+      // console.log(".,.,.,.,",totalAmount)
 
       const newOrder = new Order({
         userId,
@@ -125,7 +134,7 @@ const paypalSuccess = async (req, res) => {
           quantity: item.quantity,
           price: item.price,
         })),
-        totalAmount,
+        totalAmount: totalAmount,
         paymentMethod: "paypal",
         orderStatus: "Ordered",
         couponApplied: appliedCoupon || null,
@@ -152,10 +161,34 @@ const paypalSuccess = async (req, res) => {
   }
 };
 
+const paypalCancel = async (req, res) => {
+  try {
+    console.log("PayPal payment was canceled by the user.");
 
+    // Clear session data related to the payment
+    req.session.cartItems = null;
+    req.session.selectedAddressId = null;
+    req.session.appliedCoupon = null;
 
+    // Respond with a message or redirect the user to a cancellation page
+    res.redirect("/paymentCancelled"); // Redirect to a cancellation page
+  } catch (error) {
+    console.error("Error handling PayPal cancellation:", error.message);
+    res.status(500).send("Something went wrong while handling PayPal cancellation");
+  }
+};
+
+const  orderCancelled=async (req,res)=>{
+  try {
+    res.render("oderCancelled")
+  } catch (error) {
+    
+  }
+}
   
   module.exports = {
     paypalSuccess,
-    createPayPalPayment
+    createPayPalPayment,
+    paypalCancel,
+    orderCancelled
   }

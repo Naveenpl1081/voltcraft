@@ -100,17 +100,27 @@
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Subtotal</span>
-                            <span class="text-gray-800 font-medium">$<%= order.totalAmount.toFixed(2) %></span>
+                            <span class="text-gray-800 font-medium">₹<%= order.totalAmount.toFixed(2) %></span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Shipping</span>
-                            <span class="text-gray-800 font-medium">$<%= order.shippingCost || '5.00' %></span>
-                        </div>
+                       
+                       
                         <hr class="border-gray-200">
                         <div class="flex justify-between items-center font-bold">
                             <span class="text-gray-900">Total</span>
-                            <span class="text-blue-600 text-xl">$<%= (order.totalAmount + (order.shippingCost || 5)).toFixed(2) %></span>
+                            <span class="text-blue-600 text-xl">₹<%= order.totalAmount .toFixed(2) %></span>
                         </div>
+                        <div class="mt-6">
+                            <% if (order.orderStatus === 'Delivered' || order.paymentMethod==="paypal") { %>
+                                <a 
+                                    href="/invoice/<%= order._id %>" 
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                    Download Invoice
+                                </a>
+                            <% } else { %>
+                                <p class="text-gray-500">Invoice will be available once the order is delivered.</p>
+                            <% } %>
+                        </div>
+                        
                     </div>
                 
                     <!-- Display Cancel/Return Details if the order is canceled or returned -->
@@ -122,7 +132,7 @@
                           <% if (order.cancelOrder) { %>
                             <p><strong>Reason:</strong> <%= order.cancelOrder.reason || 'No reason provided' %></p>
                             <% if (order.paymentMethod !== 'cod' || order.orderStatus === 'Returned') { %>
-                              <p><strong>Total Refund:</strong> $<%= order.cancelOrder.totalRefund.toFixed(2) %></p>
+                              <p><strong>Total Refund:</strong> ₹<%= order.cancelOrder.totalRefund.toFixed(2) %></p>
                               <h4 class="text-md font-semibold mt-4" style="color: <%= order.orderStatus === 'Failed' ? 'red' : 'green' %>;">
                                 Refund <%= order.orderStatus === 'Failed' ? 'failed' : 'successfully completed' %>
                               </h4>
@@ -140,7 +150,7 @@
                                       <%= item.productId.productName %> (x<%= item.quantity %>)
                                     </span>
                                     <span class="text-gray-500">
-                                      $<%= (item.quantity * item.price).toFixed(2) %>
+                                        ₹<%= order.cancelOrder.totalRefund.toFixed(2) %>
                                     </span>
                                   </li>
                                 <% }); %>
