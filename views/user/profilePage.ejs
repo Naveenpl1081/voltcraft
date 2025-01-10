@@ -198,27 +198,21 @@
                     <div class="form-row">
                         <div>
                             <label for="name">Name</label>
-                            <input type="text" id="name" class="input-field" name="name" value="<%=user.name%>"/>
+                            <input type="text" id="name" class="input-field" name="name" value="<%= user.name %>" />
                         </div>
                         <div class="form-row">
                             <div>
                                 <label for="email">Email</label>
-                                <input type="email" id="email" class="input-field" name="email" value="<%=user.email%>" disabled />
+                                <input type="email" id="email" class="input-field" name="email" value="<%= user.email %>" disabled />
                             </div>
                         </div>
-                        <!-- <div>
-                            <label for="address">Address</label>
-                            <input type="text" id="address" class="input-field" value="<%= user.address%>" />
-                        </div> -->
-                    </div>
-                    <!-- <div class="form-row">
-                        <div class="gender-field">
-                            <input type="radio" id="male" name="gender" checked />
-                            <label for="male">Male</label>
-                            <input type="radio" id="female" name="gender" />
-                            <label for="female">Female</label>
+                        <div class="form-row">
+                            <div>
+                                <label for="referralCode">Referral Code</label>
+                                <input type="text" id="referralCode" class="input-field" name="referralCode" value="<%= user.referralCode %>" disabled />
+                            </div>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="actions">
                         <button class="cancel-button">Cancel</button>
                         <button class="save-button">Save Changes</button>
@@ -228,6 +222,7 @@
                     <a href="/newPassword" class="save-button">Create New Password</a>
                 </div>
             </div>
+            
         </div>
     </div>
 

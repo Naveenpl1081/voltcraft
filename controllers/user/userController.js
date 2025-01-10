@@ -8,7 +8,7 @@ const Product = require("../../models/productSchema");
 const { findById } = require("../../models/userSchema");
 const { findByIdAndUpdate } = require("../../models/productSchema");
 const Address=require("../../models/addressSchema")
-
+const Wallet = require('../../models/walletSchema')
 
 
 
@@ -79,13 +79,47 @@ try {
 
 const signup=async(req,res)=>{
     try {
-        // console.log("hello")
-        const {name,email,password,cpassword}=req.body
+        console.log("hello")
+        const {name,email,password,cpassword,reff}=req.body
         console.log(email,password, cpassword)
+        console.log("refferal",reff)
         if(password!==cpassword){
             return res.render("signup",{message:"password do not match"})
         }
             const finduser=await User.findOne({email});
+
+
+            if(reff) {
+                const referredUser = await User.findOne({ referralCode: reff });
+                console.log("Found referred user:", referredUser);
+    
+                if(referredUser) {
+                    // Find or create wallet for referred user
+                    let referredUserWallet = await Wallet.findOne({ userId: referredUser._id });
+                    
+                    if (!referredUserWallet) {
+                        referredUserWallet = new Wallet({
+                            userId: referredUser._id,
+                            balance: 0
+                        });
+                    }
+    
+                    // Add referral bonus transaction
+                    referredUserWallet.transactions.push({
+                        amount: 150,
+                        type: 'credit',
+                        description: 'Referral bonus',
+                        time: new Date()
+                    });
+    
+                    // Update balance
+                    referredUserWallet.balance += 150;
+    
+                    await referredUserWallet.save();
+                    console.log("Updated referred user wallet:", referredUserWallet);
+                }
+            }
+    
 
             if(finduser){
                 return res.render("signup",{message:"user with this email already exixts"});
@@ -140,6 +174,18 @@ const verifyotp = async (req, res) => {
             });
         }
 
+
+        const generateReferralCode = () => {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let referralCode = '';
+            for (let i = 0; i < 8; i++) {
+                referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return referralCode;
+        };
+
+        const referralCode = generateReferralCode();
+
         const userData = req.session.userDate;
         const passwordHash = await securepassword(userData.password);
 
@@ -148,6 +194,7 @@ const verifyotp = async (req, res) => {
             email: userData.email,
             phone: userData.phone,
             password: passwordHash,
+            referralCode:referralCode
         });
 
         await saveUserData.save();

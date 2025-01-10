@@ -41,7 +41,7 @@ const userSchema=new Schema({
     }],
     wallet:[{
         type:Schema.Types.ObjectId,
-        ref:"Wishlist"
+        ref:"wallet"
     }],
     orderHistory:[{
         type:Schema.Types.ObjectId,
@@ -51,12 +51,13 @@ const userSchema=new Schema({
         type:Date,
         default:Date.now
     },
-    referalCode:{
-        type:String,
-        
-    },
+    
     redeemed:{
         type:Boolean
+    },
+    referralCode: { 
+        type: String, 
+        unique: true 
     },
     redeemedUserse:[{
         type:Schema.Types.ObjectId,
