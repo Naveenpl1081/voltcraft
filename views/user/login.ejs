@@ -3,179 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log in to Exclusive - VoltCraft</title>
+    <title>Sign In - VoltCraft</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #DC2626, #991B1B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .input-field {
             width: 100%;
-            padding: 8px 0;
-            border-bottom: 1px solid #E5E7EB;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
             outline: none;
-            font-size: 14px;
-            color: #333;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #DC2626;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
         }
 
         .input-field::placeholder {
-            color: #8B96A5;
+            color: #9CA3AF;
         }
 
         .btn-primary {
-            background-color: #DB4444;
+            background: linear-gradient(90deg, #DC2626, #991B1B);
             color: white;
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
             font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.2s ease;
         }
 
         .btn-primary:hover {
-            background-color: #c23838;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 10px;
+            background: white;
             border: 1px solid #E5E7EB;
-            border-radius: 4px;
-            font-size: 14px;
-            gap: 8px;
-            background-color: #fff;
-            color: #333;
-            transition: box-shadow 0.3s;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
         }
 
         .btn-secondary:hover {
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #DC2626;
+            color: #DC2626;
         }
 
-        .footer-link {
-            color: #666666;
-            font-size: 13px;
-            transition: color 0.3s;
-        }
-
-        .footer-link:hover {
-            color: #DB4444;
+        .custom-shape {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48%;
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 70%);
+            z-index: -1;
         }
     </style>
 </head>
-<body class="text-gray-800">
-
-    <!-- Top Banner -->
-    <div class="bg-black text-white text-center py-2">
-        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! 
-        <a href="#" class="underline">Shop Now</a>
-    </div>
-
-    <!-- Header -->
-    <header class="py-4 px-8 border-b flex justify-between items-center">
-        <div class="text-lg font-bold">
-            <span class="text-gray-800">Volt</span>
-            <span class="text-gray-600">Craft</span>
-        </div>
-        <div class="text-sm text-gray-500 flex items-center">
-            <span>English</span>
-            <i class="fas fa-chevron-down ml-2"></i>
-        </div>
-    </header>
-
+<body>
+    <div class="custom-shape"></div>
+    
     <!-- Main Content -->
-    <main class="flex flex-col md:flex-row items-center justify-center min-h-[600px] px-6 md:px-16 py-8 gap-8">
-        <!-- Login Image -->
-        <div class="hidden md:block flex-1">
-            <img src="/images/loginpho.png" alt="Shopping Cart with Phone" class="w-full h-auto object-cover rounded-md">
-        </div>
-
-        <!-- Login Form -->
-        <div class="flex-1 max-w-md w-full">
-            <h1 class="text-2xl font-semibold mb-6">Log in to Exclusive</h1>
-            <p class="text-sm text-gray-600 mb-6">Enter your details below</p>
-            
-            <form action="/login" method="post" class="space-y-4">
-                <input type="text" placeholder="Email or Phone Number" class="input-field" name="email">
-                <input type="password" placeholder="Password" class="input-field" name="password">
-                <%if(locals.message && message.length>0){%>
-                    <div class="alert alert-danger text-center">
-                        <%=message%>
-                    </div>
-               <%}%>
-                <div class="flex justify-between items-center text-sm">
-                    <button  type="submit" class="btn-primary">Log In</button>
-                    <a href="#" class="text-[#DB4444]">Forgot Password?</a>
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden max-w-4xl w-full">
+            <div class="flex flex-col md:flex-row">
+                <!-- Left Side - Image -->
+                <div class="md:w-1/2 bg-gradient-to-br from-red-600 to-red-800 p-12 hidden md:flex flex-col justify-center items-center text-white">
+                    <h2 class="text-3xl font-bold mb-6">Welcome Back!</h2>
+                    <p class="text-center text-red-100 mb-8">Access your account and discover amazing deals on electronic gadgets.</p>
+                    <img src="/images/teenage-showing-how-to-sign-up-3d-cartoon-character-illustration-png.png" alt="Login Illustration" class="w-full max-w-sm">
                 </div>
-            </form>
 
-            <div class="my-6 text-sm text-center">
-                <p>Or login with</p>
-            </div>
+                <!-- Right Side - Login Form -->
+                <div class="md:w-1/2 p-12">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold mb-2">Sign in to VoltCraft</h1>
+                        <p class="text-gray-600">Enter your credentials to access your account</p>
+                    </div>
 
-            <button class="btn-secondary">
-                <i class="fab fa-google"></i>
-                Continue with Google
-            </button>
-        </div>
-    </main>
+                    <form action="/login" method="post" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email or Phone</label>
+                            <input type="text" name="email" class="input-field" placeholder="Enter your email or phone">
+                        </div>
 
-    <!-- Footer -->
-    <footer class="bg-black text-white py-12 px-6 md:px-16">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <!-- About -->
-            <div>
-                <h2 class="text-lg font-bold mb-4">VoltCraft</h2>
-                <p class="text-sm">Get 10% off your first order</p>
-                <form class="mt-4 flex">
-                    <input type="email" placeholder="Enter your email" class="subscribe-input flex-1 px-3 py-2 text-black text-sm">
-                    <button class="submit-arrow flex items-center justify-center px-4 bg-[#DB4444] text-white text-sm font-medium">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </form>
-            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input type="password" name="password" class="input-field" placeholder="Enter your password">
+                        </div>
 
-            <!-- Support -->
-            <div>
-                <h3 class="font-medium mb-4">Support</h3>
-                <p class="text-sm">111 Bijoy Sarani, Dhaka</p>
-                <p class="text-sm">DH 1515, Bangladesh</p>
-                <p class="text-sm">exclusive@gmail.com</p>
-                <p class="text-sm">+88015-88888-9999</p>
-            </div>
+                        <%if(locals.message && message.length>0){%>
+                            <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+                                <%=message%>
+                            </div>
+                        <%}%>
 
-            <!-- Account -->
-            <div>
-                <h3 class="font-medium mb-4">Account</h3>
-                <ul class="text-sm space-y-2">
-                    <li><a href="#" class="footer-link">My Account</a></li>
-                    <li><a href="#" class="footer-link">Login/Register</a></li>
-                    <li><a href="#" class="footer-link">Cart</a></li>
-                    <li><a href="#" class="footer-link">Wishlist</a></li>
-                </ul>
-            </div>
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-red-600">
+                                <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                            </label>
+                            <a href="#" class="text-sm text-red-600 hover:text-red-700">Forgot password?</a>
+                        </div>
 
-            <!-- Quick Links -->
-            <div>
-                <h3 class="font-medium mb-4">Quick Links</h3>
-                <ul class="text-sm space-y-2">
-                    <li><a href="#" class="footer-link">Privacy Policy</a></li>
-                    <li><a href="#" class="footer-link">Terms of Use</a></li>
-                    <li><a href="#" class="footer-link">FAQ</a></li>
-                    <li><a href="#" class="footer-link">Contact</a></li>
-                </ul>
+                        <button type="submit" class="btn-primary w-full">Sign In</button>
+
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-4 bg-white text-gray-500">Or continue with</span>
+                            </div>
+                        </div>
+
+                        <a href="/auth/google" class="btn-secondary w-full flex items-center justify-center gap-3">
+                            <img src="/images/png-transparent-google-logo-google-search-meng-meng-company-text-logo-thumbnail.png" alt="Google" class="w-5 h-5">
+                            Sign in with Google
+                        </a>
+
+                        <p class="text-center text-sm text-gray-600 mt-8">
+                            Don't have an account? 
+                            <a href="/signup" class="text-red-600 hover:text-red-700 font-medium">Create account</a>
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
-
-        <div class="text-center text-sm text-gray-400 border-t border-gray-700 pt-4">
-            <p>© 2024 VoltCraft. All rights reserved.</p>
-        </div>
-    </footer>
-
+    </div>
 </body>
 </html>

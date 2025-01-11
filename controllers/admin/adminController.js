@@ -186,45 +186,99 @@ const verifyLogin = async (req, res) => {
   
   const loadDashboard = async (req, res) => {
     try {
-      const { categoryData, timeBasedData } = await calculateChartData();
-      const categories = await Category.find({});
-      const products = await Product.find({});
-      
-      // Calculate summary statistics
-      const deliveredOrders = await Order.find({ orderStatus: 'Delivered' });
-      const totalRevenue = deliveredOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
-      const totalOrders = deliveredOrders.length;
-  
-      // Get current period data
-      const now = new Date();
-      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const monthlyEarning = Object.values(timeBasedData.monthly[currentMonth] || { revenue: 0 })[0];
-  
-      res.render('dashboard', {
-        categories,
-        products,
-        totalRevenue,
-        totalOrders,
-        monthlyEarning,
-        chartLabels: categoryData.labels,
-        chartData: categoryData.data,
-        timeBasedData,
-        currentPeriod: {
-          daily: now.toISOString().split('T')[0],
-          weekly: (() => {
-            const day = now.getDay();
-            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-            return new Date(now.setDate(diff)).toISOString().split('T')[0];
-          })(),
-          monthly: currentMonth,
-          yearly: now.getFullYear().toString()
-        }
-      });
+        const { categoryData, timeBasedData } = await calculateChartData();
+        
+        // Fetch all categories and products
+        const categories = await Category.find({ isDeleted: false });  // Exclude deleted categories
+        const products = await Product.find({ isBlocked: false });  // Exclude blocked products
+
+        // Calculate summary statistics
+        const deliveredOrders = await Order.find({ orderStatus: 'Delivered' }).populate('items.productId');  // Populate product data
+        const totalRevenue = deliveredOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
+        const totalOrders = deliveredOrders.length;
+
+        // Calculate Best Selling Products
+        const productSales = {};
+        deliveredOrders.forEach(order => {
+            order.items.forEach(item => {
+                if (!productSales[item.productId._id]) {  // Access the populated productId
+                    productSales[item.productId._id] = 0;
+                }
+                productSales[item.productId._id] += item.quantity;
+            });
+        });
+
+        const sortedProducts = Object.entries(productSales)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+        const bestSellingProducts = {
+            labels: sortedProducts.map(([productId]) => {
+                const product = products.find(p => p._id.toString() === productId.toString());
+                return product ? product.productName : 'Unknown Product';  // Use product.productName
+            }),
+            data: sortedProducts.map(([_, quantity]) => quantity)
+        };
+
+        // Calculate Best Selling Categories
+        const categorySales = {};
+        deliveredOrders.forEach(order => {
+            order.items.forEach(item => {
+                const product = item.productId;  // Access the populated productId
+                if (product) {
+                    const categoryId = product.category.toString();
+                    if (!categorySales[categoryId]) {
+                        categorySales[categoryId] = 0;
+                    }
+                    categorySales[categoryId] += item.quantity;
+                }
+            });
+        });
+
+        const sortedCategories = Object.entries(categorySales)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 2);
+        const bestSellingCategories = {
+            labels: sortedCategories.map(([categoryId]) => {
+                const category = categories.find(c => c._id.toString() === categoryId);
+                return category ? category.name : 'Unknown Category';
+            }),
+            data: sortedCategories.map(([_, quantity]) => quantity)
+        };
+
+        // Get current period data
+        const now = new Date();
+        const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const monthlyEarning = Object.values(timeBasedData.monthly[currentMonth] || { revenue: 0 })[0];
+
+        res.render('dashboard', {
+            categories,
+            products,
+            totalRevenue,
+            totalOrders,
+            monthlyEarning,
+            chartLabels: categoryData.labels,
+            chartData: categoryData.data,
+            timeBasedData,
+            currentPeriod: {
+                daily: now.toISOString().split('T')[0],
+                weekly: (() => {
+                    const day = now.getDay();
+                    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                    return new Date(now.setDate(diff)).toISOString().split('T')[0];
+                })(),
+                monthly: currentMonth,
+                yearly: now.getFullYear().toString()
+            },
+            bestSellingProducts,
+            bestSellingCategories
+        });
     } catch (error) {
-      console.error('Error rendering dashboard:', error);
-      res.status(500).send('Error loading dashboard');
+        console.error('Error rendering dashboard:', error);
+        res.status(500).send('Error loading dashboard');
     }
-  };
+};
+
+
   
   module.exports = {
     loadDashboard

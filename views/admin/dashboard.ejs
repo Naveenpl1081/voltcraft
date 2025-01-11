@@ -17,7 +17,7 @@
             </select>
         </div>
     </div>
-
+   
     <!-- Statistics Cards -->
     <div class="row">
         <!-- Revenue Card -->
@@ -107,6 +107,28 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <!-- Best Selling Products Chart -->
+        <div class="col-xl-6 col-lg-12">
+            <div class="card mb-4">
+                <article class="card-body">
+                    <h5 class="card-title">Best Selling Products</h5>
+                    <div id="bestSellingProductsChart"></div>
+                </article>
+            </div>
+        </div>
+    
+        <!-- Best Selling Categories Chart -->
+        <div class="col-xl-6 col-lg-12">
+            <div class="card mb-4">
+                <article class="card-body">
+                    <h5 class="card-title">Best Selling Categories</h5>
+                    <div id="bestSellingCategoriesChart"></div>
+                </article>
+            </div>
+        </div>
+    </div>
 </section>
 
 <script>
@@ -184,6 +206,52 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('timeRangeSelector').addEventListener('change', (e) => {
         updateTimeSeriesChart(e.target.value);
     });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Best Selling Products Chart
+    const bestSellingProductsOptions = {
+        series: [{
+            name: 'Sales',
+            data: <%- JSON.stringify(bestSellingProducts.data) %>
+        }],
+        chart: {
+            type: 'bar',
+            height: 400
+        },
+        xaxis: {
+            categories: <%- JSON.stringify(bestSellingProducts.labels) %>
+        },
+        colors: ['#008FFB'],
+        tooltip: {
+            y: {
+                formatter: (value) => value.toLocaleString('en-IN') + ' units'
+            }
+        }
+    };
+    new ApexCharts(document.querySelector("#bestSellingProductsChart"), bestSellingProductsOptions).render();
+
+    // Best Selling Categories Chart
+    const bestSellingCategoriesOptions = {
+        series: <%- JSON.stringify(bestSellingCategories.data) %>,
+        chart: {
+            type: 'pie',
+            height: 400
+        },
+        labels: <%- JSON.stringify(bestSellingCategories.labels) %>,
+        colors: ['#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A'],
+        legend: {
+            position: 'bottom'
+        },
+        tooltip: {
+            y: {
+                formatter: (value) => value.toLocaleString('en-IN') + ' units'
+            }
+        }
+    };
+    new ApexCharts(document.querySelector("#bestSellingCategoriesChart"), bestSellingCategoriesOptions).render();
 });
 </script>
 

@@ -224,26 +224,38 @@ const orderDetails = async (req, res) => {
 
 const myOrder = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.session.userId; // Ensure `userId` is available in the session
     console.log("User ID: ", userId);
 
-    const page = parseInt(req.query.page) || 1; 
-    const limit = parseInt(req.query.limit) || 5; 
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const limit = parseInt(req.query.limit) || 5; // Orders per page
     const skip = (page - 1) * limit;
 
-    const totalOrders = await Order.countDocuments({ userId }); 
-    const orders = await Order.find({ userId })
-      .populate('items.productId', 'name') 
-      .sort({ createdAt: -1 }) // Sort orders by createdAt in descending order
+    // Count total orders for pagination
+    const totalOrders = await Order.countDocuments({ userId });
+
+    // Fetch paginated orders for the user
+    let orders = await Order.find({ userId })
+      .populate('items.productId', 'name') // Populate product details
+      .sort({ createdAt: -1 }) // Sort by most recent orders
       .skip(skip)
       .limit(limit);
 
+    // Handle case where no orders are found
     if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: "No orders found" });
+      return res.render("myOrder", {
+        order: [],
+        userId,
+        currentPage: page,
+        totalPages: 0,
+        message: "No orders found",
+      });
     }
 
+    // Calculate total pages for pagination
     const totalPages = Math.ceil(totalOrders / limit);
 
+    // Render the orders page
     res.render("myOrder", {
       order: orders,
       userId,
@@ -251,7 +263,7 @@ const myOrder = async (req, res) => {
       totalPages,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching orders:", error);
     res.status(500).json({ message: "Error fetching orders" });
   }
 };

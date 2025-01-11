@@ -183,13 +183,13 @@
                 <img src="/uploads/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>" class="wishlist-image">
             </div>
             <div class="wishlist-info">
-                <h3 class="wishlist-title"><%= item.productId.productName %></h3>
+                <a href="/product/<%= item.productId._id %>" class="wishlist-title"><%= item.productId.productName %></a>
                 <div class="price-container">
                     <span class="current-price">
-                        $<%= item.productId.salePrice ? item.productId.salePrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : 'N/A' %>
+                        ₹<%= item.productId.salePrice ? item.productId.salePrice.toLocaleString( { style: 'currency', currency: 'USD' }) : 'N/A' %>
                     </span>
                     <span class="original-price">
-                        $<%= item.productId.regularPrice ? item.productId.regularPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : 'N/A' %>
+                        ₹<%= item.productId.regularPrice ? item.productId.regularPrice.toLocaleString( { style: 'currency', currency: 'USD' }) : 'N/A' %>
                     </span>
                 </div>
                 <div class="rating">

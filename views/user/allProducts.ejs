@@ -264,8 +264,8 @@
                     <div class="product-info">
                         <h3 class="product-title"><%= product.productName %></h3>
                         <div class="price-container">
-                            <span class="current-price">$<%= product.salePrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) %></span>
-                            <span class="original-price">$<%= product.regularPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) %></span>
+                            <span class="current-price">₹<%= product.salePrice.toLocaleString( { style: 'currency', currency: 'USD' }) %></span>
+                            <span class="original-price">₹<%= product.regularPrice.toLocaleString( { style: 'currency', currency: 'USD' }) %></span>
                         </div>
                         <div class="rating">
                             <span class="stars">★★★★★</span>
@@ -455,20 +455,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
+document.addEventListener('DOMContentLoaded', function () {
+    const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
 
-        addToWishlistButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.getAttribute('data-product-id');
-                
-                fetch('/addToWishlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ productId: productId }),
-                })
+    addToWishlistButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const productId = this.getAttribute('data-product-id');
+
+            fetch('/addToWishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: productId }),
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -510,9 +510,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         timer: 1500
                     });
                 });
-            });
         });
     });
+});
 
 
 

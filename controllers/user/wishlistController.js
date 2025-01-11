@@ -9,21 +9,20 @@ const Wishlist = require('../../models/wishlistSchema');
 const wishlist = async (req, res) => {
     try {
         const userId = req.session.userId;
-        console.log("User ID:", userId);
-        
+        if (!userId) {
+            return res.status(401).json({ message: 'User not authenticated' });
+        }
 
-       
-        const wishlist = await Wishlist.findOne({ userId })
+        let wishlist = await Wishlist.findOne({ userId }) // Use `let` to allow reassignment
             .populate({
-                path: 'products.productId', 
-                select: 'productName salePrice productImage', 
+                path: 'products.productId', // Populate the productId field in the products array
+                select: 'productName salePrice productImage status', // Fields to be returned from the Product model
             });
-            const products=await Product.find()
-
-        console.log('Wishlist:', wishlist,products);
 
         if (!wishlist) {
-            return res.status(404).json({ message: 'Wishlist not found' });
+            wishlist = new Wishlist({ userId, products: [] }); // Reassign `wishlist` if not found
+            await wishlist.save(); // Use `wishlist.save()` to save the instance
+            console.log("Created new empty wishlist:", wishlist);
         }
 
         res.render('wishlistPage', { user: userId, wishlist: wishlist });
@@ -35,52 +34,44 @@ const wishlist = async (req, res) => {
 };
 
 
-
-
 const addToWishlist = async (req, res) => {
     try {
-        console.log('Adding to wishlist starts here');
-        console.log(req.body);
-
         const { productId } = req.body;
         const userId = req.session.userId;
 
-        console.log("//",userId)
+        if (!userId) {
+            return res.status(401).json({ message: 'User not authenticated' });
+        }
 
-        
-        const wishlist = await Wishlist.findOne({ userId });
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
 
+        let wishlist = await Wishlist.findOne({ userId });
         if (!wishlist) {
-            console.log('Wishlist not found for user');
-            return res.status(404).json({ error: 'Wishlist not found' });
+            wishlist = new Wishlist({ userId, products: [] });
         }
 
-        
-        const existingWishlistItem = wishlist.products.find(item => item.productId.toString() === productId);
-        console.log("existing", existingWishlistItem);
-        if (existingWishlistItem) {
-            console.log('Product already exists in the wishlist');
-            return res.json({ alreadyExists: true });
-        } else {
-            const product = await Product.findById(productId);
-            if (!product || product.quantity === 0) {
-                console.log('Product is out of stock');
-                return res.json({ outOfStock: true });
-            }
-
-            
-            wishlist.products.push({ productId, addedAt: Date.now() });
-            await wishlist.save();
-
-            console.log('Product added to wishlist successfully');
-            return res.json({ success: true });
+        const productExists = wishlist.products.some(item => item.productId.toString() === productId);
+        if (productExists) {
+            return res.status(409).json({ alreadyExists: true });
         }
+
+        if (product.stock <= 0) {
+            return res.status(400).json({ outOfStock: true });
+        }
+
+        wishlist.products.push({ productId });
+        await wishlist.save();
+
+        res.status(200).json({ success: true });
+
     } catch (error) {
-        console.log('Error adding to wishlist:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error adding to wishlist:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 const removeFromWishlist = async (req, res) => {
     try {
         const { productId } = req.params; 

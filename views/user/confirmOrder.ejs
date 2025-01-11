@@ -583,11 +583,30 @@
       <div class="payment-summary">
         <h2>Payment Method</h2>
         <div class="payment-methods">
-          <label><input type="radio" name="paymentMethod" value="cod" required> Cash on Delivery</label>
-          <label><input type="radio" name="paymentMethod" value="paypal" required> paypal</label>
-          <label><input type="radio" name="paymentMethod" value="creditCard" required> Credit Card</label>
-          <label><input type="radio" name="paymentMethod" value="debitCard" required> Debit Card</label>
+          <label>
+            <input 
+              type="radio" 
+              name="paymentMethod" 
+              value="cod" 
+              required 
+              <%= disableCOD ? 'disabled' : '' %>
+            > 
+            Cash on Delivery
+          </label>
+          <label>
+            <input type="radio" name="paymentMethod" value="paypal" required> PayPal
+          </label>
+          <label>
+            <input type="radio" name="paymentMethod" value="creditCard" required> Credit Card
+          </label>
+          <label>
+            <input type="radio" name="paymentMethod" value="debitCard" required> Debit Card
+          </label>
         </div>
+        <% if (disableCOD) { %>
+        <p style="color: red;">Cash on Delivery is not available for orders above ₹100,000.</p>
+        <% } %>
+        
         
         <div class="coupon-section">
           <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code">
@@ -625,37 +644,67 @@
         </div>
 
           <!-- Cart Summary and Pricing -->
-          <div class="cart-summary">
-            <div class="cart-summary-pricing">
-              <table>
-                <tfoot>
-                  <!-- Subtotal Row -->
-                  <tr>
-                    <th>Subtotal:</th>
-                    <td>
-                      ₹<%= cart.totalPrice %>
-                    </td>
-                  </tr>
-                  <!-- Shipping Row -->
-                  <tr>
-                    <th>Shipping:</th>
-                    <td>₹100</td>
-                  </tr>
-                  <tr>
-                    <th>GST(18%):</th>
-                    <td>₹<%= cart.totalPrice*(18/100)%></td>
-                  </tr>
-                  <!-- Total Row -->
-                  <tr>
-                    <th>Total:</th>
-                    <td>
-                      ₹<%= cart.totalPrice+cart.totalPrice*(18/100) +100%>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+          <div class="cart-summary-container">
+            <div class="cart-summary" id="cartSummary">
+                <div class="cart-summary-pricing">
+                    <table>
+                        <tfoot>
+                            <!-- Subtotal Row -->
+                            <tr>
+                                <th>Subtotal:</th>
+                                <td>₹<%= cart.totalPrice %></td>
+                            </tr>
+                            <!-- Shipping Row -->
+                            <tr>
+                                <th>Shipping:</th>
+                                <td>₹100</td>
+                            </tr>
+                            <tr>
+                                <th>GST(18%):</th>
+                                <td>₹<%= cart.totalPrice * (18 / 100) %></td>
+                            </tr>
+                            <!-- Total Row -->
+                            <tr>
+                                <th>Total:</th>
+                                <td>₹<%= cart.totalPrice + cart.totalPrice * (18 / 100) + 100 %></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
-            <div>
+            <!-- Coupon Applied Details -->
+            <div class="cart-summary" id="cartSummary">
+            <div class="applied-coupon-summary" id="appliedCouponSummary" style="display: none;">
+              <div class="cart-summary-pricing">
+                <table>
+                    <tfoot>
+                        <!-- Discount Row -->
+                        <tr>
+                            <th>Discount:</th>
+                            <td id="discountAmountDisplay">₹0</td>
+                        </tr>
+                        <!-- Shipping Row -->
+                        <tr>
+                            <th>Shipping:</th>
+                            <td>₹100</td>
+                        </tr>
+                        <!-- GST Row -->
+                        <tr>
+                            <th>GST(18%):</th>
+                            <td>₹<%= cart.totalPrice * (18 / 100) %></td>
+                        </tr>
+                        <!-- Updated Total Row -->
+                        <tr>
+                            <th>Updated Total:</th>
+                            <td id="updatedTotalDisplay">₹0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
               <!-- <p id="discountAmount">Discount: $0.00</p>
               <p id="updatedTotal">Updated Total: $0.00</p> -->
           </div>
@@ -785,6 +834,9 @@
 
 document.getElementById('applyCouponButton').addEventListener('click', async () => {
     const couponCode = document.getElementById('couponCodeInput').value.trim();
+    const cartTotal = 500; // Example cart total, replace with actual cart total
+    const shippingCharge = 100;
+    const gstRate = 18 / 100;
 
     let removeButton = document.getElementById('removeCouponButton');
     if (!removeButton) {
@@ -808,8 +860,8 @@ document.getElementById('applyCouponButton').addEventListener('click', async () 
             icon: 'warning',
             title: 'No Coupon Code',
             text: 'Please enter a coupon code.',
-        }).then(()=>{
-          location.reload()
+        }).then(() => {
+            location.reload();
         });
         return;
     }
@@ -818,49 +870,44 @@ document.getElementById('applyCouponButton').addEventListener('click', async () 
         const response = await fetch('/applycoupon', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 couponCode: couponCode,
-                cartTotal: 500 // Pass the cart total (example: 500)
-            })
+                cartTotal: cartTotal,
+            }),
         });
 
         const result = await response.json();
-        
-
-
 
         if (response.ok) {
-            document.getElementById('discountAmount').textContent = `Discount: ₹${result.discount}`;
-            document.getElementById('updatedTotal').textContent = `Updated Total: ₹${result.discountedTotal}`;
+            const discount = result.discount;
+            const discountedTotal = result.discountedTotal;
 
-            // Show green success message below the coupon input
-            const successMessage = document.getElementById('couponSuccessMessage');
-            successMessage.textContent = 'Coupon applied successfully!';
-            successMessage.style.color = 'green';
-            successMessage.style.display = 'block';
+            // Update applied coupon summary details
+            document.getElementById('discountAmountDisplay').textContent = `₹${discount}`;
+            
+            document.getElementById('updatedTotalDisplay').textContent = `₹${discountedTotal}`;
 
-            // Hide the "Apply Coupon" button and show the "Remove Coupon" button
-            document.getElementById('applyCouponButton').style.display = 'none';
-            removeButton.style.display = 'inline-block';
+            // Hide original cart summary and show applied coupon summary
+            document.getElementById('cartSummary').style.display = 'none';
+            document.getElementById('appliedCouponSummary').style.display = 'block';
 
-            // SweetAlert success message
+            // Show success message
             Swal.fire({
                 icon: 'success',
                 title: 'Coupon Applied',
-                text: `Discount: ₹${result.discount}. Updated Total: ₹${result.discountedTotal}`,
+                text: `Discount: ₹${discount}. Updated Total: ₹${discountedTotal + cartTotal * gstRate + shippingCharge}`,
             });
-        }  else {
-    Swal.fire({
-        icon: 'error',
-        title: 'Coupon Failed',
-        text: result.message || 'Failed to apply coupon.',
-    }).then(() => {
-        // Reload the page after the SweetAlert closes
-        location.reload();
-    });
-}
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Coupon Failed',
+                text: result.message || 'Failed to apply coupon.',
+            }).then(() => {
+                location.reload();
+            });
+        }
     } catch (error) {
         console.error('Error applying coupon:', error);
         Swal.fire({
@@ -870,6 +917,7 @@ document.getElementById('applyCouponButton').addEventListener('click', async () 
         });
     }
 });
+
 
 
 async function fetchAllCoupons() {

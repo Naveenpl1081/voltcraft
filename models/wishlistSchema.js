@@ -4,13 +4,13 @@ const { Schema } = mongoose;
 const wishlistSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "User", 
+        ref: "User", // Reference to the User model
         required: true
     },
     products: [{
         productId: {
             type: Schema.Types.ObjectId,
-            ref: "Product",
+            ref: "Product", // Reference to the Product model
             required: true
         },
         addedAt: {
@@ -24,7 +24,7 @@ const wishlistSchema = new Schema({
     },
     isDeleted: {
         type: Boolean,
-        default: false
+        default: false // Soft delete flag
     }
 }, { timestamps: true });
 

@@ -11,28 +11,51 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        .input-field {
-            width: 100%;
-            padding: 8px 0;
-            border-bottom: 1px solid #E5E7EB;
-            outline: none;
-            font-size: 14px;
-            color: #333;
+        body {
+            background: linear-gradient(to right, #2c3e50, #3498db);
         }
 
-        .input-field::placeholder {
-            color: #8B96A5;
+        .login-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .input-field {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #007bff;
         }
 
         .btn-primary {
             background-color: #007bff;
-            color: white;
-            width: 100%;
-            padding: 10px;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
             border-radius: 4px;
             font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
+            width: 100%;
             transition: background-color 0.3s;
         }
 
@@ -41,37 +64,37 @@
         }
 
         .footer-link {
-            color: #666666;
-            font-size: 13px;
-            transition: color 0.3s;
+            color: #007bff;
+            text-decoration: none;
         }
 
         .footer-link:hover {
-            color: #007bff;
+            text-decoration: underline;
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="flex items-center justify-center min-h-screen">
 
-    <!-- Header -->
-    <header class="py-4 px-8 border-b flex justify-between items-center bg-gray-900 text-white">
-        <div class="text-lg font-bold">
-            <span class="text-white">VoltCraft</span>
-            <span class="text-gray-400">Admin Panel</span>
+    <!-- Login Card -->
+    <div class="login-card w-full max-w-sm">
+        <!-- Header -->
+        <div class="login-header">
+            <h1>VoltCraft Admin Panel</h1>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="flex flex-col items-center justify-center min-h-screen px-6 md:px-16 py-8">
         <!-- Login Form -->
-        <div class="flex-1 max-w-md w-full bg-white p-8 shadow-md rounded-md">
-            <h1 class="text-2xl font-semibold text-center mb-6">Admin Login</h1>
-            <p class="text-sm text-gray-600 text-center mb-6">Enter your admin credentials to access the dashboard</p>
-            
+        <div class="p-6">
+            <h2 class="text-center text-lg font-semibold mb-4">Admin Login</h2>
+            <p class="text-center text-gray-600 mb-6">Enter your credentials to access the admin dashboard</p>
+
             <form action="/admin/login" method="post" class="space-y-4">
-                <input type="text" placeholder="Admin Username" class="input-field" name="username" required>
-                <input type="password" placeholder="Password" class="input-field" name="password" required>
-                
+                <div>
+                    <input type="text" name="username" placeholder="Admin Username" class="input-field" required>
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="Password" class="input-field" required>
+                </div>
+
                 <% if (locals.message && locals.message.length > 0) { %>
                     <div class="alert alert-danger text-center">
                         <%= locals.message %>
@@ -81,16 +104,16 @@
                 <button type="submit" class="btn-primary">Log In</button>
             </form>
 
-            <div class="mt-6 text-sm text-center">
-                <a href="#" class="text-[#007bff]">Forgot Password?</a>
+            <div class="text-center mt-4">
+                <a href="#" class="footer-link text-sm">Forgot Password?</a>
             </div>
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-4 text-center text-sm">
-        <p>© 2024 VoltCraft Admin Panel. All rights reserved.</p>
-    </footer>
+        <!-- Footer -->
+        <div class="text-center bg-gray-100 py-4">
+            <p class="text-gray-600 text-sm">© 2024 VoltCraft Admin Panel. All rights reserved.</p>
+        </div>
+    </div>
 
 </body>
 </html>

@@ -325,9 +325,28 @@
 .clear-search-button:hover {
     background-color: #5a6268;
 }
+.logo {
+        font-family: 'Poppins', sans-serif; /* Modern, clean font */
+        font-size: 24px; /* Medium size for balanced appearance */
+        font-weight: 600; /* Semi-bold for prominence */
+        color: #1a73e8; /* Professional blue tone */
+        letter-spacing: 1px; /* Subtle spacing for refinement */
+        text-transform: uppercase; /* All caps for a bold brand presence */
+        background: linear-gradient(90deg, #1a73e8, #ff5722); /* Gradient effect */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; /* Make gradient visible on text */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        transition: all 0.3s ease; /* Smooth hover effect */
+    }
 
-
+    .logo:hover {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Slight shadow enhancement */
+        transform: scale(1.05); /* Subtle enlargement on hover */
+    }
     </style>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -371,7 +390,9 @@
                 👤 
             </a>
             
-            <a href="/logout" class="logout-button">Logout</a>
+            <a href="/logout" class="logout-button" style="text-decoration: none; color: #333; font-size: 18px; font-weight: bold; padding: 5px 10px; border: 1px solid #333; border-radius: 5px; transition: all 0.3s;">
+                Logout
+            </a>
         </div>
 
         <script>
