@@ -87,22 +87,25 @@
                             </select>
                         </div>
                     </div>
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <label for="categoryId" class="form-label">Category</label>
-                            <select name="categoryId" id="categoryId" class="form-select">
-                                <option >
-                                    select categories
-                                  </option>
-                                <% categories.forEach(category => { %>
-                                    <option value="<%= category._id %>">
-                                      <%= category.name %>
-                                    </option>
-                                  <% }) %>
-                                  
-                            </select>
-                        </div>
+                    <div class="card-body">
+                        <label for="categoryId" class="form-label">Category</label>
+                        <select name="categoryId" id="categoryId" class="form-select">
+                            <% if (selectedCategory) { %>
+                                <option value="<%= selectedCategory._id %>" selected>
+                                    <%= selectedCategory.name %>
+                                </option>
+                            <% } else { %>
+                                <option disabled selected>Select categories</option>
+                            <% } %>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category._id %>" 
+                                    <%= selectedCategory && selectedCategory._id === category._id ? 'selected' : '' %>>
+                                    <%= category.name %>
+                                </option>
+                            <% }) %>
+                        </select>
                     </div>
+                    
                 </div>
             </div>
 

@@ -576,38 +576,16 @@ const viewAllProduct = async (req, res) => {
 
 
 
+// Controller function for viewing all products
 const viewAllProductsPage = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;  // Default to page 1
-        const limit = 10;  // Number of products per page
-        const skip = (page - 1) * limit;  // Calculate the number of products to skip
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const skip = (page - 1) * limit;
+        const query = req.query.query || '';
+        const sort = req.query.sort || '';
 
-        const query = req.query.query || ''; // Initialize query (default to an empty string)
-
-        // Fetch products with pagination
-        const products = await Product.find({ isBlocked: false })
-            .skip(skip)
-            .limit(limit);
-
-        // Count total products to calculate total pages
-        const totalProducts = await Product.countDocuments({ isBlocked: false });
-        const totalPages = Math.ceil(totalProducts / limit);
-
-        // Render the 'allProducts' view with paginated products and total pages
-        res.render('allProducts', { products, totalPages, currentPage: page, query });
-    } catch (error) {
-        console.error('Error loading products page:', error);
-        res.status(500).send('Error loading products');
-    }
-};
-
-
-const getAllProducts = async (req, res) => {
-    try {
-        const { sort, page = 1 } = req.query;
-        const limit = 10;  // Number of products per page
-        const skip = (page - 1) * limit;  // Calculate the number of products to skip
-        const query = req.query.query || ''; 
+        // Define sort criteria based on the query
         let sortCriteria = {};
         switch (sort) {
             case 'a-z':
@@ -623,21 +601,104 @@ const getAllProducts = async (req, res) => {
                 sortCriteria = { salePrice: -1 };
                 break;
             default:
-                sortCriteria = {};
+                sortCriteria = { createdAt: -1 }; // Default sort by newest
         }
 
+        // Base query
+        const baseQuery = {
+            isBlocked: false,
+            $or: [
+                { productName: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } }
+            ]
+        };
+
         // Fetch products with pagination and sorting
-        const products = await Product.find({ isBlocked: false })
+        const products = await Product.find(baseQuery)
+            .sort(sortCriteria)
+            .skip(skip)
+            .limit(limit)
+            .lean(); // Use lean() for better performance
+
+        // Count total products
+        const totalProducts = await Product.countDocuments(baseQuery);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        res.render('allProducts', {
+            products,
+            totalPages,
+            currentPage: page,
+            query,
+            sort,
+            hasNextPage: page < totalPages,
+            hasPrevPage: page > 1,
+            nextPage: page + 1,
+            prevPage: page - 1,
+            lastPage: totalPages
+        });
+
+    } catch (error) {
+        console.error('Error loading products page:', error);
+        res.status(500).send('Error loading products');
+    }
+};
+
+// Update the pagination section in your EJS template:
+
+const getAllProducts = async (req, res) => {
+    try {
+        const { sort, page = 1, query = '' } = req.query;
+        const limit = 10;  // Number of products per page
+        const skip = (page - 1) * limit;  // Calculate the number of products to skip
+
+        // Define sort criteria based on the query
+        let sortCriteria = {};
+        switch (sort) {
+            case 'a-z':
+                sortCriteria = { productName: 1 };
+                break;
+            case 'z-a':
+                sortCriteria = { productName: -1 };
+                break;
+            case 'low-to-high':
+                sortCriteria = { salePrice: 1 };
+                break;
+            case 'high-to-low':
+                sortCriteria = { salePrice: -1 };
+                break;
+            default:
+                sortCriteria = {};  // Default to no sorting
+        }
+
+        // Fetch products with pagination, sorting, and optional search query
+        const products = await Product.find({
+            isBlocked: false,
+            $or: [
+                { productName: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } }
+            ]
+        })
             .sort(sortCriteria)
             .skip(skip)
             .limit(limit);
 
         // Count total products to calculate total pages
-        const totalProducts = await Product.countDocuments({ isBlocked: false });
+        const totalProducts = await Product.countDocuments({
+            isBlocked: false,
+            $or: [
+                { productName: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } }
+            ]
+        });
+
         const totalPages = Math.ceil(totalProducts / limit);
 
-        // Render the 'allProducts' view with products, total pages, and current page
-        res.render('allProducts', { products, totalPages, currentPage: page,query });
+        // Render the 'allProducts' view with products, sorting, pagination, and search query
+        res.render('allProducts', { products, totalPages, currentPage: page, query, sort , hasNextPage: page < totalPages,
+            hasPrevPage: page > 1,
+            nextPage: page + 1,
+            prevPage: page - 1,
+            lastPage: totalPages});
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).send('Internal Server Error');
@@ -646,31 +707,68 @@ const getAllProducts = async (req, res) => {
 
 
 
+
+
 const searchProducts = async (req, res) => {
     try {
-        const { query } = req.query;
+        const { query = '', page = 1, sort = 'a-z' } = req.query;
+        const limit = 10;  // Number of products per page
+        const skip = (page - 1) * limit;  // Calculate the number of products to skip
 
-        let products;
-        if (query) {
-            // Search products by name or description
-            products = await Product.find({
-                isBlocked: false,
-                $or: [
-                    { productName: { $regex: query, $options: 'i' } },
-                    { description: { $regex: query, $options: 'i' } }
-                ]
-            });
-        } else {
-            // Show all products if no query
-            products = await Product.find({ isBlocked: false });
+        // Define sort criteria based on the query
+        let sortCriteria = {};
+        switch (sort) {
+            case 'a-z':
+                sortCriteria = { productName: 1 };
+                break;
+            case 'z-a':
+                sortCriteria = { productName: -1 };
+                break;
+            case 'low-to-high':
+                sortCriteria = { salePrice: 1 };
+                break;
+            case 'high-to-low':
+                sortCriteria = { salePrice: -1 };
+                break;
+            default:
+                sortCriteria = {};  // Default to no sorting
         }
 
-        res.render('allProducts', { products, query }); // Pass query to the view
+        // Fetch products based on the search query, pagination, and sorting
+        const products = await Product.find({
+            isBlocked: false,
+            $or: [
+                { productName: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } }
+            ]
+        })
+            .sort(sortCriteria)
+            .skip(skip)
+            .limit(limit);
+
+        // Count total products to calculate total pages
+        const totalProducts = await Product.countDocuments({
+            isBlocked: false,
+            $or: [
+                { productName: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } }
+            ]
+        });
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // Render the 'allProducts' view with the search results, pagination, and sorting
+        res.render('allProducts', { products, totalPages, currentPage: page, query, sort, hasNextPage: page < totalPages,
+            hasPrevPage: page > 1,
+            nextPage: page + 1,
+            prevPage: page - 1,
+            lastPage: totalPages });
     } catch (error) {
         console.error('Error searching products:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 
 

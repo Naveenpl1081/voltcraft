@@ -1,173 +1,54 @@
+<%- include('../partials/header.ejs') %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbox</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <style>
-        /* General Styling */
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        /* Chatbox Container */
-        .chat-container {
-            width: 100%;
-            max-width: 600px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header */
-        .chat-header {
-            background-color: #4caf50;
-            color: #ffffff;
-            padding: 15px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        /* Chatbox */
-        #chatBox {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            border-top: 1px solid #e0e0e0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        /* Messages */
-        .message {
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 10px;
-            max-width: 75%;
-        }
-
-        .user-message {
-            background-color: #d1f7c4;
-            align-self: flex-end;
-            text-align: right;
-        }
-
-        .bot-message {
-            background-color: #f1f1f1;
-            align-self: flex-start;
-            text-align: left;
-        }
-
-        /* Input Section */
-        .chat-input {
-            display: flex;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-
-        #messageInput {
-            flex: 1;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        #sendButton {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #sendButton:hover {
-            background-color: #45a049;
-        }
-
-        /* Scrollbar Styling */
-        #chatBox::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #chatBox::-webkit-scrollbar-thumb {
-            background-color: #cccccc;
-            border-radius: 4px;
-        }
-
-        #chatBox::-webkit-scrollbar-thumb:hover {
-            background-color: #bbbbbb;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .chat-header {
-                font-size: 1.2rem;
-            }
-
-            #messageInput {
-                font-size: 0.9rem;
-            }
-
-            #sendButton {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    <title>Retry Payment</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">AI Chat Assistant</div>
-        <div id="chatBox" class="chatbox">
-            <!-- Messages will be dynamically added here -->
-        </div>
-        <div class="chat-input">
-            <input id="messageInput" type="text" placeholder="Type your message here...">
-            <button id="sendButton">Send</button>
-        </div>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Retry Payment for Order</h1>
+
+        <section class="bg-white shadow-md rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Order Details</h2>
+            <p><strong>Order ID:</strong> <%= order.id %></p>
+            <p><strong>Date:</strong> <%= new Date(order.date).toLocaleDateString() %></p>
+            <p><strong>Total Amount:</strong> ₹<%= order.total.toFixed(2) %></p>
+            <p><strong>Status:</strong> <%= order.status %></p>
+        </section>
+
+        <% if (order.status === 'Payment Failed') { %>
+            <section class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Payment Options</h2>
+                <form action="/retry-payment" method="POST" class="space-y-6">
+                    <input type="hidden" name="orderId" value="<%= order.id %>">
+
+                    <div>
+                        <label for="paymentMethod" class="block text-gray-600 font-medium mb-2">Choose Payment Method:</label>
+                        <select name="paymentMethod" id="paymentMethod" class="w-full border-gray-300 rounded-lg shadow-sm">
+                            <option value="credit_card">Credit Card</option>
+                            <option value="debit_card">Debit Card</option>
+                            <option value="net_banking">Net Banking</option>
+                            <option value="upi">UPI</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
+                        Retry Payment
+                    </button>
+                </form>
+            </section>
+        <% } else { %>
+            <section class="bg-white shadow-md rounded-lg p-6">
+                <p class="text-green-600 font-medium">Your payment has already been processed successfully.</p>
+            </section>
+        <% } %>
     </div>
 
-    <script>
-        const socket = io();
-        const chatBox = document.getElementById('chatBox');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                appendMessage(`You: ${message}`, 'user-message');
-                socket.emit('userMessage', message);
-                messageInput.value = '';
-            }
-        });
-
-        socket.on('botResponse', (response) => {
-            appendMessage(`Bot: ${response}`, 'bot-message');
-        });
-
-        function appendMessage(message, className) {
-            const div = document.createElement('div');
-            div.textContent = message;
-            div.className = `message ${className}`;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
+<%- include('../partials/footer.ejs') %>

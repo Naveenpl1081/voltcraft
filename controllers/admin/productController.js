@@ -125,13 +125,16 @@ const loadEditProduct = async (req, res) => {
         console.log("id", id);
 
         const proData = await Product.findById({ _id: id })
+        console.log("product",proData)
         const categories = await Category.find()
+        const selectedCategory = await Category.findById({ _id: proData.category })
+        console.log("sele",selectedCategory)
         console.log("cattt",categories);
 
         console.log(proData);
         if (proData) {
             console.log('reached here');
-            res.render('editProduct', { product: proData,  categories })
+            res.render('editProduct', { product: proData,  categories,selectedCategory })
         } else {
             res.redirect('/admin/allProduct')
         }

@@ -32,7 +32,7 @@ const placeOrder = async (req, res) => {
     }
 
     
-    const validPaymentMethods = ["cod", "paypal"];
+    const validPaymentMethods = ["cod", "paypal",'wallet'];
     if (!validPaymentMethods.includes(paymentMethod)) {
       return res.status(400).json({ error: "Invalid payment method" });
     }
@@ -106,6 +106,27 @@ const placeOrder = async (req, res) => {
      
     }
 
+
+    if (paymentMethod === "wallet") {
+      const wallet = await Wallet.findOne({ userId: req.session.userId });
+      if (!wallet) {
+        return res.status(404).json({ error: "Wallet not found" });
+      }
+
+      if (wallet.balance < totalAmount) {
+        return res.status(400).json({ error: "Insufficient wallet balance" });
+      }
+
+      // Deduct wallet balance
+      wallet.balance -= totalAmount;
+      wallet.transactions.push({
+        amount: totalAmount,
+        type: 'debit',
+        description: 'Order Payment',
+      });
+      await wallet.save();
+    }
+
    
     const newOrder = new Order({
       userId: req.session.userId, 
@@ -124,6 +145,7 @@ const placeOrder = async (req, res) => {
 
     console.log("New Order Object: ", newOrder);
 
+    
     
     const savedOrder = await newOrder.save();
     console.log("Order saved to database: ", savedOrder);

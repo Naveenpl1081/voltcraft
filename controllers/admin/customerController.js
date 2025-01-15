@@ -69,12 +69,13 @@ const userBlock = async (req, res) => {
         user.isBlocked = !user.isBlocked;
         await user.save();
 
-        
+       
         res.json({
             success: true,
             isBlocked: user.isBlocked,
             message: `User has been ${user.isBlocked ? 'blocked' : 'unblocked'}`,
         });
+       
     } catch (error) {
         console.error('Error toggling block/unblock status:', error);
         res.status(500).json({

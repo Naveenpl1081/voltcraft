@@ -30,6 +30,7 @@
                                             <th>End Date</th>
                                             <th>Offer Type</th>
                                             <th>Product Name</th> 
+                                            <th>Category Name</th> 
                                             <th>Edit</th>
                                             <th>Remove</th>
                                         </tr>
@@ -44,6 +45,7 @@
                                                 <td><%= offer.endDate ? offer.endDate.toDateString() : 'N/A' %></td>
                                                 <td><%= offer.offerType %></td>
                                                 <td><%= offer.productNames %></td> <!-- Access productNames -->
+                                                <td><%= offer.categoryName %></td>
                                                 <td>
                                                     <a href="/admin/editOffer?id=<%= offer._id %>"
                                                         class="badge rounded-pill  btn btn-success">Edit</a>

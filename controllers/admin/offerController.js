@@ -20,12 +20,15 @@ const offerPage = async (req, res) => {
 
             // Extract product names from the populated productId array
             const productNames = item.productId.map(product => product.productName).join(', ');
+            const categoryName=item.categoryId.map(category =>category.name ).join(', ')
+            console.log("catname",categoryName)
 
             return {
                 ...item.toObject(),
                 formattedStartDate,
                 formattedEndDate,
                 productNames: productNames || 'N/A', // Join product names if multiple products exist
+                categoryName:categoryName ||'N/A',
             };
         });
 

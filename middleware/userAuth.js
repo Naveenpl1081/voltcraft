@@ -32,11 +32,10 @@ const ifLogged = async (req, res, next) => {
 
 
 
-
-
   module.exports = {
     ifLogged,
     ifLogout,
+    
     
   };
 

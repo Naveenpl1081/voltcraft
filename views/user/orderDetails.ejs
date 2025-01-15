@@ -64,7 +64,7 @@
                     <div class="flex-1 h-1.5 <%= ['Delivered', 'Cancelled'].includes(order.orderStatus) ? 'bg-green-500' : 'bg-gray-300' %> mx-2"></div>
                 </div>
                 <div class="order-progress-step">
-                    <div class="progress-step <%= order.orderStatus === 'Delivered' ? 'completed' : order.orderStatus === 'Cancelled' ? 'cancelled' : '' %> rounded-full h-12 w-12 flex items-center justify-center border-2 text-lg font-bold">
+                    <div class="progress-step <%= order.orderStatus === 'Delivered' ? 'completed' : order.orderStatus === 'Cancelled' ? 'cancelled' : ''  %> rounded-full h-12 w-12 flex items-center justify-center border-2 text-lg font-bold">
                         4
                     </div>
                 </div>
@@ -175,11 +175,21 @@
                 
                     <!-- Disable buttons after the order is canceled or returned -->
                     <button 
-                        class="mt-6 w-full <%= order.orderStatus === 'Delivered' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600' %> text-white py-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                        <% if (order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned' || order.orderStatus === 'Failed') { %> disabled <% } %>
-                        onclick="openCancelModal(<%= JSON.stringify(order) %>)">
-                        <%= order.orderStatus === 'Delivered' ? 'Return Order' : 'Cancel Order' %>
-                    </button>
+                    class="mt-6 w-full <%= 
+                        order.orderStatus === 'Delivered' ? 'bg-green-500 hover:bg-green-600' : 
+                        order.orderStatus === 'payment-Retry' ? 'bg-blue-500 hover:bg-blue-600' :
+                        'bg-red-500 hover:bg-red-600' 
+                    %> text-white py-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50"
+                    <% if (order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned' || order.orderStatus === 'Failed') { %> disabled <% } %>
+                    onclick="<%= order.orderStatus === 'payment-Retry' ? 'retryPayment(' + JSON.stringify(order) + ')' : 'openCancelModal(' + JSON.stringify(order) + ')' %>">
+                    <%= 
+                        order.orderStatus === 'Delivered' ? 'Return Order' : 
+                        order.orderStatus === 'payment-Retry' ? 'Retry Payment' :
+                        'Cancel Order' 
+                    %>
+                </button>
+                
+                
                 
                 
 
@@ -367,6 +377,67 @@ console.log("Response:", result);  // Log the response body
         });
     }
 });
+
+
+async function retryPayment(order) {
+  try {
+    // Check if order data is valid
+    if (!order || !order._id || !order.totalAmount) {
+      throw new Error('Invalid order data');
+    }
+
+    // Prepare the order data to be sent to the server
+    const orderData = {
+      orderId: order._id,  // Assuming the order has an _id field
+      amount: order.totalAmount,  // Assuming the total amount field exists
+      currency: order.currency || 'INR',  // Default to INR if no currency is provided
+    };
+
+    console.log("orderData:",orderData);
+
+    // Send the fetch request to create the PayPal payment
+    const response = await fetch('/createPayPalPayments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData),
+    });
+console.log("res",response)
+    // Check if the response is valid
+    if (!response.ok) {
+      const result = await response.json();
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: result.error || 'Failed to initiate PayPal payment.',
+      });
+      return;
+    }
+
+    const result = await response.json();
+    console.log("result", result);
+
+    // Redirect to PayPal approval URL
+    if (result.approvalUrl) {
+      console.log("Redirecting to PayPal:", result.approvalUrl);
+      window.location.href = result.approvalUrl;  // Redirect to PayPal for approval
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No approval URL returned from PayPal.',
+      });
+    }
+  } catch (err) {
+    // Handle any unexpected errors
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: err.message || 'An error occurred. Please try again.',
+    });
+    console.error("Error initiating payment:", err);
+  }
+}
+
 
 
     </script>

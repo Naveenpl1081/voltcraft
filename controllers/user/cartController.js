@@ -378,10 +378,11 @@ const confirmOrder = async (req, res) => {
             });
         }
 
-        
         const userCart = await Cart.findOne({ userId })
-            .populate('items.productId', 'productName productImage salePrice')
+            .populate('items.productId', 'productName productImage salePrice quantity')
             .lean();
+
+        console.log('Populated Cart:', JSON.stringify(userCart, null, 2));
 
         if (!userCart || userCart.items.length === 0) {
             return res.status(400).json({ 
@@ -390,7 +391,17 @@ const confirmOrder = async (req, res) => {
             });
         }
 
-        
+        const outOfStockProduct = userCart.items.find(item => item.productId.quantity === 0);
+
+        console.log('Out of Stock Product:', outOfStockProduct);
+
+        if (outOfStockProduct) {
+            return res.status(400).json({ 
+                success: false, 
+                message: `The product "${outOfStockProduct.productId.productName}" is out of stock. Please remove it from your cart before proceeding.` 
+            });
+        }
+
         return res.json({ 
             success: true,
             redirectUrl: '/confirmOrder' 
@@ -405,6 +416,7 @@ const confirmOrder = async (req, res) => {
         });
     }
 };
+
 
 const removeCartItem = async (req, res) => {
     try {

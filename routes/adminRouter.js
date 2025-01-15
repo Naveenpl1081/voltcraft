@@ -37,7 +37,7 @@ router.get('/',auth.ifLogout,adminController.loadDashboard)
 router.get("/logout",auth.ifLogout,adminController.logout)
 router.get("/users",auth.ifLogout,customerController.customerInfo)
 router.get('/dashboard',auth.ifLogout,adminController.loadDashboard)
-router.post('/blockAndUnblock/:id', customerController.userBlock);
+router.post('/blockAndUnblock/:id',customerController.userBlock);
 
 
 

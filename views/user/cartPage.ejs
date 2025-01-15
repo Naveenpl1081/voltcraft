@@ -424,6 +424,7 @@ document.getElementById('checkout-btn').addEventListener('click', (e) => {
     }),
   })
   .then(response => {
+    console.log("error",response)
     if (!response.ok) {
       return response.json().then(data => {
         // If the response is not OK, throw an error with the server message
@@ -433,6 +434,7 @@ document.getElementById('checkout-btn').addEventListener('click', (e) => {
     return response.json(); // Parse JSON if the response is OK
   })
   .then(data => {
+    console.log("hrk",data)
     if (data.success) {
       Swal.fire({
         title: 'Success!',

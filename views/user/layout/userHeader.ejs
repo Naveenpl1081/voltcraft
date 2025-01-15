@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <style>
 .promo-banner {
     background-color: black;
@@ -343,6 +344,242 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Slight shadow enhancement */
         transform: scale(1.05); /* Subtle enlargement on hover */
     }
+
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .promo-banner {
+            background: linear-gradient(90deg, #1a1a1a, #2d2d2d);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .shop-now-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 15px;
+            padding: 5px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .shop-now-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            background: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ef0a11, #f10105);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ec0612;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .search-form {
+            position: relative;
+            margin-right: 2rem;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .search-input:focus {
+            border-color: #ed1010;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        .clear-search:hover {
+            opacity: 1;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-icons a {
+            color: #374151;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-icons a:hover {
+            color: #ed0e0e;
+            transform: translateY(-2px);
+        }
+
+        .logout-button {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white !important;
+            border-radius: 20px;
+            font-size: 14px !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+
+
+        .search-form {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 2px solid #e5e7eb;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin-left: 25px; /* Adjust this value to move it further */
+}
+
+
+        .search-input:focus {
+            border-color: #ee1313;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+
+        .clear-search:hover {
+            opacity: 1;
+            color: #ef4444;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        /* Added styles for URL parameters display */
+        .current-search {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #f3f4f6;
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .current-search i {
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .current-search i:hover {
+            color: #ef4444;
+        }
     </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -358,52 +595,95 @@
             <a href="#">About</a>
             <a href="/wallet">Wallet</a>
         </div>
-        <div class="nav-icons">
-            <form class="search-form" action="/search" method="get">
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        placeholder="Search products" 
-                        name="query" 
-                        id="search" 
-                        class="form-control search-input" 
-                        value="<%= typeof query !== 'undefined' ? query : '' %>">
-                    <!-- <button type="submit" class="btn btn-primary search-button">
-                        <i class="fa fa-search"></i>
-                    </button> -->
-                    <% if (typeof query !== 'undefined' && query.length > 0) { %>
-                        <button 
-                            type="button" 
-                            class="btn btn-secondary clear-search-button" 
-                            onclick="window.location.href='/products'">
-                            Clear Search
-                        </button>
-                    <% } %>
-                </div>
-            </form>
+       
+        <form class="search-form" action="/search" method="get">
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search products..." 
+                name="query" 
+                id="search"
+                value="<%= typeof query !== 'undefined' ? query : '' %>"
+            >
+            <i class="fas fa-times clear-search" id="clearSearch"></i>
+            <i class="fas fa-search search-icon" id="searchIcon"></i>
+        </form>
             
-            <a href="/wishlist" aria-label="Wishlist" style="text-decoration: none; color: inherit;">❤️</a>
-
-            <a href="/cart" aria-label="Wishlist" style="text-decoration: none; color: inherit;">🛒</a>
-
-            <a href="/profile" aria-label="User Profile" style="text-decoration: none; color: inherit; font-size: 20px;">
-                👤 
-            </a>
-            
-            <a href="/logout" class="logout-button" style="text-decoration: none; color: #333; font-size: 18px; font-weight: bold; padding: 5px 10px; border: 1px solid #333; border-radius: 5px; transition: all 0.3s;">
-                Logout
-            </a>
-        </div>
+            <div class="nav-icons">
+                <a href="/wishlist" aria-label="Wishlist">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="/cart" aria-label="Shopping Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+                <a href="/profile" aria-label="User Profile">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="/logout" class="logout-button">
+                    Logout
+                </a>
+            </div>
+        
 
         <script>
-           document.addEventListener('DOMContentLoaded', function () {
-    const clearSearchButton = document.querySelector('.clear-search-button');
-    if (clearSearchButton) {
-        clearSearchButton.addEventListener('click', () => {
-            window.location.href = '/viewAllProductPage'; // Redirect to all products page
-        });
-    }
-});
+          
+          document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search');
+            const clearSearch = document.getElementById('clearSearch');
+            const searchIcon = document.getElementById('searchIcon');
 
+            // Function to get URL parameters
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            // Initialize search input with URL parameter if it exists
+            const queryParam = getQueryParam('query');
+            if (queryParam) {
+                searchInput.value = queryParam;
+                clearSearch.style.display = 'block';
+            } else {
+                clearSearch.style.display = 'none';
+            }
+
+            // Show/hide clear icon based on input
+            searchInput.addEventListener('input', function() {
+                clearSearch.style.display = this.value ? 'block' : 'none';
+            });
+
+            // Clear search functionality
+            clearSearch.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent form submission
+                searchInput.value = '';
+                clearSearch.style.display = 'none';
+                window.location.href = '/viewAllProductPage';
+            });
+
+            // Search icon click handler
+            searchIcon.addEventListener('click', function() {
+                if (searchInput.value.trim()) {
+                    searchInput.form.submit();
+                }
+            });
+
+            // Handle form submission
+            searchInput.form.addEventListener('submit', function(e) {
+                if (!searchInput.value.trim()) {
+                    e.preventDefault();
+                    window.location.href = '/viewAllProductPage';
+                }
+            });
+
+            // Handle enter key
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (!this.value.trim()) {
+                        e.preventDefault();
+                        window.location.href = '/viewAllProductPage';
+                    }
+                }
+            });
+        });
         </script>
     </nav>

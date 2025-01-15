@@ -191,6 +191,7 @@ const verifyLogin = async (req, res) => {
         // Fetch all categories and products
         const categories = await Category.find({ isDeleted: false });  // Exclude deleted categories
         const products = await Product.find({ isBlocked: false });  // Exclude blocked products
+        console.log("helloooo",products)
 
         // Calculate summary statistics
         const deliveredOrders = await Order.find({ orderStatus: 'Delivered' }).populate('items.productId');  // Populate product data
@@ -233,6 +234,7 @@ const verifyLogin = async (req, res) => {
                 }
             });
         });
+        console.log("best",bestSellingProducts)
 
         const sortedCategories = Object.entries(categorySales)
             .sort((a, b) => b[1] - a[1])

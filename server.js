@@ -10,6 +10,7 @@ const adminRouter=require("./routes/adminRouter");
 const multer = require('multer');
 const paypal=require('paypal-rest-sdk')
 const nocache = require('nocache');
+const { checkUserBlocked } = require("./middleware/adminAuth");
 dotenv.config();
 
 
@@ -51,9 +52,12 @@ app.use(passport.session());
 
 app.use(nocache());
 
+
+
+
 app.use("/",userRouter);
 app.use("/admin",adminRouter)
-
+app.use(checkUserBlocked)
 
 app.listen(port,()=>{
     console.log(`server running on http://localhost:${port}`)

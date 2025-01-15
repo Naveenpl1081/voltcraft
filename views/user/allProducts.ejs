@@ -240,11 +240,11 @@
     <div class="sort-options">
         <div>
             <label for="sort-select">Sort By:</label>
-            <select id="sort-select" class="sort-select" onchange="handleSort(event)">
-                <option value="a-z">A-Z</option>
-                <option value="z-a">Z-A</option>
-                <option value="low-to-high">Price: Low to High</option>
-                <option value="high-to-low">Price: High to Low</option>
+            <select id="sort-select" class="sort-select">
+                <option value="a-z" <%= sort === 'a-z' ? 'selected' : '' %>>A-Z</option>
+                <option value="z-a" <%= sort === 'z-a' ? 'selected' : '' %>>Z-A</option>
+                <option value="low-to-high" <%= sort === 'low-to-high' ? 'selected' : '' %>>Price: Low to High</option>
+                <option value="high-to-low" <%= sort === 'high-to-low' ? 'selected' : '' %>>Price: High to Low</option>
             </select>
         </div>
     </div>
@@ -287,18 +287,19 @@
         <% }) %>
     </div>
     <div class="pagination">
-        <% if (!query && currentPage > 1) { %>
-            <a href="?page=<%= currentPage - 1 %>" class="prev-page">Previous</a>
+        <% if (hasPrevPage) { %>
+            <a href="?page=<%= prevPage %>&sort=<%= sort %>&query=<%= query %>" class="prev-page">Previous</a>
         <% } %>
     
-        <% if (!query) { %>
-            <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>" class="page-number <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
-            <% } %>
+        <% for(let i = 1; i <= totalPages; i++) { %>
+            <a href="?page=<%= i %>&sort=<%= sort %>&query=<%= query %>" 
+               class="page-number <%= currentPage === i ? 'active' : '' %>">
+                <%= i %>
+            </a>
         <% } %>
     
-        <% if (!query && currentPage < totalPages) { %>
-            <a href="?page=<%= currentPage + 1 %>" class="next-page">Next</a>
+        <% if (hasNextPage) { %>
+            <a href="?page=<%= nextPage %>&sort=<%= sort %>&query=<%= query %>" class="next-page">Next</a>
         <% } %>
     </div>
     
@@ -515,6 +516,26 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+document.getElementById('sort-select').addEventListener('change', function() {
+    const currentUrl = new URL(window.location.href);
+    const params = new URLSearchParams(currentUrl.search);
+    
+    // Update or add sort parameter
+    params.set('sort', this.value);
+    
+    // Keep the current page if it exists
+    if (!params.has('page')) {
+        params.set('page', '1');
+    }
+    
+    // Keep the current query if it exists
+    if (!params.has('query')) {
+        params.set('query', '');
+    }
+    
+    // Redirect to the new URL
+    window.location.href = `${currentUrl.pathname}?${params.toString()}`;
+});
 
     
     

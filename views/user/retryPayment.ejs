@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retry Payment</title>
+</head>
+<body>
+  <h1>Retry Payment</h1>
+  <p>Your payment attempt failed. Please try again.</p>
+
+  <h2>Order Details</h2>
+  <ul>
+    <li><strong>Total Amount:</strong> $<%= failedOrder.totalAmount %></li>
+    
+       
+    <li><strong>Items:</strong></li>
+    <ul>
+      <% failedOrder.cartItems.forEach(item => { %>
+        <li>Product ID: <%= item.productId %> - Quantity: <%= item.quantity %> - Price: $<%= item.price %></li>
+      <% }); %>
+    </ul>
+  </ul>
+
+  <form action="/retryPayment" method="POST">
+    <button type="submit">Retry Payment</button>
+  </form>
+</body>
+</html>

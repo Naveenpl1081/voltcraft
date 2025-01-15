@@ -1,135 +1,147 @@
 <%- include('../layouts/adminHeader') %>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-<h1>Welcome to Dashboard</h1>
+<div class="container-fluid">
+    <h1 class="mt-4 mb-3">Dashboard Overview</h1>
 
-<section class="content-main">
-    <div class="content-header">
-        <div>
-            <p>Whole data about your business here</p>
-        </div>
-        <div class="time-filter">
-            <select id="timeRangeSelector" class="form-select">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-            </select>
+    <!-- Time Range Selector -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <p class="mb-0">Business Analytics Dashboard</p>
+                    <select id="timeRangeSelector" class="form-select" style="width: auto;">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
-   
+
     <!-- Statistics Cards -->
     <div class="row">
-        <!-- Revenue Card -->
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-primary-light">
-                        <i class="text-primary material-icons md-monetization_on"></i>
-                    </span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Revenue</h6>
-                        <span>₹<%= totalRevenue.toLocaleString('en-IN') %></span>
-                        <span class="text-sm">Total Revenue</span>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Revenue</div>
+                            <div class="h5 mb-0 font-weight-bold">₹<%= totalRevenue.toLocaleString('en-IN') %></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
+                        </div>
                     </div>
-                </article>
+                </div>
             </div>
         </div>
 
-        <!-- Current Period Revenue -->
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-success-light">
-                        <i class="text-success material-icons md-account_balance_wallet"></i>
-                    </span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Current Period Revenue</h6>
-                        <span id="currentPeriodRevenue">₹0</span>
-                        <span id="periodLabel" class="text-sm">Select a time period</span>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Current Period Revenue</div>
+                            <div class="h5 mb-0 font-weight-bold" id="currentPeriodRevenue">₹0</div>
+                            <div class="text-xs" id="periodLabel">Select time period</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
                     </div>
-                </article>
+                </div>
             </div>
         </div>
 
-        <!-- Orders -->
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-warning-light">
-                        <i class="text-warning material-icons md-local_shipping"></i>
-                    </span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Orders</h6>
-                        <span id="currentPeriodOrders">0</span>
-                        <span class="text-sm">In current period</span>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Orders</div>
+                            <div class="h5 mb-0 font-weight-bold" id="currentPeriodOrders">0</div>
+                            <div class="text-xs">In current period</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
                     </div>
-                </article>
+                </div>
             </div>
         </div>
 
-        <!-- Items Sold -->
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-info-light">
-                        <i class="text-info material-icons md-shopping_basket"></i>
-                    </span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Items Sold</h6>
-                        <span id="currentPeriodItems">0</span>
-                        <span class="text-sm">In current period</span>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Items Sold</div>
+                            <div class="h5 mb-0 font-weight-bold" id="currentPeriodItems">0</div>
+                            <div class="text-xs">In current period</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
+                        </div>
                     </div>
-                </article>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Charts -->
     <div class="row">
-        <!-- Category Distribution Chart -->
-        <div class="col-xl-6 col-lg-12">
+        <div class="col-xl-6">
             <div class="card mb-4">
-                <article class="card-body">
-                    <h5 class="card-title">Sales by Category</h5>
-                    <div id="categoryChart"></div>
-                </article>
+                <div class="card-header">
+                    <i class="fas fa-chart-pie mr-1"></i>
+                    Sales by Category
+                </div>
+                <div class="card-body">
+                    <div id="categoryChart" style="height: 400px;"></div>
+                </div>
             </div>
         </div>
-
-        <!-- Time Series Chart -->
-        <div class="col-xl-6 col-lg-12">
+        <div class="col-xl-6">
             <div class="card mb-4">
-                <article class="card-body">
-                    <h5 class="card-title">Revenue Over Time</h5>
-                    <div id="timeSeriesChart"></div>
-                </article>
+                <div class="card-header">
+                    <i class="fas fa-chart-line mr-1"></i>
+                    Revenue Trend
+                </div>
+                <div class="card-body">
+                    <div id="timeSeriesChart" style="height: 400px;"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <!-- Best Selling Products Chart -->
-        <div class="col-xl-6 col-lg-12">
+        <div class="col-xl-6">
             <div class="card mb-4">
-                <article class="card-body">
-                    <h5 class="card-title">Best Selling Products</h5>
-                    <div id="bestSellingProductsChart"></div>
-                </article>
+                <div class="card-header">
+                    <i class="fas fa-chart-bar mr-1"></i>
+                    Best Selling Products
+                </div>
+                <div class="card-body">
+                    <div id="bestSellingProductsChart" style="height: 400px;"></div>
+                </div>
             </div>
         </div>
-    
-        <!-- Best Selling Categories Chart -->
-        <div class="col-xl-6 col-lg-12">
+        <div class="col-xl-6">
             <div class="card mb-4">
-                <article class="card-body">
-                    <h5 class="card-title">Best Selling Categories</h5>
-                    <div id="bestSellingCategoriesChart"></div>
-                </article>
+                <div class="card-header">
+                    <i class="fas fa-chart-pie mr-1"></i>
+                    Best Selling Categories
+                </div>
+                <div class="card-body">
+                    <div id="bestSellingCategoriesChart" style="height: 400px;"></div>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -139,27 +151,49 @@ document.addEventListener("DOMContentLoaded", function() {
     const chartLabels = <%- JSON.stringify(chartLabels) %>;
     const chartData = <%- JSON.stringify(chartData) %>;
 
+    // Helper function to format currency
+    const formatCurrency = (value) => '₹' + value.toLocaleString('en-IN');
+
     // Category Distribution Chart
     const categoryOptions = {
         series: chartData,
         chart: {
             height: 400,
-            type: 'pie'
+            type: 'pie',
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800
+            }
         },
         labels: chartLabels,
-        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a'],
+        colors: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796', '#5a5c69'],
         legend: {
-            position: 'bottom'
+            position: 'bottom',
+            horizontalAlign: 'center',
+            fontSize: '14px'
         },
         tooltip: {
             y: {
-                formatter: (value) => '₹' + value.toLocaleString('en-IN')
+                formatter: formatCurrency
             }
-        }
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    height: 300
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }]
     };
+    
     new ApexCharts(document.querySelector("#categoryChart"), categoryOptions).render();
 
-    // Time Series Chart
+    // Time Series Chart Configuration
     const updateTimeSeriesChart = (period) => {
         const data = timeBasedData[period];
         const dates = Object.keys(data);
@@ -172,14 +206,49 @@ document.addEventListener("DOMContentLoaded", function() {
             }],
             chart: {
                 height: 400,
-                type: 'line'
+                type: 'line',
+                zoom: {
+                    enabled: true
+                },
+                toolbar: {
+                    show: true
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    speed: 800
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'],
+                    opacity: 0.5
+                }
             },
             xaxis: {
-                categories: dates
+                categories: dates,
+                labels: {
+                    rotate: -45,
+                    style: {
+                        fontSize: '12px'
+                    }
+                }
             },
             yaxis: {
                 labels: {
-                    formatter: (value) => '₹' + value.toLocaleString('en-IN')
+                    formatter: formatCurrency
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: formatCurrency
                 }
             }
         };
@@ -189,15 +258,81 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Update current period statistics
         const currentPeriodData = data[currentPeriod[period]] || { revenue: 0, orders: 0, items: 0 };
-        document.getElementById('currentPeriodRevenue').textContent = 
-            '₹' + currentPeriodData.revenue.toLocaleString('en-IN');
-        document.getElementById('currentPeriodOrders').textContent = 
-            currentPeriodData.orders.toLocaleString('en-IN');
-        document.getElementById('currentPeriodItems').textContent = 
-            currentPeriodData.items.toLocaleString('en-IN');
-        document.getElementById('periodLabel').textContent = 
-            `Current ${period.charAt(0).toUpperCase() + period.slice(1)}`;
+        document.getElementById('currentPeriodRevenue').textContent = formatCurrency(currentPeriodData.revenue);
+        document.getElementById('currentPeriodOrders').textContent = currentPeriodData.orders.toLocaleString('en-IN');
+        document.getElementById('currentPeriodItems').textContent = currentPeriodData.items.toLocaleString('en-IN');
+        document.getElementById('periodLabel').textContent = `Current ${period.charAt(0).toUpperCase() + period.slice(1)}`;
     };
+
+    // Best Selling Products Chart
+    const bestSellingProductsOptions = {
+        series: [{
+            name: 'Units Sold',
+            data: <%- JSON.stringify(bestSellingProducts.data) %>
+        }],
+        chart: {
+            type: 'bar',
+            height: 400,
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                borderRadius: 4
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        xaxis: {
+            categories: <%- JSON.stringify(bestSellingProducts.labels) %>,
+            labels: {
+                style: {
+                    fontSize: '12px'
+                }
+            }
+        },
+        colors: ['#4e73df'],
+        tooltip: {
+            y: {
+                formatter: (value) => value.toLocaleString('en-IN') + ' units'
+            }
+        }
+    };
+    
+    new ApexCharts(document.querySelector("#bestSellingProductsChart"), bestSellingProductsOptions).render();
+
+    // Best Selling Categories Chart
+    const bestSellingCategoriesOptions = {
+        series: <%- JSON.stringify(bestSellingCategories.data) %>,
+        chart: {
+            type: 'donut',
+            height: 400
+        },
+        labels: <%- JSON.stringify(bestSellingCategories.labels) %>,
+        colors: ['#1cc88a', '#4e73df', '#36b9cc', '#f6c23e', '#e74a3b'],
+        legend: {
+            position: 'bottom',
+            fontSize: '14px'
+        },
+        tooltip: {
+            y: {
+                formatter: (value) => value.toLocaleString('en-IN') + ' units'
+            }
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    height: 300
+                }
+            }
+        }]
+    };
+    
+    new ApexCharts(document.querySelector("#bestSellingCategoriesChart"), bestSellingCategoriesOptions).render();
 
     // Initialize with daily data
     updateTimeSeriesChart('daily');
@@ -206,52 +341,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('timeRangeSelector').addEventListener('change', (e) => {
         updateTimeSeriesChart(e.target.value);
     });
-});
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Best Selling Products Chart
-    const bestSellingProductsOptions = {
-        series: [{
-            name: 'Sales',
-            data: <%- JSON.stringify(bestSellingProducts.data) %>
-        }],
-        chart: {
-            type: 'bar',
-            height: 400
-        },
-        xaxis: {
-            categories: <%- JSON.stringify(bestSellingProducts.labels) %>
-        },
-        colors: ['#008FFB'],
-        tooltip: {
-            y: {
-                formatter: (value) => value.toLocaleString('en-IN') + ' units'
-            }
-        }
-    };
-    new ApexCharts(document.querySelector("#bestSellingProductsChart"), bestSellingProductsOptions).render();
-
-    // Best Selling Categories Chart
-    const bestSellingCategoriesOptions = {
-        series: <%- JSON.stringify(bestSellingCategories.data) %>,
-        chart: {
-            type: 'pie',
-            height: 400
-        },
-        labels: <%- JSON.stringify(bestSellingCategories.labels) %>,
-        colors: ['#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A'],
-        legend: {
-            position: 'bottom'
-        },
-        tooltip: {
-            y: {
-                formatter: (value) => value.toLocaleString('en-IN') + ' units'
-            }
-        }
-    };
-    new ApexCharts(document.querySelector("#bestSellingCategoriesChart"), bestSellingCategoriesOptions).render();
 });
 </script>
 

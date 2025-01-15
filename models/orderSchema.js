@@ -46,12 +46,12 @@ const orderSchema = mongoose.Schema({
   totalAmount: { type: Number, required: true },
   paymentMethod: {
     type: String,
-    enum: ['Credit Card', 'Debit Card', 'paypal', 'cod'],
+    enum: ['Credit Card', 'Debit Card', 'paypal', 'cod','wallet'],
     required: true
   },
   orderStatus: {
     type: String,
-    enum: ['Ordered', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled','Returned','Pending','Approved','Failed'],
+    enum: ['Ordered', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled','Returned','Pending','Approved','Failed','payment-Retry'],
     default: 'Ordered'
   },
   orderDate: { type: Date, default: Date.now },
