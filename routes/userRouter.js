@@ -81,15 +81,15 @@ router.post("/addressConfirm",orderController.addressConfirm)
 
 
 router.post("/applycoupon",orderController.applyCoupon)
-router.get('/coupons', orderController.getAllAvailableCoupons);
+router.get('/coupons', auth.ifLogout,orderController.getAllAvailableCoupons);
 
 
-router.post("/createPayPalPayment",createPayPalPayment)
-router.post("/createPayPalPayments",createPayPalPayments)
-router.get('/paypalSuccess', paypalSuccess)
-router.get('/paypalSuccesss', paypalSuccesss)
-router.get("/paypalCancel", paypalCancel); 
-router.get("/paymentCancelled",orderCancelled)
+router.post("/createPayPalPayment",auth.ifLogout,createPayPalPayment)
+router.post("/createPayPalPayments",auth.ifLogout,createPayPalPayments)
+router.get('/paypalSuccess', auth.ifLogout,paypalSuccess)
+router.get('/paypalSuccesss',auth.ifLogout, paypalSuccesss)
+router.get("/paypalCancel", auth.ifLogout,paypalCancel); 
+router.get("/paymentCancelled",auth.ifLogout,orderCancelled)
 
 
 
@@ -97,7 +97,7 @@ router.get('/wishlist',auth.ifLogout,wishlistController.wishlist)
 router.post("/addToWishlist",wishlistController.addToWishlist)
 router.delete('/removeFromWishlist/:productId', wishlistController.removeFromWishlist);
 
-router.get("/wallet",walletController.walletPage)
+router.get("/wallet",auth.ifLogout,walletController.walletPage)
 router.put('/cancel/:orderId', orderController.cancelOrder);
 router.put('/return/:orderId', orderController.returnOrder);
 
