@@ -22,7 +22,7 @@ const ifLogged = async (req, res, next) => {
         res.redirect("/login")
       }
     } catch (error) {
-      console,log(error)
+      console.log(error)
     }
   }
 
