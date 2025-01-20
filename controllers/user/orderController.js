@@ -296,33 +296,64 @@ const myOrder = async (req, res) => {
 
 const addressConfirm = async (req, res) => {
   try {
-      const userId = req.session.userId; 
-      if (!userId) return res.status(401).send('User not authenticated.');
+    // Check if user is authenticated
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).json({ errors: ['Please login to continue.'] });
+    }
 
-      const { name, number, addressone, addresstwo, city, state, email, country } = req.body;
+    // Extract fields from request body
+    const { name, number, addressone, addresstwo, city, state, email, country } = req.body;
 
+    // Basic server-side validation
+    const errors = [];
+    
+    // Trim all string inputs and check for required fields
+    if (!name?.trim()) errors.push('Name is required.');
+    if (!number?.trim()) errors.push('Phone number is required.');
+    if (!addressone?.trim()) errors.push('Street address is required.');
+    if (!city?.trim()) errors.push('City is required.');
+    if (!state?.trim()) errors.push('State is required.');
+    if (!email?.trim()) errors.push('Email is required.');
+    if (!country?.trim()) errors.push('Country is required.');
 
-      const newAddress = new Address({
-          fullName: name,
-          phone: number,
-          addressLine1: addressone,
-          addressLine2: addresstwo,
-          city: city,
-          state: state,
-          email: email,
-          country: country,
-          userId,
-      });
+    // If any required fields are missing, return early
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
 
-      console.log("...",newAddress)
+    // Create address object with trimmed values
+    const newAddress = new Address({
+      userId,
+      fullName: name.trim(),
+      phone: number.trim(),
+      addressLine1: addressone.trim(),
+      addressLine2: addresstwo?.trim() || '',
+      city: city.trim(),
+      state: state.trim(),
+      email: email.trim().toLowerCase(),
+      country: country.trim(),
+      createdAt: new Date()
+    });
 
-      await newAddress.save();
-      return res.redirect('/confirmOrder');
+    // Save to database
+    await newAddress.save();
+
+    // Return success response
+    return res.status(200).json({ 
+      message: 'Address saved successfully',
+      redirect: '/confirmOrder'
+    });
+
   } catch (error) {
-      console.error('Error saving address:', error);
-      res.status(500).send('Something went wrong.');
+    console.error('Error saving address:', error);
+    return res.status(500).json({ 
+      errors: ['Failed to save address. Please try again.'] 
+    });
   }
 };
+
+
 
 
 const applyCoupon = async (req, res, next) => {

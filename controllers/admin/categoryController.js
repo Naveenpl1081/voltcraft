@@ -6,32 +6,32 @@ const Category=require("../../models/categorySchema");
 
 const categoryInfo = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-
-        const limit = 4;
+        const page = parseInt(req.query.page) || 1; // Current page
+        const limit = parseInt(req.query.limit) || 4; // Categories per page
         const skip = (page - 1) * limit;
 
-        const categoryDate = await Category.find() 
+        // Fetch paginated categories
+        const categories = await Category.find()
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        const totalCategories = await Category.countDocuments({ isDeleted: false });
+        // Count total categories
+        const totalCategories = await Category.countDocuments();
         const totalPages = Math.ceil(totalCategories / limit);
 
         res.render("categoryInfo", {
-            cat: categoryDate,
+            cat:categories, // Use consistent naming
             currentPage: page,
-            totalPages: totalPages,
-            categories: totalCategories,
-            topCategories: totalCategories,
+            totalPages,
+            limit,
         });
-
-        console.log(categoryDate);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching categories:', error);
+        res.status(500).send("Internal Server Error");
     }
 };
+
 
 
 
@@ -48,20 +48,30 @@ const addCategory = async (req, res) => {
     try {
         const { catName, description } = req.body;
 
-        // Validate required fields
-        if (!catName || !description) {
+        // Trim inputs to remove leading/trailing spaces
+        const trimmedCatName = catName?.trim();
+        const trimmedDescription = description?.trim();
+
+        // Validate presence of fields
+        if (!trimmedCatName || !trimmedDescription) {
             return res.status(400).json({ message: 'Category name and description are required.' });
         }
 
-        // Trim and validate input lengths
-        const trimmedCatName = catName.trim();
-        const trimmedDescription = description.trim();
-
-        // Check if fields are empty or contain only spaces
-        if (trimmedCatName.length === 0 || trimmedDescription.length === 0) {
-            return res.status(400).json({ message: 'Fields cannot be empty or contain only spaces.' });
+        // Validate category name format
+        const catNameRegex = /^[A-Za-z][A-Za-z0-9\s]+$/;
+        if (!catNameRegex.test(trimmedCatName)) {
+            return res.status(400).json({
+                message: 'Category name must start with a letter and contain only alphanumeric characters and spaces.',
+            });
+        }
+       
+        if (trimmedCatName.startsWith(' ')) {
+            return res.status(400).json({
+                message: 'Category name cannot start with a space.',
+            });
         }
 
+        // Validate lengths
         if (trimmedCatName.length > 50) {
             return res.status(400).json({ message: 'Category name cannot exceed 50 characters.' });
         }
@@ -70,16 +80,18 @@ const addCategory = async (req, res) => {
             return res.status(400).json({ message: 'Description cannot exceed 250 characters.' });
         }
 
-        // Check if category already exists (case-insensitive)
+        // Check for duplicate category (case-insensitive)
         const existingCategory = await Category.findOne({
-            catName: { $regex: new RegExp(`^${trimmedCatName}$`, 'i') },
+            name: { $regex: `^${trimmedCatName}$`, $options: 'i' },
         });
+
+        console.log("Existing Category:", existingCategory);
 
         if (existingCategory) {
             return res.status(400).json({ message: 'Category with the same name already exists.' });
         }
 
-        // Create and save the new category
+        // Save the new category
         const newCategory = new Category({
             name: trimmedCatName,
             description: trimmedDescription,
@@ -87,13 +99,13 @@ const addCategory = async (req, res) => {
 
         await newCategory.save();
 
-        // Respond with success message
         return res.status(201).json({ message: `Category "${trimmedCatName}" added successfully.` });
     } catch (error) {
-        console.error('Error in adding category:', error.message);
-        return res.status(500).json({ message: 'An error occurred while adding the category.' });
+        console.error('Error adding category:', error);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 };
+
 
 
 const deleteCategory = async (req, res) => {
@@ -134,61 +146,66 @@ const restoreCategory = async (req, res) => {
 
 const editCategory = async (req, res) => {
     try {
-      console.log('editing start');
-      const id = req.query.id
-      console.log(id);
-      const catData = await Category.findById({ _id: id })
-      console.log(catData);
-      if (catData) {
-        res.render('editCategory', { category: catData })
-      } else {
-        res.redirect('/admin/categoryInfo')
-      }
-  
+        const id = req.query.id; // Use query params to get the category ID
+        const catData = await Category.findById(id); // Find the category by ID
+
+        if (catData) {
+            res.render('editCategory', { category: catData }); // Render the edit form with category data
+        } else {
+            res.redirect('/admin/categoryInfo'); // Redirect if category not found
+        }
     } catch (error) {
-      console.log('error loading edit cat page');
-      console.log(error);
+        console.error('Error loading edit category page:', error);
+        res.redirect('/admin/categoryInfo'); // Redirect on error
     }
-  }
+};
 
-
-  const editCat = async (req, res) => {
+const editCat = async (req, res) => {
     try {
-        console.log("req body", req.body);
+        const id = req.params.id; // Get category ID from the URL params
+        const { catName, description } = req.body; // Get the category name and description from the request body
 
-        const { id, catName, description } = req.body;
+        // Trim inputs to remove leading/trailing spaces
+        const trimmedCatName = catName.trim();
+        const trimmedDescription = description.trim();
 
-        
-        if (!catName || !description || catName.trim().length === 0 || description.trim().length === 0) {
-            console.log('Validation failed: Empty fields');
-            return res.redirect('/admin/editCategory');
+        // Validate presence of fields
+        if (!trimmedCatName || !trimmedDescription) {
+            return res.status(400).json({ message: 'Fields cannot be empty.' });
         }
 
-        
-        const existingCategory = await Category.findOne({ 
-            catName: { $regex: new RegExp(`^${catName}$`, 'i') }, 
+        // Validate category name format
+        const catNameRegex = /^[A-Za-z][A-Za-z0-9\s]*$/;
+        if (!catNameRegex.test(trimmedCatName)) {
+            return res.status(400).json({ message: 'Invalid category name format.' });
+        }
+
+        // Validate lengths
+        if (trimmedCatName.length > 50 || trimmedDescription.length > 250) {
+            return res.status(400).json({ message: 'Exceeded maximum length.' });
+        }
+
+        // Check if the category name already exists (case-insensitive)
+        const existingCategory = await Category.findOne({
+            name: { $regex: new RegExp(`^${trimmedCatName}$`, 'i') },
             _id: { $ne: id }
         });
 
         if (existingCategory) {
-            console.log('Category name already exists');
-            return res.redirect('/admin/editCategory');
+            return res.status(400).json({ message: 'Category name already exists.' });
         }
 
-        
+        // Update category
         const updatedCategory = await Category.findByIdAndUpdate(
             id,
-            { name: catName, description: description },
+            { name: trimmedCatName, description: trimmedDescription },
             { new: true }
         );
 
-        console.log('Category updated:', updatedCategory);
-
-        
-        return res.redirect('/admin/categoryInfo');
+        res.status(200).json({ message: 'Category updated successfully.', updatedCategory });
     } catch (error) {
         console.error('Error editing category:', error);
-        res.redirect('/admin/editCategory');
+        res.status(500).json({ message: 'An error occurred while editing the category.' });
     }
 };
 

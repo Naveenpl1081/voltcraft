@@ -4,14 +4,14 @@
     <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-6 bg-white mt-5 p-4 shadow-sm">
             <h2 class="text-center mb-4">EDIT CATEGORY</h2>
-            
+
             <% if (typeof error !== 'undefined' && error) { %>
                 <div class="alert alert-danger text-center" role="alert">
                     <%= error %>
                 </div>
             <% } %>
 
-            <form action="/admin/editCategory" method="post">
+            <form id="editCategoryForm" class="needs-validation" novalidate>
                 <input type="hidden" name="id" value="<%= category._id %>">
 
                 <div class="mb-3">
@@ -21,13 +21,18 @@
                         class="form-control" 
                         id="catName" 
                         name="catName" 
-                        placeholder="Enter category name" 
                         value="<%= category.name %>" 
+                        placeholder="Enter category name" 
                         required 
                         maxlength="50"
+                        pattern="^[A-Za-z][A-Za-z0-9\s]*$"
+                        title="Category name must start with a letter and contain only alphanumeric characters and spaces."
                     >
+                    <div class="invalid-feedback">
+                        Please enter a valid category name (must not start with a space, max 50 characters, no special characters).
+                    </div>
                 </div>
-
+            
                 <div class="mb-3">
                     <label for="description" class="form-label">Category Description</label>
                     <textarea 
@@ -39,20 +44,122 @@
                         required 
                         maxlength="250"
                     ><%= category.description %></textarea>
+                    <div class="invalid-feedback">
+                        Please provide a valid description (max 250 characters, cannot be empty or spaces only).
+                    </div>
                 </div>
-
+            
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Update Category</button>
                 </div>
             </form>
 
-            <div class="text-center mt-3">
-                <a href="/admin/categoryInfo" class="btn btn-outline-secondary">
-                    Back to All Categories
-                </a>
-            </div>
         </div>
     </div>
-</main>
 
+    <script>
+        document.getElementById('editCategoryForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const catName = document.getElementById('catName').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const categoryId = document.querySelector('input[name="id"]').value;
+
+            // Validate if the category name starts with a space
+            if (catName.startsWith(' ')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Category name cannot start with a space.',
+                });
+                return;
+            }
+
+            // Validate if the description starts with a space
+            if (description.startsWith(' ')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Description cannot start with a space.',
+                });
+                return;
+            }
+
+            // Validate for empty fields or spaces only
+            if (catName.length === 0 || description.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Fields cannot be empty or contain only spaces.',
+                });
+                return;
+            }
+
+            // Validate category name and description format
+            const validNameAndDescRegex = /^[A-Za-z][A-Za-z0-9\s]*$/;
+            if (!validNameAndDescRegex.test(catName) || !validNameAndDescRegex.test(description)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Category name must start with a letter and contain only alphanumeric characters and spaces.',
+                });
+                return;
+            }
+
+            // Validate length of category name and description
+            if (catName.length > 50) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Category name cannot exceed 50 characters.',
+                });
+                return;
+            }
+
+            if (description.length > 250) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Description cannot exceed 250 characters.',
+                });
+                return;
+            }
+
+            // Submit data to the server
+            try {
+                const response = await fetch(`/admin/editCategory/${categoryId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ catName, description }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: result.message,
+                        willClose: () => {
+                            window.location.href = '/admin/categoryInfo';
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message,
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while editing the category.',
+                });
+            }
+        });
+    </script>
 <%- include('../layouts/adminfooter') %>

@@ -98,7 +98,7 @@ const dailySalesReport = async (req, res) => {
         const totalAmount = dailyReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
         const totalCouponAmount = dailyReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
 
-        res.render('reports', { report: dailyReport, totalOrders, totalAmount, totalCouponAmount });
+        res.render('report', { report: dailyReport, totalOrders, totalAmount, totalCouponAmount });
     } catch (error) {
         console.error('Error loading daily sales report:', error);
         res.status(500).send('Error loading daily sales report');
@@ -160,7 +160,7 @@ const generateWeeklyReport = async (req, res) => {
         const totalAmount = weeklyReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
         const totalCouponAmount = weeklyReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
 
-        res.render('reports', { report: weeklyReport, totalOrders, totalAmount, totalCouponAmount });
+        res.render('report', { report: weeklyReport, totalOrders, totalAmount, totalCouponAmount });
     } catch (error) {
         console.error('Error generating weekly report:', error);
         res.status(500).send('Error generating weekly report');
@@ -221,7 +221,7 @@ const generateMonthlyReport = async (req, res) => {
         const totalAmount = formattedReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
         const totalCouponAmount = formattedReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
 
-        res.render('reports', {
+        res.render('report', {
             report: formattedReport,
             totalOrders,
             totalAmount,
@@ -280,7 +280,7 @@ const generateYearlyReport = async (req, res) => {
         const totalAmount = yearlyReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
         const totalCouponAmount = yearlyReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
 
-        res.render('reports', { report: yearlyReport, totalOrders, totalAmount, totalCouponAmount });
+        res.render('report', { report: yearlyReport, totalOrders, totalAmount, totalCouponAmount });
     } catch (error) {
         console.error('Error generating yearly report:', error);
         res.status(500).send('Error generating yearly report');
@@ -301,37 +301,103 @@ const generateCustomDateReport = async (req, res) => {
         }
 
         // Query orders within the date range
-        const customDateReport = await Orders.find({
+        const report = await Orders.find({
             createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
-        });
+        })
+        .populate('userId', 'name email')
+        .populate('couponApplied')
+        .populate('items.productId')
+        .sort({ createdAt: -1 });
 
-        // Calculate totals
-        let totalAmount = 0;
-        let totalOrders = customDateReport.length;
+        // Initialize metrics object
+        const metrics = {
+            totalAmount: 0,
+            totalOrders: report.length,
+            totalItems: 0,
+            totalCouponAmount: 0,
+            couponsUsed: 0,
+            paymentMethods: {},
+            orderStatuses: {}
+        };
 
-        customDateReport.forEach(order => {
-            if (order.totalAmount && !isNaN(order.totalAmount)) {
-                totalAmount += parseFloat(order.totalAmount);
-            } else {
-                console.warn('Invalid or missing totalAmount in order:', order);
+        // Calculate metrics
+        report.forEach(order => {
+            // Calculate total amount
+            metrics.totalAmount += order.totalAmount || 0;
+
+            // Calculate items count
+            metrics.totalItems += order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Track payment methods
+            metrics.paymentMethods[order.paymentMethod] = 
+                (metrics.paymentMethods[order.paymentMethod] || 0) + 1;
+
+            // Track order statuses
+            metrics.orderStatuses[order.orderStatus] = 
+                (metrics.orderStatuses[order.orderStatus] || 0) + 1;
+
+            // Calculate coupon amounts
+            if (order.couponApplied) {
+                const couponAmount = calculateCouponDiscount(order);
+                metrics.totalCouponAmount += couponAmount;
+                metrics.couponsUsed++;
             }
         });
 
-        // Debug logs
-        console.log('Total Amount:', totalAmount);
-        console.log('Total Orders:', totalOrders);
+        // Calculate averages
+        metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
+        metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
+        metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
+
+        // Prepare chart data
+        const chartData = {
+            paymentMethodLabels: Object.keys(metrics.paymentMethods),
+            paymentMethodData: Object.values(metrics.paymentMethods),
+            orderStatusLabels: Object.keys(metrics.orderStatuses),
+            orderStatusData: Object.values(metrics.orderStatuses)
+        };
+
+        // Helper function for status colors
+        const getStatusColor = (status) => {
+            const colors = {
+                'Ordered': 'primary',
+                'Shipped': 'info',
+                'Out For Delivery': 'warning',
+                'Delivered': 'success',
+                'Cancelled': 'danger',
+                'Returned': 'secondary',
+                'Pending': 'warning',
+                'Approved': 'success',
+                'Failed': 'danger',
+                'payment-Retry': 'warning'
+            };
+            return colors[status] || 'secondary';
+        };
 
         // Render the report
-        res.render('customReport', {
-            report: customDateReport,
+        res.render('reports', {
+            report,
+            metrics,
             startDate: startDate.format('YYYY-MM-DD'),
             endDate: endDate.format('YYYY-MM-DD'),
-            totalAmount: totalAmount.toFixed(2),
-            totalOrders: totalOrders
+            getStatusColor,
+            getCouponAmount: calculateCouponDiscount,
+            ...chartData // Spread the chart data into the template variables
         });
+
     } catch (error) {
         console.error('Error generating custom date report:', error);
         res.status(500).send('Error generating custom date report');
+    }
+};
+
+const calculateCouponDiscount = (order) => {
+    if (!order.couponApplied) return 0;
+    
+    if (order.couponApplied.discountType === 'percentage') {
+        return (order.totalAmount * order.couponApplied.discountAmount) / 100;
+    } else {
+        return Math.min(order.couponApplied.discountAmount, order.totalAmount);
     }
 };
 

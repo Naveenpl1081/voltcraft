@@ -566,17 +566,19 @@
         </select>
         <h3> Add a New Address</h3>
         <!-- New Address Fields -->
-        <form id="new-address-form" action="/addressConfirm" method="POST">
+        <form id="new-address-form">
           <input type="text" name="name" placeholder="First Name*" required>
-          <input type="text" name="number" placeholder="Number" required>
+          <input type="text" name="number" placeholder="Phone Number*" required>
           <input type="text" name="addressone" placeholder="Street Address*" required>
           <input type="text" name="addresstwo" placeholder="Apartment (optional)">
           <input type="text" name="city" placeholder="City*" required>
-          <input type="tel" name="state" placeholder="State*" required>
+          <input type="text" name="state" placeholder="State*" required>
           <input type="email" name="email" placeholder="Email*" required>
           <input type="text" name="country" placeholder="Country*" required>
           <button type="submit">Add Address</button>
         </form>
+        <div id="error-messages"></div>
+        
       </div>
 
       <!-- Payment Method and Cart Summary Section -->
@@ -963,6 +965,63 @@ async function fetchAllCoupons() {
 
 // Attach the event listener to the "Show All Coupons" button
 document.getElementById('showCouponsButton').addEventListener('click', fetchAllCoupons);
+
+
+document.getElementById('new-address-form').addEventListener('submit', async function(event) {
+  event.preventDefault();
+  
+  // Clear previous errors
+  const errorMessagesDiv = document.getElementById('error-messages');
+  errorMessagesDiv.innerHTML = '';
+  
+  const formData = new FormData(this);
+  const formObject = Object.fromEntries(formData.entries());
+  
+  try {
+    const response = await fetch('/addressConfirm', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formObject),
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      displayErrors(data.errors);
+    } else {
+      // Success - redirect to confirm order page
+      window.location.href = '/confirmOrder';
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    displayErrors(['An unexpected error occurred. Please try again.']);
+  }
+});
+
+function displayErrors(errors) {
+  const errorMessagesDiv = document.getElementById('error-messages');
+  errorMessagesDiv.innerHTML = '';
+  
+  if (errors && errors.length > 0) {
+    const ul = document.createElement('ul');
+    ul.style.listStyle = 'none';
+    ul.style.padding = '0';
+    ul.style.margin = '10px 0';
+    
+    errors.forEach(error => {
+      const li = document.createElement('li');
+      li.style.color = 'red';
+      li.style.marginBottom = '5px';
+      li.textContent = error;
+      ul.appendChild(li);
+    });
+    
+    errorMessagesDiv.appendChild(ul);
+  }
+}
+
 
 
     </script>

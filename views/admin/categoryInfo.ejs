@@ -2,6 +2,40 @@
 
 <section class="content-main">
     <div class="content-header">
+        <style>
+            <style>
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.pagination {
+    list-style: none;
+    display: flex;
+    padding: 0;
+}
+.pagination .page-item {
+    margin: 0 5px;
+}
+.pagination .page-item a {
+    display: block;
+    padding: 8px 12px;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+.pagination .page-item.active a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+.pagination .page-item a:hover {
+    background-color: #e9ecef;
+}
+</style>
+
+        </style>
         <div>
             <h2 class="content-title card-title">Categories</h2>
             <p>Here are the categories.</p>
@@ -82,6 +116,33 @@
             </div>
         </div>
     </div>
+    <div class="pagination-container">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <% if (currentPage > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                </li>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+    
+    
 </section>
 
 <%- include('../layouts/adminfooter') %>  
@@ -212,6 +273,50 @@ async function restoreCategory(button) {
         }
     }
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    attachCategoryPaginationListeners();
+});
+
+function attachCategoryPaginationListeners() {
+    const paginationLinks = document.querySelectorAll('.pagination .page-link');
+
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', async function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('href');
+
+            try {
+                const response = await fetch(url, { method: 'GET' });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch paginated data');
+                }
+
+                const html = await response.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newTableBody = doc.querySelector('#categoriesTableBody');
+                const newPagination = doc.querySelector('.pagination-container');
+
+                if (newTableBody && newPagination) {
+                    document.querySelector('#categoriesTableBody').innerHTML = newTableBody.innerHTML;
+                    document.querySelector('.pagination-container').innerHTML = newPagination.innerHTML;
+
+                    attachCategoryPaginationListeners(); // Reattach listeners after update
+                } else {
+                    console.error('Missing elements in the fetched HTML');
+                    alert('Failed to update the table. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error fetching paginated data:', error);
+                alert('An error occurred while fetching the data. Please try again.');
+            }
+        });
+    });
+}
+
 
 
 </script>

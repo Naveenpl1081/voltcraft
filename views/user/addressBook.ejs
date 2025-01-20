@@ -341,7 +341,7 @@
         const country = document.getElementById("countryy").value;
 
         // Regular expressions for validation
-        const phoneRegex = /^\d{10}$/; // 10-digit phone number
+        const phoneRegex = /^[6-9]\d{9}$/;  // 10-digit phone number
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation
         
         // Reset error messages
@@ -356,11 +356,26 @@
             isValid = false;
         }
 
-        if (!phone || !phoneRegex.test(phone)) {
-            document.getElementById("phone-error").innerText = "Enter a valid 10-digit phone number.";
-            document.getElementById("phone-error").style.display = "block";
-            isValid = false;
-        }
+        if (!/^[A-Za-z]+$/.test(name)) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Invalid Name',
+        text: 'Name can only contain letters and should not start with a space or include numbers.',
+        confirmButtonText: 'OK',
+    });
+    return;
+}
+
+
+ // Validates Indian phone numbers starting with 6-9 and having 10 digits
+
+if (!phone || !phoneRegex.test(phone)) {
+    document.getElementById("phone-error").innerText = "Enter a valid 10-digit phone number starting with 6-9.";
+    document.getElementById("phone-error").style.display = "block";
+    isValid = false;
+} else {
+    document.getElementById("phone-error").style.display = "none";
+}
 
         if (!addressLine1) {
             document.getElementById("address-line1-error").innerText = "Street address is required.";

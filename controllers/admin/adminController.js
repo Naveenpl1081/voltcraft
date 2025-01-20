@@ -28,6 +28,7 @@ const login = async (req, res) => {
         if (admin) {
             const passwordMatch = await bcrypt.compare(password, admin.password); // Use await here
             if (passwordMatch) {
+              console.log("hello")
                 req.session.admin = true;
                 return res.redirect("/admin/dashboard");
             } else {
@@ -296,6 +297,7 @@ const logout=async(req,res)=>{
                 console.log("error destroying session",err)
                 return res.redirect("/pageerror")
             }
+            console.log("session des")
             res.redirect("/admin/login")
         })
     } catch (error) {

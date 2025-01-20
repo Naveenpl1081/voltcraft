@@ -16,19 +16,19 @@
                 <div class="mb-3">
                     <label for="catName" class="form-label">Category Name</label>
                     <input 
-                        type="text" 
-                        class="form-control" 
-                        id="catName" 
-                        name="catName" 
-                        placeholder="Enter category name" 
-                        required 
-                        maxlength="50"
-                        pattern="^[A-Za-z0-9\s]+$"
-                        title="Only alphanumeric characters and spaces are allowed."
-                    >
-                    <div class="invalid-feedback">
-                        Please enter a valid category name (max 50 characters, no special characters).
-                    </div>
+                    type="text" 
+                    class="form-control" 
+                    id="catName" 
+                    name="catName" 
+                    placeholder="Enter category name" 
+                    required 
+                    maxlength="50"
+                    pattern="^[A-Za-z][A-Za-z0-9\s]*$"
+                    title="Category name must start with a letter and contain only alphanumeric characters and spaces."
+                >
+                <div class="invalid-feedback">
+                    Please enter a valid category name (must not start with a space, max 50 characters, no special characters).
+                </div>
                 </div>
             
                 <div class="mb-3">
@@ -43,7 +43,7 @@
                         maxlength="250"
                     ></textarea>
                     <div class="invalid-feedback">
-                        Please provide a valid description (max 250 characters).
+                        Please provide a valid description (max 250 characters, cannot be empty or spaces only).
                     </div>
                 </div>
             
@@ -57,108 +57,104 @@
 
     <!-- SweetAlert Script -->
     <script>
-    document.getElementById('addCategoryForm').addEventListener('submit', async function (event) {
-        event.preventDefault();
-        const catName = document.getElementById('catName').value.trim();
-        const description = document.getElementById('description').value.trim();
+   document.getElementById('addCategoryForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
 
-        // Check if category name or description are empty or only contain spaces
-        // if (!catName || !description) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Validation Error',
-        //         text: 'Category name and description are required.',
-        //     });
-        //     return;
-        // }
+    const catName = document.getElementById('catName').value;
+    const description = document.getElementById('description').value;
 
-        // Check if fields contain only spaces
-        if (catName.length === 0 || description.length === 0) {
+    // Check if the category name starts with a space
+    if (catName.startsWith(' ')) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Category name cannot start with a space.',
+        });
+        return;
+    }
+    if (description.startsWith(' ')) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Description cannot start with a space.',
+        });
+        return;
+    }
+    // Client-side validations
+    if (catName.length === 0 || description.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Fields cannot be empty or contain only spaces.',
+        });
+        return;
+    }
+
+   
+
+    if (!/^[A-Za-z][A-Za-z0-9\s]+$/.test(catName) || !/^[A-Za-z][A-Za-z0-9\s]+$/.test(description)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Category name must start with a letter and contain only alphanumeric characters and spaces.',
+        });
+        return;
+    }
+
+    if (catName.length > 50) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Category name cannot exceed 50 characters.',
+        });
+        return;
+    }
+
+    if (description.length > 250) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Description cannot exceed 250 characters.',
+        });
+        return;
+    }
+
+    // Submit data to the server
+    try {
+        const response = await fetch('/admin/addcategory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ catName, description }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
             Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Fields cannot be empty or contain only spaces.',
-            });
-            return;
-        }
-
-        // Validate category name pattern (alphanumeric and spaces only)
-//         const catNamePattern = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*$/;
-
-// if (!catNamePattern.test(catName)) {
-//     Swal.fire({
-//         icon: 'error',
-//         title: 'Validation Error',
-//         text: 'Category name can only contain alphanumeric characters and spaces (spaces must not be at the beginning or end).',
-//     });
-//     return;
-// }
-
-if (/\d/.test(catName)) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Validation Error',
-        text: 'Category name cannot contain numbers.',
-    });
-    return;
-}
-
-        // Check if the category name and description length exceed limits
-        if (catName.length > 50) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Category name cannot exceed 50 characters.',
-            });
-            return;
-        }
-
-        if (description.length > 250) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Description cannot exceed 250 characters.',
-            });
-            return;
-        }
-
-        // Use fetch to submit the form data to the server
-        try {
-            const response = await fetch('/admin/addcategory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                icon: 'success',
+                title: 'Success',
+                text: result.message,
+                willClose: () => {
+                    window.location.href = '/admin/categoryInfo';
                 },
-                body: JSON.stringify({ catName, description }),
             });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                // Show success message and redirect to the category info page
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: result.message,
-                    willClose: () => {
-                        window.location.href = '/admin/categoryInfo'; // Redirect to category info page
-                    }
-                });
-            }else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: result.message,
-                });
-            }
-        } catch (error) {
+        } else {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'An error occurred while adding the category.',
+                text: result.message,
             });
         }
-    });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while adding the category.',
+        });
+    }
+});
     </script>
 </main>
 

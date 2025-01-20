@@ -19,6 +19,85 @@
         .was-validated .form-control:invalid ~ .invalid-feedback {
             display: block;
         }
+        <style>
+/* Form Styling */
+.form-control {
+    background-color: #f8f9fa;
+    border: 1.5px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Button Styling */
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom SweetAlert Styling */
+.custom-swal-container {
+    z-index: 1500;
+}
+
+.custom-swal-popup {
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.custom-swal-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.custom-swal-html {
+    font-size: 1rem;
+    color: #34495e;
+}
+
+.custom-swal-button {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+</style>
     </style>
     <div class="row">
         <!-- Add Coupon Form -->
@@ -134,60 +213,189 @@
 </main>
 
 <script>
-  document.getElementById('addCouponForm').addEventListener('submit', async function (event) {
-    event.preventDefault();
+ // Add these helper functions at the top
+const isValidDate = (date) => {
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selectedDate >= today;
+};
 
-    const form = document.getElementById('addCouponForm');
-    // Check if form is valid
-    if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        return;
+const isAlphanumeric = (str) => /^[A-Za-z0-9]+$/.test(str);
+
+const validateCouponForm = (data) => {
+    const errors = [];
+    
+    // Coupon Name Validation
+    if (!data.couponName || !data.couponName.trim()) {
+        errors.push('Coupon name is required');
+    } else if (data.couponName.length < 3 || data.couponName.length > 50) {
+        errors.push('Coupon name must be between 3 and 50 characters');
+    } else if (!isAlphanumeric(data.couponName)) {
+        errors.push('Coupon name can only contain letters and numbers');
     }
+    
+    // Coupon Code Validation
+    if (!data.couponCode || !data.couponCode.trim()) {
+        errors.push('Coupon code is required');
+    } else if (data.couponCode.length < 5 || data.couponCode.length > 15) {
+        errors.push('Coupon code must be between 5 and 15 characters');
+    } else if (!isAlphanumeric(data.couponCode)) {
+        errors.push('Coupon code can only contain letters and numbers');
+    }
+    
+    // Offer Type and Value Validation
+    if (!data.offerType) {
+        errors.push('Please select an offer type');
+    } else {
+        const offerValue = parseFloat(data.offerValue);
+        if (isNaN(offerValue) || offerValue <= 0) {
+            errors.push('Offer value must be greater than 0');
+        } else if (data.offerType === 'percentage' && offerValue > 100) {
+            errors.push('Percentage discount cannot exceed 100%');
+        } else if (data.offerType === 'flat' && offerValue > 50000) {
+            errors.push('Flat discount cannot exceed ₹50,000');
+        }
+    }
+    
+    // Minimum Price Validation
+    const minPrice = parseFloat(data.minimumPrice);
+    if (isNaN(minPrice) || minPrice < 0) {
+        errors.push('Minimum price must be a non-negative number');
+    } else if (data.offerType === 'flat' && parseFloat(data.offerValue) >= minPrice) {
+        errors.push('Flat discount cannot be greater than or equal to minimum purchase amount');
+    }
+    
+    // Usage Limits Validation
+    const usageLimit = parseInt(data.usageLimit);
+    const userLimit = parseInt(data.usagePerUserLimit);
+    
+    if (usageLimit !== null && (isNaN(usageLimit) || usageLimit < 1)) {
+        errors.push('Usage limit must be at least 1');
+    }
+    if (isNaN(userLimit) || userLimit < 1) {
+        errors.push('Usage limit per user must be at least 1');
+    }
+    if (usageLimit !== null && userLimit > usageLimit) {
+        errors.push('Per-user limit cannot exceed total usage limit');
+    }
+    
+    // Description Validation
+    if (!data.description || data.description.trim().length < 10) {
+        errors.push('Description must be at least 10 characters long');
+    }
+    
+    // Expiry Date Validation
+    if (!data.expiryDate) {
+        errors.push('Expiry date is required');
+    } else if (!isValidDate(data.expiryDate)) {
+        errors.push('Expiry date must be in the future');
+    }
+    
+    return errors;
+};
 
-    // Gather form data
+// Update the form submit handler
+document.getElementById('addCouponForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('addCouponForm');
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
-    // Check if couponName is empty
-    if (!data.couponName || !data.couponName.trim()) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Coupon name cannot be empty or just spaces.',
+    
+    // Clear previous validation states
+    form.querySelectorAll('.is-invalid').forEach(el => {
+        el.classList.remove('is-invalid');
     });
-    return;
-}
-
-
+    
+    // Perform validation
+    const errors = validateCouponForm(data);
+    
+    if (errors.length > 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            html: errors.join('<br>'),
+            confirmButtonText: 'OK',
+            customClass: {
+                container: 'custom-swal-container',
+                popup: 'custom-swal-popup',
+                title: 'custom-swal-title',
+                htmlContainer: 'custom-swal-html',
+                confirmButton: 'custom-swal-button'
+            }
+        });
+        return;
+    }
+    
+    // Real-time validation for offer value based on type
+    document.getElementById('offerType').addEventListener('change', function() {
+        const offerValueInput = document.getElementById('offerValue');
+        if (this.value === 'percentage') {
+            offerValueInput.setAttribute('max', '100');
+        } else {
+            offerValueInput.setAttribute('max', '50000');
+        }
+    });
+    
     try {
         const response = await fetch('/admin/addcoupon', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-
+        
+        const result = await response.json();
+        
         if (!response.ok) {
-            const result = await response.json();
             throw new Error(result.message || 'Failed to add coupon.');
         }
-
-        const result = await response.json();
+        
         Swal.fire({
             icon: 'success',
-            title: 'Success',
-            text: result.message || 'Coupon added successfully!',
+            title: 'Success!',
+            text: result.message,
+            showConfirmButton: true,
+            timer: 2000
         }).then(() => {
-            window.location.reload(); // Reload the page after success
+            window.location.reload();
         });
-
+        
     } catch (error) {
-        console.error('Error:', error);
         Swal.fire({
             icon: 'error',
-            title: 'Oops...',
-            text: error.message || 'An unexpected error occurred.',
+            title: 'Error',
+            text: error.message,
+            confirmButtonText: 'OK'
         });
     }
+});
+
+// Add real-time validation feedback
+const inputs = document.querySelectorAll('input, select, textarea');
+inputs.forEach(input => {
+    input.addEventListener('input', function() {
+        const formData = new FormData(document.getElementById('addCouponForm'));
+        const data = Object.fromEntries(formData.entries());
+        const errors = validateCouponForm(data);
+        
+        // Clear previous validation state
+        this.classList.remove('is-invalid', 'is-valid');
+        
+        // Check if there are any errors related to this input
+        const inputErrors = errors.filter(error => 
+            error.toLowerCase().includes(this.name.toLowerCase()));
+        
+        if (inputErrors.length > 0) {
+            this.classList.add('is-invalid');
+            const feedback = this.nextElementSibling;
+            if (feedback && feedback.classList.contains('invalid-feedback')) {
+                feedback.textContent = inputErrors[0];
+            }
+        } else if (this.value) {
+            this.classList.add('is-valid');
+        }
+    });
 });
 
 </script>

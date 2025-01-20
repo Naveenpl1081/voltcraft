@@ -34,7 +34,7 @@ const upload = multer({ storage });
 router.get("/login",adminController.loadLogin);
 router.post("/login",adminController.login)
 router.get('/',auth.ifLogout,adminController.loadDashboard)
-router.get("/logout",auth.ifLogout,adminController.logout)
+router.get("/logout",adminController.logout)
 router.get("/users",auth.ifLogout,customerController.customerInfo)
 router.get('/dashboard',auth.ifLogout,adminController.loadDashboard)
 router.post('/blockAndUnblock/:id',customerController.userBlock);
@@ -46,8 +46,8 @@ router.post('/addcategory', categoryController.addCategory)
 router.get('/addCategory',auth.ifLogout,categoryController.getCategory)
 router.delete('/deleteCategory/:id', categoryController.deleteCategory);
 router.patch('/restoreCategory/:id', categoryController.restoreCategory);
-router.get('/editCategory',auth.ifLogout,categoryController.editCategory)
-router.post('/editCategory',categoryController.editCat)
+router.get('/editCategory', auth.ifLogout, categoryController.editCategory);
+router.post('/editCategory/:id', categoryController.editCat);
 // router.patch('/catblock/:cat_id', categoryController.catBlock);
 
 
@@ -91,6 +91,7 @@ router.get('/salesWeekly',salesController.generateWeeklyReport)
 router.get('/salesMonthly',salesController.generateMonthlyReport)
 router.get('/salesYearly',salesController.generateYearlyReport)
 router.get('/customDateReport',salesController.generateCustomDateReport)
+
 
 
 

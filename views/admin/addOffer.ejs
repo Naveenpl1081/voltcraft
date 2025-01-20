@@ -1,5 +1,120 @@
 <%- include('../layouts/adminheader') %>  
+<style>
+    <style>
+/* Form Container */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 
+/* Form Elements */
+.form-control, .form-select {
+    height: 48px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    background-color: #ffffff;
+}
+
+/* Validation States */
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-valid, .form-select.is-valid {
+    border-color: #28a745;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback,
+.form-select.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* Labels */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Submit Button */
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* SweetAlert Customization */
+.custom-swal {
+    font-family: inherit;
+}
+
+.custom-swal .swal2-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.custom-swal .swal2-content {
+    font-size: 1rem;
+    color: #34495e;
+}
+
+.custom-swal .swal2-confirm {
+    background: linear-gradient(45deg, #007bff, #0056b3) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .btn-primary {
+        width: 100%;
+    }
+}
+</style>
+</style>
 <h1>Add Offer !!!</h1>
 <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
     <div class="alert alert-danger" role="alert">
@@ -9,11 +124,10 @@
 <div class="container">   
     <form id="addOfferForm" action="addoffer" method="POST">
         <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="offerName" class="form-label">Offer Name</label>
-                    <input type="text" class="form-control" id="offerName" name="offerName" required>
-                </div>
+            <div class="mb-3">
+                <label for="offerName" class="form-label">Offer Name</label>
+                <input type="text" class="form-control" id="offerName" name="offerName" required>
+                <div class="invalid-feedback"></div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
@@ -74,112 +188,204 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const offerTypeSelect = document.getElementById('offerType');
-        const productSelect = document.getElementById('productSelect');
-        const categorySelect = document.getElementById('categorySelect');
-        const addOfferForm = document.getElementById('addOfferForm');
+   // Utility functions
+const isValidDate = (date) => {
+    const selectedDate = new Date(date);
+    return !isNaN(selectedDate.getTime());
+};
 
-        // Function to show/hide product or category select based on offer type
-        function toggleSelects() {
-            const selectedOfferType = offerTypeSelect.value;
-            if (selectedOfferType === 'Product') {
-                productSelect.style.display = 'block';
-                categorySelect.style.display = 'none';
-            } else if (selectedOfferType === 'Category') {
-                productSelect.style.display = 'none';
-                categorySelect.style.display = 'block';
-            } else {
-                productSelect.style.display = 'none';
-                categorySelect.style.display = 'none';
+const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR'
+    }).format(amount);
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('addOfferForm');
+    const offerTypeSelect = document.getElementById('offerType');
+    const productSelect = document.getElementById('productSelect');
+    const categorySelect = document.getElementById('categorySelect');
+    
+    // Initialize form elements
+    const inputs = {
+        offerName: document.getElementById('offerName'),
+        discount: document.getElementById('discount'),
+        startDate: document.getElementById('startDate'),
+        endDate: document.getElementById('endDate'),
+        productId: document.getElementById('productId'),
+        categoryId: document.getElementById('categoryId')
+    };
+
+    // Add input masks and constraints
+    inputs.offerName.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^a-zA-Z0-9\s-]/g, '');
+        validateField('offerName');
+    });
+
+    inputs.discount.addEventListener('input', function(e) {
+        validateField('discount');
+    });
+
+    // Dynamic min dates for date inputs
+    const today = new Date().toISOString().split('T')[0];
+    inputs.startDate.setAttribute('min', today);
+    inputs.endDate.setAttribute('min', today);
+
+    // Validation rules
+    const validationRules = {
+        offerName: {
+            validate: (value) => {
+                if (!value.trim()) return 'Offer name is required';
+if (value.length < 3) return 'Offer name must be at least 3 characters';
+if (value.length > 50) return 'Offer name cannot exceed 50 characters';
+if (/^\s/.test(value)) return 'Offer name cannot start with a space';
+if (!/^[a-zA-Z0-9]+$/.test(value)) return 'Only letters and numbers are allowed, no spaces or special characters';
+                return '';
+            }
+        },
+        discount: {
+            validate: (value) => {
+                const discount = parseFloat(value);
+                if (!value) return 'Discount is required';
+                if (isNaN(discount)) return 'Discount must be a number';
+                if (discount <= 0) return 'Discount must be greater than 0';
+                if (discount > 50000) return 'Maximum discount cannot exceed ₹50,000';
+                return '';
+            }
+        },
+        startDate: {
+            validate: (value) => {
+                if (!value) return 'Start date is required';
+                if (!isValidDate(value)) return 'Invalid date format';
+                const startDate = new Date(value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (startDate < today) return 'Start date cannot be in the past';
+                return '';
+            }
+        },
+        endDate: {
+            validate: (value, formData) => {
+                if (!value) return 'End date is required';
+                if (!isValidDate(value)) return 'Invalid date format';
+                const endDate = new Date(value);
+                const startDate = new Date(formData.startDate);
+                if (endDate <= startDate) return 'End date must be after start date';
+                const maxDate = new Date(startDate);
+                maxDate.setMonth(maxDate.getMonth() + 6);
+                if (endDate > maxDate) return 'Offer duration cannot exceed 6 months';
+                return '';
             }
         }
+    };
 
-        // Initial call to toggleSelects
-        toggleSelects();
+    // Field validation function
+    function validateField(fieldName) {
+        const input = inputs[fieldName];
+        const errorDiv = input.nextElementSibling || document.createElement('div');
+        
+        if (!input.nextElementSibling) {
+            errorDiv.className = 'invalid-feedback';
+            input.parentNode.appendChild(errorDiv);
+        }
 
-        // Event listener for offerType select change
-        offerTypeSelect.addEventListener('change', toggleSelects);
+        const formData = Object.fromEntries(new FormData(form));
+        const error = validationRules[fieldName]?.validate(input.value, formData) || '';
 
-        // Front-end validation on form submission
-        addOfferForm.addEventListener('submit', function (e) {
-            const offerName = document.getElementById('offerName').value.trim();
-            const discount = parseFloat(document.getElementById('discount').value);
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
-            const now = new Date();
+        input.classList.remove('is-valid', 'is-invalid');
+        if (error) {
+            input.classList.add('is-invalid');
+            errorDiv.textContent = error;
+            return false;
+        } else {
+            input.classList.add('is-valid');
+            errorDiv.textContent = '';
+            return true;
+        }
+    }
 
-            if (offerName.length < 3) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Offer Name',
-                    text: 'Offer name must be at least 3 characters long.',
-                });
-                e.preventDefault();
-                return;
-            }
+    // Offer type change handler
+    offerTypeSelect.addEventListener('change', function() {
+        const selectedType = this.value;
+        
+        // Reset and hide both selects
+        productSelect.style.display = 'none';
+        categorySelect.style.display = 'none';
+        inputs.productId.required = false;
+        inputs.categoryId.required = false;
 
-            if (isNaN(discount) || discount <= 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Discount',
-                    text: 'Discount must be a positive number.',
-                });
-                e.preventDefault();
-                return;
-            }
-
-            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Dates',
-                    text: 'Please provide valid start and end dates.',
-                });
-                e.preventDefault();
-                return;
-            }
-
-            if (startDate < now) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Start Date',
-                    text: 'Start date cannot be in the past.',
-                });
-                e.preventDefault();
-                return;
-            }
-
-            if (startDate >= endDate) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Date Range',
-                    text: 'Start date must be before end date.',
-                });
-                e.preventDefault();
-                return;
-            }
-
-            if (offerTypeSelect.value === 'Product' && !document.getElementById('productId').value) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Selection',
-                    text: 'Please select a product for Product offers.',
-                });
-                e.preventDefault();
-                return;
-            }
-
-            if (offerTypeSelect.value === 'Category' && !document.getElementById('categoryId').value) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Selection',
-                    text: 'Please select a category for Category offers.',
-                });
-                e.preventDefault();
-                return;
-            }
-        });
+        // Show relevant select based on type
+        if (selectedType === 'Product') {
+            productSelect.style.display = 'block';
+            inputs.productId.required = true;
+        } else if (selectedType === 'Category') {
+            categorySelect.style.display = 'block';
+            inputs.categoryId.required = true;
+        }
     });
+
+    // Form submission handler
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Validate all fields
+        let isValid = true;
+        Object.keys(validationRules).forEach(field => {
+            if (!validateField(field)) isValid = false;
+        });
+
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please check all fields and try again',
+                confirmButtonText: 'OK',
+                customClass: {
+                    container: 'custom-swal'
+                }
+            });
+            return;
+        }
+
+        // Prepare form data
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/admin/addoffer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.errorMessage || 'Failed to add offer');
+            }
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Offer added successfully',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            window.location.href = '/admin/offer';
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message,
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});
 </script>
 
 <br><br><br>

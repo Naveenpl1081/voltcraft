@@ -2,6 +2,7 @@
 const Offer=require("../../models/offerSchema")
 const Product=require("../../models/productSchema")
 const Category=require("../../models/categorySchema")
+const mongoose=require("mongoose");
 const moment = require('moment')
 
 const offerPage = async (req, res) => {
@@ -60,128 +61,253 @@ const addOffer = async (req, res) => {
         console.log('Adding offer started');
         const { offerName, discount, startDate, endDate, offerType, productId, categoryId } = req.body;
 
-        // Validate required fields
-        if (!offerName || !discount || !startDate || !endDate || !offerType) {
-            return res.status(400).json({ success: false, errorMessage: 'All fields are required' });
+        // Enhanced validation helper
+        const validationErrors = [];
+        const addError = (message) => validationErrors.push(message);
+
+        // Required fields validation with specific messages
+        const requiredFields = {
+            offerName: 'Offer name',
+            discount: 'Discount amount',
+            startDate: 'Start date',
+            endDate: 'End date',
+            offerType: 'Offer type'
+        };
+
+        Object.entries(requiredFields).forEach(([field, label]) => {
+            if (!req.body[field]) addError(`${label} is required`);
+        });
+
+        if (validationErrors.length) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: validationErrors.join(', ')
+            });
         }
 
-        // Validate offer name
-        if (offerName.trim().length < 3) {
-            return res.status(400).json({ success: false, errorMessage: 'Offer name must be at least 3 characters long' });
+        // Enhanced offer name validation
+        if (!/^[a-zA-Z0-9\s-]{3,50}$/.test(offerName.trim())) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Offer name must be 3-50 characters long and contain only letters, numbers, spaces, and hyphens'
+            });
         }
 
-        // Validate discount
-        if (isNaN(discount) || discount <= 0) {
-            return res.status(400).json({ success: false, errorMessage: 'Discount must be a positive number' });
+        // Enhanced discount validation
+        const numericDiscount = parseFloat(discount);
+        if (isNaN(numericDiscount) || numericDiscount <= 0 || numericDiscount > 50000) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Discount must be between 0 and ₹50,000'
+            });
         }
 
-        // Validate dates
+        // Enhanced date validation
         const start = new Date(startDate);
         const end = new Date(endDate);
         const now = new Date();
+        now.setHours(0, 0, 0, 0);
 
         if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-            return res.status(400).json({ success: false, errorMessage: 'Invalid date format' });
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Invalid date format'
+            });
         }
 
         if (start < now) {
-            return res.status(400).json({ success: false, errorMessage: 'Start date cannot be in the past' });
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Start date cannot be in the past'
+            });
         }
 
         if (start >= end) {
-            return res.status(400).json({ success: false, errorMessage: 'Start date must be before end date' });
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'End date must be after start date'
+            });
+        }
+
+        // Check maximum offer duration (6 months)
+        const maxEndDate = new Date(start);
+        maxEndDate.setMonth(maxEndDate.getMonth() + 6);
+        if (end > maxEndDate) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Offer duration cannot exceed 6 months'
+            });
         }
 
         // Validate offer type
-        if (!['Product', 'Category', 'Referral'].includes(offerType)) {
-            return res.status(400).json({ success: false, errorMessage: 'Invalid offer type' });
+        const validOfferTypes = ['Product', 'Category', 'Referral'];
+        if (!validOfferTypes.includes(offerType)) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Invalid offer type'
+            });
         }
 
+        // Create new offer instance
         const newOffer = new Offer({
-            offerName,
-            discount,
-            startDate,
-            endDate,
+            offerName: offerName.trim(),
+            discount: numericDiscount,
+            startDate: start,
+            endDate: end,
             offerType,
+            createdAt: new Date()
         });
 
+        // Process Product offer
         if (offerType === 'Product') {
-            console.log('Processing product offer');
             if (!productId) {
-                return res.status(400).json({ success: false, errorMessage: 'Product ID is required for Product offers' });
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: 'Product ID is required for Product offers'
+                });
             }
 
             const product = await Product.findById(productId);
             if (!product) {
-                return res.status(404).json({ success: false, errorMessage: 'Product not found' });
+                return res.status(404).json({
+                    success: false,
+                    errorMessage: 'Product not found'
+                });
             }
 
-            const discountedPrice = product.salePrice - discount;
-            if (discountedPrice < 0) {
-                return res.status(400).json({ success: false, errorMessage: 'Discount exceeds product sale price' });
-            }
-
-            await Product.findByIdAndUpdate(
+            // Check for existing active offers on the product
+            const existingOffer = await Offer.findOne({
                 productId,
-                {
-                    $set: {
-                        salePrice: discountedPrice,
-                        productOfferId: newOffer._id,
-                        productDiscount: discount,
-                    },
-                },
-                { new: true }
-            );
+                endDate: { $gt: now },
+                isActive: true
+            });
 
-            console.log(`Product sale price updated to ${discountedPrice}`);
-            newOffer.productId = productId;
-        } else if (offerType === 'Category') {
-            console.log('Processing category offer');
+            if (existingOffer) {
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: 'Product already has an active offer'
+                });
+            }
+
+            const discountedPrice = product.salePrice - numericDiscount;
+            if (discountedPrice < 0) {
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: `Discount exceeds product sale price of ₹${product.salePrice}`
+                });
+            }
+
+            // Update product with transaction
+            const session = await mongoose.startSession();
+            try {
+                await session.withTransaction(async () => {
+                    await Product.findByIdAndUpdate(
+                        productId,
+                        {
+                            $set: {
+                                salePrice: discountedPrice,
+                                productOfferId: newOffer._id,
+                                productDiscount: numericDiscount,
+                            }
+                        },
+                        { new: true, session }
+                    );
+                    newOffer.productId = productId;
+                    await newOffer.save({ session });
+                });
+            } finally {
+                await session.endSession();
+            }
+        }
+        // Process Category offer
+        else if (offerType === 'Category') {
             if (!categoryId) {
-                return res.status(400).json({ success: false, errorMessage: 'Category ID is required for Category offers' });
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: 'Category ID is required for Category offers'
+                });
+            }
+
+            // Check if category exists
+            const category = await Category.findById(categoryId);
+            if (!category) {
+                return res.status(404).json({
+                    success: false,
+                    errorMessage: 'Category not found'
+                });
+            }
+
+            // Check for existing active offers on the category
+            const existingOffer = await Offer.findOne({
+                categoryId,
+                endDate: { $gt: now },
+                isActive: true
+            });
+
+            if (existingOffer) {
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: 'Category already has an active offer'
+                });
             }
 
             const categoryProducts = await Product.find({ category: categoryId });
             if (!categoryProducts.length) {
-                return res.status(404).json({ success: false, errorMessage: 'No products found for the category' });
+                return res.status(404).json({
+                    success: false,
+                    errorMessage: 'No products found in this category'
+                });
             }
 
-            for (const product of categoryProducts) {
-                const discountedPrice = product.salePrice - discount;
-
-                if (discountedPrice < 0) {
-                    console.warn(`Skipping product ${product._id} due to excessive discount`);
-                    continue;
-                }
-
-                await Product.findByIdAndUpdate(
-                    product._id,
-                    {
-                        $set: {
-                            salePrice: discountedPrice,
-                            categoryOfferId: newOffer._id,
-                            categoryDiscount: discount,
-                        },
-                    },
-                    { new: true }
-                );
-
-                console.log(`Product ${product._id} sale price updated to ${discountedPrice}`);
+            // Update category products with transaction
+            const session = await mongoose.startSession();
+            try {
+                await session.withTransaction(async () => {
+                    for (const product of categoryProducts) {
+                        const discountedPrice = product.salePrice - numericDiscount;
+                        if (discountedPrice >= 0) {
+                            await Product.findByIdAndUpdate(
+                                product._id,
+                                {
+                                    $set: {
+                                        salePrice: discountedPrice,
+                                        categoryOfferId: newOffer._id,
+                                        categoryDiscount: numericDiscount,
+                                    }
+                                },
+                                { session }
+                            );
+                        } else {
+                            console.warn(`Skipping product ${product._id} - discount exceeds price`);
+                        }
+                    }
+                    newOffer.categoryId = categoryId;
+                    await newOffer.save({ session });
+                });
+            } finally {
+                await session.endSession();
             }
-
-            newOffer.categoryId = categoryId;
+        }
+        // Process Referral offer
+        else if (offerType === 'Referral') {
+            await newOffer.save();
         }
 
-        // Save the offer
-        await newOffer.save();
         console.log('Offer saved successfully:', newOffer);
-        res.redirect('/admin/offer');
+        return res.status(201).json({
+            success: true,
+            message: 'Offer added successfully',
+            offer: newOffer
+        });
+
     } catch (error) {
         console.error('Error adding offer:', error);
-        res.status(500).json({ success: false, errorMessage: 'Error adding offer: ' + error.message });
+        return res.status(500).json({
+            success: false,
+            errorMessage: 'An error occurred while adding the offer. Please try again.'
+        });
     }
 };
-
 
 
 const loadEditOffer = async (req, res) => {

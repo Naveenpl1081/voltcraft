@@ -246,6 +246,16 @@
         });
         return;
     }
+    if (!/^[A-Za-z]+$/.test(name)) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Invalid Name',
+        text: 'Name can only contain letters and should not start with a space or include numbers.',
+        confirmButtonText: 'OK',
+    });
+    return;
+}
+
 
     // Show a confirmation dialog
     Swal.fire({
