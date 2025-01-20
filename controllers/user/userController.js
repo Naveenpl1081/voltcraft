@@ -322,13 +322,66 @@ const getProductDetails = async (req,res) => {
 }
 
 const findbycategory= async(req,res)=>{
-    try {
-        console.log('entering into the findbycategory');
+    try {const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const skip = (page - 1) * limit;
+        const query = req.query.query || '';
+        const sort = req.query.sort || '';
         const id = req.query.categoryId
-        console.log('id:',id);
-        const product=await Product.find({category:id,status:'Available',isBlocked:false});
-        console.log('product:',product);
-        res.render('products',{product})
+
+        // Define sort criteria based on the query
+        let sortCriteria = {};
+        switch (sort) {
+            case 'a-z':
+                sortCriteria = { productName: 1 };
+                break;
+            case 'z-a':
+                sortCriteria = { productName: -1 };
+                break;
+            case 'low-to-high':
+                sortCriteria = { salePrice: 1 };
+                break;
+            case 'high-to-low':
+                sortCriteria = { salePrice: -1 };
+                break;
+            default:
+                sortCriteria = { createdAt: -1 }; // Default sort by newest
+        }
+
+        // Base query
+        const baseQuery = {
+            isBlocked: false,
+            $or: [
+                { productName: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } }
+            ]
+        };
+
+        // Fetch products with pagination and sorting
+        const product=await Product.find({category:id,status:'Available',isBlocked:false}).sort(sortCriteria)
+        .skip(skip)
+        .limit(limit)
+        .lean();;
+
+        // Count total products
+        const totalProducts = await Product.countDocuments(baseQuery);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        res.render('products', {
+            product,
+            totalPages,
+            currentPage: page,
+            query,
+            sort,
+            hasNextPage: page < totalPages,
+            hasPrevPage: page > 1,
+            nextPage: page + 1,
+            prevPage: page - 1,
+            lastPage: totalPages
+        });
+        console.log('entering into the findbycategory');
+        
+        
     } catch (error) {
         console.log(error)
     }

@@ -7,6 +7,30 @@
         font-family: 'Arial', sans-serif;
     }
 
+    .sort-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .sort-options label {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #555;
+        margin-right: 0.5rem;
+    }
+
+    .sort-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+        color: #333;
+        cursor: pointer;
+    }
+
     body {
         background-color: #f9f9f9;
     }
@@ -260,7 +284,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-
+    <div class="sort-options">
+        <div>
+            <label for="sort-select">Sort By:</label>
+            <select id="sort-select" class="sort-select">
+                <option value="a-z" <%= sort === 'a-z' ? 'selected' : '' %>>A-Z</option>
+                <option value="z-a" <%= sort === 'z-a' ? 'selected' : '' %>>Z-A</option>
+                <option value="low-to-high" <%= sort === 'low-to-high' ? 'selected' : '' %>>Price: Low to High</option>
+                <option value="high-to-low" <%= sort === 'high-to-low' ? 'selected' : '' %>>Price: High to Low</option>
+            </select>
+        </div>
+    </div>
     <div class="products-grid">
         <% product.forEach(product => { %>
             <div class="product-card">
@@ -428,6 +462,105 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+    let currentPage = 1;
+    const limit = 10; // Items per page
+    const productsGrid = document.getElementById('products-grid');
+    const loadingIndicator = document.getElementById('loading');
+    let isLoading = false;
+
+    // Fetch and render products
+    async function fetchProducts() {
+        if (isLoading) return;
+        isLoading = true;
+        loadingIndicator.style.display = 'block';
+
+        try {
+            const response = await fetch(`/products?page=${currentPage}&limit=${limit}`);
+            const data = await response.json();
+
+            if (data.success) {
+                data.products.forEach(product => {
+                    const productCard = `
+                        <div class="product-card">
+                            <div class="product-image-container">
+                                <img src="/uploads/${product.productImage[0]}" alt="${product.productName}" class="product-image">
+                                <div class="action-buttons">
+                                    <button class="action-button add-to-wishlist" data-product-id="${product._id}">♡</button>
+                                    <button class="action-button view-details" data-product-id="${product._id}">👁</button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">${product.productName}</h3>
+                                <div class="price-container">
+                                    <span class="current-price">$${product.salePrice}</span>
+                                    <span class="original-price">$${product.regularPrice}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productsGrid.insertAdjacentHTML('beforeend', productCard);
+                });
+
+                if (!data.hasMore) {
+                    // Hide loading indicator if no more products
+                    window.removeEventListener('scroll', handleScroll);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        } finally {
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+        }
+    }
+
+    // Infinite scroll logic
+    function handleScroll() {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+        if (scrollTop + clientHeight >= scrollHeight - 50 && !isLoading) {
+            currentPage++;
+            fetchProducts();
+        }
+    }
+
+    // Initial fetch
+    fetchProducts();
+
+    // Attach scroll event listener
+    window.addEventListener('scroll', handleScroll);
+});
+
+    function handleSort(event) {
+        const sortValue = event.target.value;
+        window.location.href = `/productss?sort=${sortValue}`;
+    }
+
+
+    document.getElementById('sort-select').addEventListener('change', function() {
+    const currentUrl = new URL(window.location.href);
+    const params = new URLSearchParams(currentUrl.search);
+    
+    // Update or add sort parameter
+    params.set('sort', this.value);
+    
+    // Keep the current page if it exists
+    if (!params.has('page')) {
+        params.set('page', '1');
+    }
+    
+    // Keep the current query if it exists
+    if (!params.has('query')) {
+        params.set('query', '');
+    }
+    
+    // Redirect to the new URL
+    window.location.href = `${currentUrl.pathname}?${params.toString()}`;
+});
+
 </script>
 
 </section>

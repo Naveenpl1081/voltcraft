@@ -20,6 +20,8 @@ const walletPage = async (req, res) => {
             });
         }
 
+        wallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
         // Render the wallet page with the fetched wallet details
         res.render("wallet", { 
             wallet, 
