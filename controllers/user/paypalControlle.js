@@ -47,8 +47,8 @@ const createPayPalPayment = async (req, res) => {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url:  'https://www.voltcraft.shop/paypalSuccess'  | "http://localhost:3001/paypalSuccess",
-        cancel_url: 'https://www.voltcraft.shop/paypalCancel'  |  "http://localhost:3001/paypalCancel",
+        return_url:   "http://localhost:3001/paypalSuccess",
+        cancel_url:   "http://localhost:3001/paypalCancel",
       },
       transactions: [
         {
