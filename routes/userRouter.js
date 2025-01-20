@@ -84,12 +84,12 @@ router.post("/applycoupon",orderController.applyCoupon)
 router.get('/coupons', auth.ifLogout,orderController.getAllAvailableCoupons);
 
 
-router.post("/createPayPalPayment",auth.ifLogout,createPayPalPayment)
-router.post("/createPayPalPayments",auth.ifLogout,createPayPalPayments)
-router.get('/paypalSuccess', auth.ifLogout,paypalSuccess)
-router.get('/paypalSuccesss',auth.ifLogout, paypalSuccesss)
-router.get("/paypalCancel", auth.ifLogout,paypalCancel); 
-router.get("/paymentCancelled",auth.ifLogout,orderCancelled)
+router.post("/createPayPalPayment",createPayPalPayment)
+router.post("/createPayPalPayments",createPayPalPayments)
+router.get('/paypalSuccess', paypalSuccess)
+router.get('/paypalSuccesss', paypalSuccesss)
+router.get("/paypalCancel", paypalCancel); 
+router.get("/paymentCancelled",orderCancelled)
 
 
 
