@@ -8,7 +8,7 @@ const Coupon=require('../../models/couponSchema')
 const createPayPalPayment = async (req, res) => {
   try {
     console.log("Request received for PayPal payment");
-    console.log("req.body in create paypal payments",req.body)
+
     const { cartItems, selectedAddressId, couponCode } = req.body;
     console.log(couponCode)
 
@@ -49,8 +49,8 @@ const createPayPalPayment = async (req, res) => {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url:   "https://www.voltcraft.shop/paypalSuccess",
-        cancel_url:   "https://www.voltcraft.shop/paypalCancel",
+        return_url:   process.env.PAYPAL_REDIRECT,
+        cancel_url:   process.env.PAYPAL_CANCEL,
       },
       transactions: [
         {
