@@ -23,10 +23,12 @@ const createPayPalPayment = async (req, res) => {
     if (couponCode) {
       const coupon = await Coupon.findOne({ couponCode, isActive: true });
       if (!coupon) {
+        console.log("coupon not exit")
         return res.status(400).json({ error: "Invalid or expired coupon code" });
       }
 
       if (totalAmount < coupon.minimumPrice) {
+        console.log("total ethi")
         return res.status(400).json({ error: `Minimum purchase amount of $${coupon.minimumPrice} is required` });
       }
 
@@ -202,7 +204,9 @@ const paypalSuccess = async (req, res) => {
 
     if (!paymentId || !PayerID) {
       return res.status(400).send("Missing paymentId or PayerID");
+      
     }
+    console.log("payment",paymentId)
 
     const execute_payment_json = {
       payer_id: PayerID,
