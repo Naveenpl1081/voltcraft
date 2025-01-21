@@ -48,247 +48,378 @@ const dailySalesReport = async (req, res) => {
         const startDate = moment().startOf('day');
         const endDate = moment().endOf('day');
 
-        const dailyReport = await Orders.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
-                }
-            },
-            {
-                $lookup: {
-                    from: 'coupons',
-                    localField: 'couponApplied',
-                    foreignField: '_id',
-                    as: 'couponDetails'
-                }
-            },
-            {
-                $addFields: {
-                    couponDiscount: {
-                        $cond: {
-                            if: { $gt: [{ $size: "$couponDetails" }, 0] }, // Check if coupon exists
-                            then: {
-                                $cond: [
-                                    { $eq: [{ $arrayElemAt: ["$couponDetails.offerType", 0] }, "percentage"] },
-                                    {
-                                        $multiply: [
-                                            "$totalAmount",
-                                            { $divide: [{ $arrayElemAt: ["$couponDetails.offerValue", 0] }, 100] }
-                                        ]
-                                    },
-                                    { $arrayElemAt: ["$couponDetails.offerValue", 0] }
-                                ]
-                            },
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-                    totalOrders: { $sum: 1 },
-                    totalAmount: { $sum: "$totalAmount" },
-                    totalCouponAmount: { $sum: "$couponDiscount" }
-                }
+        // Query orders within the daily date range
+        const report = await Orders.find({
+            createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
+        })
+        .populate('userId', 'name email')
+        .populate('couponApplied')
+        .populate('items.productId')
+        .sort({ createdAt: -1 });
+
+        // Initialize metrics object
+        const metrics = {
+            totalAmount: 0,
+            totalOrders: report.length,
+            totalItems: 0,
+            totalCouponAmount: 0,
+            couponsUsed: 0,
+            paymentMethods: {},
+            orderStatuses: {}
+        };
+
+        // Calculate metrics
+        report.forEach(order => {
+            // Calculate total amount
+            metrics.totalAmount += order.totalAmount || 0;
+
+            // Calculate items count
+            metrics.totalItems += order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Track payment methods
+            metrics.paymentMethods[order.paymentMethod] = 
+                (metrics.paymentMethods[order.paymentMethod] || 0) + 1;
+
+            // Track order statuses
+            metrics.orderStatuses[order.orderStatus] = 
+                (metrics.orderStatuses[order.orderStatus] || 0) + 1;
+
+            // Calculate coupon amounts
+            if (order.couponApplied) {
+                const couponAmount = calculateCouponDiscount(order);
+                metrics.totalCouponAmount += couponAmount;
+                metrics.couponsUsed++;
             }
-        ]);
+        });
 
-        const totalOrders = dailyReport.reduce((acc, curr) => acc + curr.totalOrders, 0);
-        const totalAmount = dailyReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
-        const totalCouponAmount = dailyReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
+        // Calculate averages
+        metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
+        metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
+        metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
 
-        res.render('report', { report: dailyReport, totalOrders, totalAmount, totalCouponAmount });
+        // Prepare chart data
+        const chartData = {
+            paymentMethodLabels: Object.keys(metrics.paymentMethods),
+            paymentMethodData: Object.values(metrics.paymentMethods),
+            orderStatusLabels: Object.keys(metrics.orderStatuses),
+            orderStatusData: Object.values(metrics.orderStatuses)
+        };
+
+        // Helper function for status colors
+        const getStatusColor = (status) => {
+            const colors = {
+                'Ordered': 'primary',
+                'Shipped': 'info',
+                'Out For Delivery': 'warning',
+                'Delivered': 'success',
+                'Cancelled': 'danger',
+                'Returned': 'secondary',
+                'Pending': 'warning',
+                'Approved': 'success',
+                'Failed': 'danger',
+                'payment-Retry': 'warning'
+            };
+            return colors[status] || 'secondary';
+        };
+
+        // Render the daily report
+        res.render('reports', {
+            report,
+            metrics,
+            startDate: startDate.format('YYYY-MM-DD'),
+            endDate: endDate.format('YYYY-MM-DD'),
+            getStatusColor,
+            getCouponAmount: calculateCouponDiscount,
+            ...chartData // Spread the chart data into the template variables
+        });
+
     } catch (error) {
-        console.error('Error loading daily sales report:', error);
-        res.status(500).send('Error loading daily sales report');
+        console.error('Error generating daily sales report:', error);
+        res.status(500).send('Error generating daily sales report');
     }
 };
+
+
 
 const generateWeeklyReport = async (req, res) => {
     try {
         const startDate = moment().startOf('week');
         const endDate = moment().endOf('week');
 
-        const weeklyReport = await Orders.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
-                }
-            },
-            {
-                $lookup: {
-                    from: 'coupons',
-                    localField: 'couponApplied',
-                    foreignField: '_id',
-                    as: 'couponDetails'
-                }
-            },
-            {
-                $addFields: {
-                    couponDiscount: {
-                        $cond: {
-                            if: { $gt: [{ $size: "$couponDetails" }, 0] },
-                            then: {
-                                $cond: [
-                                    { $eq: [{ $arrayElemAt: ["$couponDetails.offerType", 0] }, "percentage"] },
-                                    {
-                                        $multiply: [
-                                            "$totalAmount",
-                                            { $divide: [{ $arrayElemAt: ["$couponDetails.offerValue", 0] }, 100] }
-                                        ]
-                                    },
-                                    { $arrayElemAt: ["$couponDetails.offerValue", 0] }
-                                ]
-                            },
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: { $week: "$createdAt" },
-                    totalOrders: { $sum: 1 },
-                    totalAmount: { $sum: "$totalAmount" },
-                    totalCouponAmount: { $sum: "$couponDiscount" }
-                }
+        // Fetch orders for the week
+        const report = await Orders.find({
+            createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
+        })
+            .populate('userId', 'name email')
+            .populate('couponApplied')
+            .populate('items.productId')
+            .sort({ createdAt: -1 });
+
+        // Initialize metrics
+        const metrics = {
+            totalAmount: 0,
+            totalOrders: report.length,
+            totalItems: 0,
+            totalCouponAmount: 0,
+            couponsUsed: 0,
+            paymentMethods: {},
+            orderStatuses: {}
+        };
+
+        // Calculate metrics
+        report.forEach(order => {
+            metrics.totalAmount += order.totalAmount || 0;
+
+            metrics.totalItems += order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+            metrics.paymentMethods[order.paymentMethod] =
+                (metrics.paymentMethods[order.paymentMethod] || 0) + 1;
+
+            metrics.orderStatuses[order.orderStatus] =
+                (metrics.orderStatuses[order.orderStatus] || 0) + 1;
+
+            if (order.couponApplied) {
+                const couponAmount = calculateCouponDiscount(order);
+                metrics.totalCouponAmount += couponAmount;
+                metrics.couponsUsed++;
             }
-        ]);
+        });
 
-        const totalOrders = weeklyReport.reduce((acc, curr) => acc + curr.totalOrders, 0);
-        const totalAmount = weeklyReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
-        const totalCouponAmount = weeklyReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
+        // Calculate averages
+        metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
+        metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
+        metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
 
-        res.render('report', { report: weeklyReport, totalOrders, totalAmount, totalCouponAmount });
+        // Prepare chart data
+        const chartData = {
+            paymentMethodLabels: Object.keys(metrics.paymentMethods),
+            paymentMethodData: Object.values(metrics.paymentMethods),
+            orderStatusLabels: Object.keys(metrics.orderStatuses),
+            orderStatusData: Object.values(metrics.orderStatuses)
+        };
+
+        // Helper function for status colors
+        const getStatusColor = (status) => {
+            const colors = {
+                'Ordered': 'primary',
+                'Shipped': 'info',
+                'Out For Delivery': 'warning',
+                'Delivered': 'success',
+                'Cancelled': 'danger',
+                'Returned': 'secondary',
+                'Pending': 'warning',
+                'Approved': 'success',
+                'Failed': 'danger',
+                'payment-Retry': 'warning'
+            };
+            return colors[status] || 'secondary';
+        };
+
+        // Render the weekly report
+        res.render('reports', {
+            report,
+            metrics,
+            startDate: startDate.format('YYYY-MM-DD'),
+            endDate: endDate.format('YYYY-MM-DD'),
+            getStatusColor,
+            getCouponAmount: calculateCouponDiscount,
+            ...chartData
+        });
     } catch (error) {
         console.error('Error generating weekly report:', error);
         res.status(500).send('Error generating weekly report');
     }
 };
 
+
+
 const generateMonthlyReport = async (req, res) => {
     try {
-        const monthlyReport = await Orders.aggregate([
-            {
-                $lookup: {
-                    from: 'coupons',
-                    localField: 'couponApplied',
-                    foreignField: '_id',
-                    as: 'couponDetails'
-                }
-            },
-            {
-                $addFields: {
-                    couponDiscount: {
-                        $cond: {
-                            if: { $gt: [{ $size: "$couponDetails" }, 0] },
-                            then: {
-                                $cond: [
-                                    { $eq: [{ $arrayElemAt: ["$couponDetails.offerType", 0] }, "percentage"] },
-                                    {
-                                        $multiply: [
-                                            "$totalAmount",
-                                            { $divide: [{ $arrayElemAt: ["$couponDetails.offerValue", 0] }, 100] }
-                                        ]
-                                    },
-                                    { $arrayElemAt: ["$couponDetails.offerValue", 0] }
-                                ]
-                            },
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: { $month: "$createdAt" },
-                    totalOrders: { $sum: 1 },
-                    totalAmount: { $sum: "$totalAmount" },
-                    totalCouponAmount: { $sum: "$couponDiscount" }
-                }
+        const startDate = moment().startOf('month');
+        const endDate = moment().endOf('month');
+
+        // Fetch orders for the week
+        const report = await Orders.find({
+            createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
+        })
+            .populate('userId', 'name email')
+            .populate('couponApplied')
+            .populate('items.productId')
+            .sort({ createdAt: -1 });
+
+        // Initialize metrics
+        const metrics = {
+            totalAmount: 0,
+            totalOrders: report.length,
+            totalItems: 0,
+            totalCouponAmount: 0,
+            couponsUsed: 0,
+            paymentMethods: {},
+            orderStatuses: {}
+        };
+
+        // Calculate metrics
+        report.forEach(order => {
+            metrics.totalAmount += order.totalAmount || 0;
+
+            metrics.totalItems += order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+            metrics.paymentMethods[order.paymentMethod] =
+                (metrics.paymentMethods[order.paymentMethod] || 0) + 1;
+
+            metrics.orderStatuses[order.orderStatus] =
+                (metrics.orderStatuses[order.orderStatus] || 0) + 1;
+
+            if (order.couponApplied) {
+                const couponAmount = calculateCouponDiscount(order);
+                metrics.totalCouponAmount += couponAmount;
+                metrics.couponsUsed++;
             }
-        ]);
+        });
 
-        const formattedReport = monthlyReport.map(report => ({
-            _id: moment().month(report._id - 1).format('MMMM'),
-            totalOrders: report.totalOrders,
-            totalAmount: report.totalAmount,
-            totalCouponAmount: report.totalCouponAmount || 0
-        }));
+        // Calculate averages
+        metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
+        metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
+        metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
 
-        const totalOrders = formattedReport.reduce((acc, curr) => acc + curr.totalOrders, 0);
-        const totalAmount = formattedReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
-        const totalCouponAmount = formattedReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
+        // Prepare chart data
+        const chartData = {
+            paymentMethodLabels: Object.keys(metrics.paymentMethods),
+            paymentMethodData: Object.values(metrics.paymentMethods),
+            orderStatusLabels: Object.keys(metrics.orderStatuses),
+            orderStatusData: Object.values(metrics.orderStatuses)
+        };
 
-        res.render('report', {
-            report: formattedReport,
-            totalOrders,
-            totalAmount,
-            totalCouponAmount
+        // Helper function for status colors
+        const getStatusColor = (status) => {
+            const colors = {
+                'Ordered': 'primary',
+                'Shipped': 'info',
+                'Out For Delivery': 'warning',
+                'Delivered': 'success',
+                'Cancelled': 'danger',
+                'Returned': 'secondary',
+                'Pending': 'warning',
+                'Approved': 'success',
+                'Failed': 'danger',
+                'payment-Retry': 'warning'
+            };
+            return colors[status] || 'secondary';
+        };
+
+        // Render the weekly report
+        res.render('reports', {
+            report,
+            metrics,
+            startDate: startDate.format('YYYY-MM-DD'),
+            endDate: endDate.format('YYYY-MM-DD'),
+            getStatusColor,
+            getCouponAmount: calculateCouponDiscount,
+            ...chartData
         });
     } catch (error) {
-        console.error('Error generating monthly report:', error);
-        res.status(500).send('Error generating monthly report');
+        console.error('Error generating weekly report:', error);
+        res.status(500).send('Error generating weekly report');
     }
 };
 
+// Keep your existing calculateCouponDiscount function
+
+
 const generateYearlyReport = async (req, res) => {
     try {
-        const yearlyReport = await Orders.aggregate([
-            {
-                $lookup: {
-                    from: 'coupons',
-                    localField: 'couponApplied',
-                    foreignField: '_id',
-                    as: 'couponDetails'
-                }
-            },
-            {
-                $addFields: {
-                    couponDiscount: {
-                        $cond: {
-                            if: { $gt: [{ $size: "$couponDetails" }, 0] },
-                            then: {
-                                $cond: [
-                                    { $eq: [{ $arrayElemAt: ["$couponDetails.offerType", 0] }, "percentage"] },
-                                    {
-                                        $multiply: [
-                                            "$totalAmount",
-                                            { $divide: [{ $arrayElemAt: ["$couponDetails.offerValue", 0] }, 100] }
-                                        ]
-                                    },
-                                    { $arrayElemAt: ["$couponDetails.offerValue", 0] }
-                                ]
-                            },
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: { $year: "$createdAt" },
-                    totalOrders: { $sum: 1 },
-                    totalAmount: { $sum: "$totalAmount" },
-                    totalCouponAmount: { $sum: "$couponDiscount" }
-                }
+        const startDate = moment().startOf('year');
+        const endDate = moment().endOf('year');
+
+        // Fetch orders for the week
+        const report = await Orders.find({
+            createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
+        })
+            .populate('userId', 'name email')
+            .populate('couponApplied')
+            .populate('items.productId')
+            .sort({ createdAt: -1 });
+
+        // Initialize metrics
+        const metrics = {
+            totalAmount: 0,
+            totalOrders: report.length,
+            totalItems: 0,
+            totalCouponAmount: 0,
+            couponsUsed: 0,
+            paymentMethods: {},
+            orderStatuses: {}
+        };
+
+        // Calculate metrics
+        report.forEach(order => {
+            metrics.totalAmount += order.totalAmount || 0;
+
+            metrics.totalItems += order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+            metrics.paymentMethods[order.paymentMethod] =
+                (metrics.paymentMethods[order.paymentMethod] || 0) + 1;
+
+            metrics.orderStatuses[order.orderStatus] =
+                (metrics.orderStatuses[order.orderStatus] || 0) + 1;
+
+            if (order.couponApplied) {
+                const couponAmount = calculateCouponDiscount(order);
+                metrics.totalCouponAmount += couponAmount;
+                metrics.couponsUsed++;
             }
-        ]);
+        });
 
-        const totalOrders = yearlyReport.reduce((acc, curr) => acc + curr.totalOrders, 0);
-        const totalAmount = yearlyReport.reduce((acc, curr) => acc + curr.totalAmount, 0);
-        const totalCouponAmount = yearlyReport.reduce((acc, curr) => acc + curr.totalCouponAmount, 0);
+        // Calculate averages
+        metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
+        metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
+        metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
 
-        res.render('report', { report: yearlyReport, totalOrders, totalAmount, totalCouponAmount });
+        // Prepare chart data
+        const chartData = {
+            paymentMethodLabels: Object.keys(metrics.paymentMethods),
+            paymentMethodData: Object.values(metrics.paymentMethods),
+            orderStatusLabels: Object.keys(metrics.orderStatuses),
+            orderStatusData: Object.values(metrics.orderStatuses)
+        };
+
+        // Helper function for status colors
+        const getStatusColor = (status) => {
+            const colors = {
+                'Ordered': 'primary',
+                'Shipped': 'info',
+                'Out For Delivery': 'warning',
+                'Delivered': 'success',
+                'Cancelled': 'danger',
+                'Returned': 'secondary',
+                'Pending': 'warning',
+                'Approved': 'success',
+                'Failed': 'danger',
+                'payment-Retry': 'warning'
+            };
+            return colors[status] || 'secondary';
+        };
+
+        // Render the weekly report
+        res.render('reports', {
+            report,
+            metrics,
+            startDate: startDate.format('YYYY-MM-DD'),
+            endDate: endDate.format('YYYY-MM-DD'),
+            getStatusColor,
+            getCouponAmount: calculateCouponDiscount,
+            ...chartData
+        });
     } catch (error) {
-        console.error('Error generating yearly report:', error);
-        res.status(500).send('Error generating yearly report');
+        console.error('Error generating weekly report:', error);
+        res.status(500).send('Error generating weekly report');
     }
 };
 
 const generateCustomDateReport = async (req, res) => {
     try {
+
+       
         const startDate = moment(req.query.startDate, 'YYYY-MM-DD', true).startOf('day');
         const endDate = moment(req.query.endDate, 'YYYY-MM-DD', true).endOf('day');
 
@@ -299,6 +430,23 @@ const generateCustomDateReport = async (req, res) => {
         if (startDate.isAfter(endDate)) {
             return res.status(400).send('Start date cannot be after end date.');
         }
+        const validateDates = (startDate, endDate) => {
+            const currentDate = moment().endOf('day');
+            
+            if (startDate.isAfter(currentDate) || endDate.isAfter(currentDate)) {
+                return {
+                    isValid: false,
+                    message: 'Cannot generate report for future dates'
+                };
+            }
+            
+            return { isValid: true };
+        };
+
+        const dateValidation = validateDates(startDate, endDate);
+if (!dateValidation.isValid) {
+    return res.status(400).send(dateValidation.message);
+}
 
         // Query orders within the date range
         const report = await Orders.find({
@@ -400,6 +548,7 @@ const calculateCouponDiscount = (order) => {
         return Math.min(order.couponApplied.discountAmount, order.totalAmount);
     }
 };
+
 
 const graphData = async (req, res) => {
     try {

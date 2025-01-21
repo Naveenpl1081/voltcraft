@@ -112,5 +112,33 @@
         cursor: pointer;
     }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    // Set max date to today for both inputs
+    const today = new Date().toISOString().split('T')[0];
+    startDateInput.setAttribute('max', today);
+    endDateInput.setAttribute('max', today);
+    
+    // Ensure end date is not before start date
+    startDateInput.addEventListener('change', function() {
+        endDateInput.setAttribute('min', this.value);
+    });
+    
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        const currentDate = new Date();
+        
+        if (startDate > currentDate || endDate > currentDate) {
+            e.preventDefault();
+            alert('Cannot select future dates');
+        }
+    });
+});
+</script>
 
 <%- include('../layouts/adminfooter') %>
