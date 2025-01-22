@@ -5,11 +5,11 @@ const mongoose = require('mongoose');
 
 const loadCouponPage = async (req, res) => {
     try {
-        // Retrieve all coupons from the database
+        
         const coupons = await Coupon.find({});
         console.log("coupon",coupons)
 
-        // Pass the coupons to the view
+       
         res.render('couponPage', { coupons });
     } catch (error) {
         console.error('Error loading coupon page:', error);
@@ -40,28 +40,28 @@ const addCoupon = async (req, res) => {
             description,
         } = req.body;
          console.log(".,",expiryDate)
-        // Validate required fields
+        
         if (!couponName || !couponCode || !offerType || !offerValue || !minimumPrice || !expiryDate) {
             return res.status(400).json({ message: 'All fields are required. Please check again!' });
         }
 
-        // Ensure couponName is not null or empty
+        
         if (!couponName.trim()) {
             return res.status(400).json({ message: 'Coupon name cannot be empty.' });
         }
 
         
 
-        // Check if coupon already exists
+        
         const existingCoupon = await Coupon.findOne({ $or: [{ couponName }, { couponCode }] });
         if (existingCoupon) {
             return res.status(400).json({ message: 'Coupon with the same name or code already exists.' });
         }
 
-        // Default isActive to false if not provided
+        
         const isActiveValue = isActive === 'on' ? true : false;
 
-        // Create a new coupon
+        
         const newCoupon = new Coupon({
             couponName,
             couponCode,
@@ -70,7 +70,7 @@ const addCoupon = async (req, res) => {
             minimumPrice,
             expiredOn: expiryDate,
             isActive: isActiveValue,
-            usageLimit: usageLimit || null, // Allow null for unlimited usage
+            usageLimit: usageLimit || null, 
             usagePerUserLimit,
             description,
         });

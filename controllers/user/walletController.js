@@ -9,23 +9,23 @@ const walletPage = async (req, res) => {
         }
         console.log("-------->",user.name);
         
-        // Fetch the wallet details for the logged-in user
+        
         const wallet = await Wallet.findOne({ userId: userId });
 
         if (!wallet) {
             return res.status(404).render("wallet", { 
                 wallet: { balance: 0, transactions: [] }, 
                 userName: user.name || " "
-                 // Handle case where req.user is undefined
+                
             });
         }
 
         wallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // Render the wallet page with the fetched wallet details
+       
         res.render("wallet", { 
             wallet, 
-            userName: user.name // Handle case where req.user is undefined
+            userName: user.name 
         });
     } catch (error) {
         console.error("Error fetching wallet details:", error);

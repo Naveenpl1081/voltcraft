@@ -57,11 +57,22 @@
                                             </td>
                                             <td>
                                                 <!-- Buttons to approve or reject the order -->
-                                                <% if (order.action === 'return' || order.paymentMethod==='paypal') { %>
-                                                    <button class="btn btn-success" onclick="approveOrder('<%= order._id %>')">Approve</button>
-                                                    <button class="btn btn-danger" onclick="rejectOrder('<%= order._id %>')">Reject</button>
+                                                <% if (order.action === 'return' || order.paymentMethod === 'paypal') { %>
+                                                    <button 
+                                                        class="btn btn-success" 
+                                                        id="approve-<%= order._id %>" 
+                                                        onclick="approveOrder('<%= order._id %>')">
+                                                        Approve
+                                                    </button>
+                                                    <button 
+                                                        class="btn btn-danger" 
+                                                        id="reject-<%= order._id %>" 
+                                                        onclick="rejectOrder('<%= order._id %>')">
+                                                        Reject
+                                                    </button>
                                                 <% } %>
                                             </td>
+                                            
                                         </tr>
                                     <% }) %>
                                 </tbody>
@@ -145,12 +156,23 @@
     });
 
     function approveOrder(orderId) {
-        console.log("orfer",orderId)
+    const approveButton = document.getElementById(`approve-${orderId}`);
+    const rejectButton = document.getElementById(`reject-${orderId}`);
+
+    // Disable buttons to prevent multiple clicks
+    approveButton.disabled = true;
+    rejectButton.disabled = true;
+
+    // Change button appearance
+    approveButton.textContent = "Approved";
+    approveButton.classList.remove('btn-success');
+    approveButton.classList.add('btn-secondary');
+
     fetch(`/admin/approve/${orderId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Optional if token-based auth is implemented
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
     })
     .then(response => {
@@ -166,8 +188,6 @@
             icon: 'success',
             title: 'Order Approved',
             text: result.message,
-        }).then(() => {
-            window.location.reload();
         });
     })
     .catch(error => {
@@ -177,10 +197,28 @@
             title: 'Error',
             text: error.message || 'An error occurred while processing your request.',
         });
+        // Re-enable buttons if there was an error
+        approveButton.disabled = false;
+        rejectButton.disabled = false;
+        approveButton.textContent = "Approve";
+        approveButton.classList.remove('btn-secondary');
+        approveButton.classList.add('btn-success');
     });
 }
 
 function rejectOrder(orderId) {
+    const approveButton = document.getElementById(`approve-${orderId}`);
+    const rejectButton = document.getElementById(`reject-${orderId}`);
+
+    // Disable buttons to prevent multiple clicks
+    approveButton.disabled = true;
+    rejectButton.disabled = true;
+
+    // Change button appearance
+    rejectButton.textContent = "Rejected";
+    rejectButton.classList.remove('btn-danger');
+    rejectButton.classList.add('btn-secondary');
+
     fetch(`/admin/reject/${orderId}`, {
         method: 'PUT',
         headers: {
@@ -195,8 +233,6 @@ function rejectOrder(orderId) {
                 icon: 'success',
                 title: 'Order Rejected',
                 text: result.message,
-            }).then(() => {
-                window.location.reload();
             });
         } else {
             Swal.fire({
@@ -213,6 +249,12 @@ function rejectOrder(orderId) {
             title: 'An error occurred',
             text: 'An error occurred while processing your request.',
         });
+        // Re-enable buttons if there was an error
+        approveButton.disabled = false;
+        rejectButton.disabled = false;
+        rejectButton.textContent = "Reject";
+        rejectButton.classList.remove('btn-secondary');
+        rejectButton.classList.add('btn-danger');
     });
 }
 

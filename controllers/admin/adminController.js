@@ -26,18 +26,18 @@ const login = async (req, res) => {
         console.log(admin);
 
         if (admin) {
-            const passwordMatch = await bcrypt.compare(password, admin.password); // Use await here
+            const passwordMatch = await bcrypt.compare(password, admin.password); 
             if (passwordMatch) {
               console.log("hello")
                 req.session.admin = true;
                 return res.redirect("/admin/dashboard");
             } else {
                 console.log("Incorrect password");
-                return res.render("adminlogin", { message: "Incorrect password. Please try again." }); // Show message on failed login
+                return res.render("adminlogin", { message: "Incorrect password. Please try again." }); 
             }
         } else {
             console.log("Admin not found");
-            return res.render("adminlogin", { message: "Admin not found. Please check your credentials." }); // Show message if admin is not found
+            return res.render("adminlogin", { message: "Admin not found. Please check your credentials." }); 
         }
     } catch (error) {
         console.log("Login error", error);
@@ -147,7 +147,7 @@ const verifyLogin = async (req, res) => {
         }
       });
   
-      // Category-wise sales data
+      
       const salesByCategory = categories.reduce((acc, category) => {
         acc[category.name] = 0;
         return acc;
@@ -161,7 +161,7 @@ const verifyLogin = async (req, res) => {
         });
       });
   
-      // Time-based analytics
+      
       const dailyData = await calculateTimeBasedData(deliveredOrders, 'daily');
       const weeklyData = await calculateTimeBasedData(deliveredOrders, 'weekly');
       const monthlyData = await calculateTimeBasedData(deliveredOrders, 'monthly');
@@ -189,21 +189,21 @@ const verifyLogin = async (req, res) => {
     try {
         const { categoryData, timeBasedData } = await calculateChartData();
         
-        // Fetch all categories and products
-        const categories = await Category.find({ isDeleted: false });  // Exclude deleted categories
-        const products = await Product.find({ isBlocked: false });  // Exclude blocked products
+        
+        const categories = await Category.find({ isDeleted: false });  
+        const products = await Product.find({ isBlocked: false });  
         console.log("helloooo",products)
 
-        // Calculate summary statistics
-        const deliveredOrders = await Order.find({ orderStatus: 'Delivered' }).populate('items.productId');  // Populate product data
+   
+        const deliveredOrders = await Order.find({ orderStatus: 'Delivered' }).populate('items.productId'); 
         const totalRevenue = deliveredOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
         const totalOrders = deliveredOrders.length;
 
-        // Calculate Best Selling Products
+        
         const productSales = {};
         deliveredOrders.forEach(order => {
             order.items.forEach(item => {
-                if (!productSales[item.productId._id]) {  // Access the populated productId
+                if (!productSales[item.productId._id]) {  
                     productSales[item.productId._id] = 0;
                 }
                 productSales[item.productId._id] += item.quantity;
@@ -216,16 +216,16 @@ const verifyLogin = async (req, res) => {
         const bestSellingProducts = {
             labels: sortedProducts.map(([productId]) => {
                 const product = products.find(p => p._id.toString() === productId.toString());
-                return product ? product.productName : 'Unknown Product';  // Use product.productName
+                return product ? product.productName : 'Unknown Product';  
             }),
             data: sortedProducts.map(([_, quantity]) => quantity)
         };
 
-        // Calculate Best Selling Categories
+        
         const categorySales = {};
         deliveredOrders.forEach(order => {
             order.items.forEach(item => {
-                const product = item.productId;  // Access the populated productId
+                const product = item.productId; 
                 if (product) {
                     const categoryId = product.category.toString();
                     if (!categorySales[categoryId]) {
@@ -248,7 +248,7 @@ const verifyLogin = async (req, res) => {
             data: sortedCategories.map(([_, quantity]) => quantity)
         };
 
-        // Get current period data
+        
         const now = new Date();
         const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         const monthlyEarning = Object.values(timeBasedData.monthly[currentMonth] || { revenue: 0 })[0];
@@ -307,7 +307,7 @@ const logout=async(req,res)=>{
 
 
 
-// Helper function to calculate the sales for a specific time range
+
 
 
 module.exports={

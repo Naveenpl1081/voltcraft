@@ -228,6 +228,96 @@
 .pagination .prev-page, .pagination .next-page {
     font-weight: bold;
 }
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Sort options */
+.sort-options {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+}
+
+.sort-options label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.sort-select {
+    padding: 5px;
+    font-size: 14px;
+}
+
+/* Categories container */
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px;
+    padding-left: 240px;
+    justify-content: flex-start;
+}
+
+/* Category card */
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+.category-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.category-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.category-name:hover {
+    text-decoration: underline;
+}
+
+.category-description {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .categories-container {
+        justify-content: center;
+    }
+
+    .category-card {
+        width: 100%;
+        max-width: 300px;
+    }
+}
 
 </style>
 
@@ -248,6 +338,24 @@
             </select>
         </div>
     </div>
+    
+    <div class="categories-container">
+        <% category.forEach(cat => { %>
+            <% if (!cat.isDeleted) { %>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <% if (cat.name.toLowerCase() === 'mobile') { %> 📱 <% } %>
+                        <% if (cat.name.toLowerCase() === 'computers') { %> 💻 <% } %>
+                        <% if (cat.name.toLowerCase() === 'smartwatches') { %> ⌚ <% } %>
+                        <% if (cat.name.toLowerCase().includes('games')) { %> 🎮 <% } %>
+                    </div>
+                    <a href="/findbycat/?categoryId=<%= cat._id %>" class="category-name"><%= cat.name %></a>
+                    <p class="category-description"><%= cat.description %></p>
+                </div>
+            <% } %>
+        <% }) %>
+    </div>
+    
 
     <div class="products-grid">
         <% products.forEach(product => { %>

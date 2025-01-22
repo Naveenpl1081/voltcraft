@@ -13,15 +13,15 @@ const wishlist = async (req, res) => {
             return res.status(401).json({ message: 'User not authenticated' });
         }
 
-        let wishlist = await Wishlist.findOne({ userId }) // Use `let` to allow reassignment
+        let wishlist = await Wishlist.findOne({ userId }) 
             .populate({
-                path: 'products.productId', // Populate the productId field in the products array
-                select: 'productName salePrice productImage status', // Fields to be returned from the Product model
+                path: 'products.productId', 
+                select: 'productName salePrice productImage status', 
             });
 
         if (!wishlist) {
-            wishlist = new Wishlist({ userId, products: [] }); // Reassign `wishlist` if not found
-            await wishlist.save(); // Use `wishlist.save()` to save the instance
+            wishlist = new Wishlist({ userId, products: [] }); 
+            await wishlist.save(); // 
             console.log("Created new empty wishlist:", wishlist);
         }
 

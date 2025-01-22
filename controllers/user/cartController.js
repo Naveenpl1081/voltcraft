@@ -467,20 +467,20 @@ const renderConfirmOrderPage = async (req, res) => {
     try {
         const userId = req.session.userId;
 
-        // Fetch the user's cart
+       
         const userCart = await Cart.findOne({ userId })
             .populate('items.productId', 'productName productImage salePrice')
             .lean();
 
-        // Calculate the total amount
+        
         const totalAmount = userCart.items.reduce((sum, item) => {
             return sum + item.productId.salePrice * item.quantity;
         }, 0);
 
-        // Fetch the user's addresses
+        
         const userAddress = await Address.find({ userId }).lean();
 
-        // Determine if COD should be disabled
+        
         const disableCOD = totalAmount > 100000;
 
         return res.render("confirmOrder", {

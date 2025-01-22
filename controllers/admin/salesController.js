@@ -6,17 +6,17 @@ const PDFDocument = require('pdfkit');
 
 const loadSalesReport = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Current page number
-        const limit = 10; // Number of records per page
-        const skip = (page - 1) * limit; // Number of records to skip
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 10; 
+        const skip = (page - 1) * limit; 
 
-        const totalOrders = await Orders.countDocuments(); // Total number of orders
+        const totalOrders = await Orders.countDocuments(); 
         const totalPages = Math.ceil(totalOrders / limit);
 
         const orders = await Orders.find({})
             .populate('userId')
             .populate('deliveryAddress')
-            .populate({ path: 'items.productId', model: 'Product' }) // Corrected path
+            .populate({ path: 'items.productId', model: 'Product' }) 
             .sort({ _id: -1 })
             .skip(skip)
             .limit(limit);
@@ -48,7 +48,7 @@ const dailySalesReport = async (req, res) => {
         const startDate = moment().startOf('day');
         const endDate = moment().endOf('day');
 
-        // Query orders within the daily date range
+        
         const report = await Orders.find({
             createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
         })
@@ -57,7 +57,7 @@ const dailySalesReport = async (req, res) => {
         .populate('items.productId')
         .sort({ createdAt: -1 });
 
-        // Initialize metrics object
+       
         const metrics = {
             totalAmount: 0,
             totalOrders: report.length,
@@ -68,23 +68,23 @@ const dailySalesReport = async (req, res) => {
             orderStatuses: {}
         };
 
-        // Calculate metrics
+        
         report.forEach(order => {
-            // Calculate total amount
+           
             metrics.totalAmount += order.totalAmount || 0;
 
-            // Calculate items count
+           
             metrics.totalItems += order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-            // Track payment methods
+            
             metrics.paymentMethods[order.paymentMethod] = 
                 (metrics.paymentMethods[order.paymentMethod] || 0) + 1;
 
-            // Track order statuses
+            
             metrics.orderStatuses[order.orderStatus] = 
                 (metrics.orderStatuses[order.orderStatus] || 0) + 1;
 
-            // Calculate coupon amounts
+           
             if (order.couponApplied) {
                 const couponAmount = calculateCouponDiscount(order);
                 metrics.totalCouponAmount += couponAmount;
@@ -92,12 +92,12 @@ const dailySalesReport = async (req, res) => {
             }
         });
 
-        // Calculate averages
+        
         metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
         metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
         metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
 
-        // Prepare chart data
+        
         const chartData = {
             paymentMethodLabels: Object.keys(metrics.paymentMethods),
             paymentMethodData: Object.values(metrics.paymentMethods),
@@ -105,7 +105,7 @@ const dailySalesReport = async (req, res) => {
             orderStatusData: Object.values(metrics.orderStatuses)
         };
 
-        // Helper function for status colors
+        
         const getStatusColor = (status) => {
             const colors = {
                 'Ordered': 'primary',
@@ -122,7 +122,7 @@ const dailySalesReport = async (req, res) => {
             return colors[status] || 'secondary';
         };
 
-        // Render the daily report
+        
         res.render('reports', {
             report,
             metrics,
@@ -130,7 +130,7 @@ const dailySalesReport = async (req, res) => {
             endDate: endDate.format('YYYY-MM-DD'),
             getStatusColor,
             getCouponAmount: calculateCouponDiscount,
-            ...chartData // Spread the chart data into the template variables
+            ...chartData 
         });
 
     } catch (error) {
@@ -146,7 +146,7 @@ const generateWeeklyReport = async (req, res) => {
         const startDate = moment().startOf('week');
         const endDate = moment().endOf('week');
 
-        // Fetch orders for the week
+        
         const report = await Orders.find({
             createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
         })
@@ -155,7 +155,7 @@ const generateWeeklyReport = async (req, res) => {
             .populate('items.productId')
             .sort({ createdAt: -1 });
 
-        // Initialize metrics
+       
         const metrics = {
             totalAmount: 0,
             totalOrders: report.length,
@@ -166,7 +166,7 @@ const generateWeeklyReport = async (req, res) => {
             orderStatuses: {}
         };
 
-        // Calculate metrics
+        
         report.forEach(order => {
             metrics.totalAmount += order.totalAmount || 0;
 
@@ -185,12 +185,12 @@ const generateWeeklyReport = async (req, res) => {
             }
         });
 
-        // Calculate averages
+        
         metrics.avgOrderValue = metrics.totalAmount / metrics.totalOrders || 0;
         metrics.avgItemsPerOrder = metrics.totalItems / metrics.totalOrders || 0;
         metrics.couponUsageRate = (metrics.couponsUsed / metrics.totalOrders * 100) || 0;
 
-        // Prepare chart data
+        
         const chartData = {
             paymentMethodLabels: Object.keys(metrics.paymentMethods),
             paymentMethodData: Object.values(metrics.paymentMethods),
@@ -323,7 +323,7 @@ const generateMonthlyReport = async (req, res) => {
     }
 };
 
-// Keep your existing calculateCouponDiscount function
+
 
 
 const generateYearlyReport = async (req, res) => {
@@ -530,7 +530,7 @@ if (!dateValidation.isValid) {
             endDate: endDate.format('YYYY-MM-DD'),
             getStatusColor,
             getCouponAmount: calculateCouponDiscount,
-            ...chartData // Spread the chart data into the template variables
+            ...chartData 
         });
 
     } catch (error) {
@@ -613,7 +613,7 @@ const graphData = async (req, res) => {
                 },
                 {
                     $sort: {
-                        "_id": 1 // Sort by month in ascending order
+                        "_id": 1 
                     }
                 }
             ])

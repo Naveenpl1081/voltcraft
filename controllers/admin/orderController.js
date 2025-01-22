@@ -96,35 +96,35 @@ const loadCancelPage = async (req, res) => {
     try {
         console.log("Loading cancel/return orders...");
 
-        // Fetch all orders with cancel/return status and populate necessary fields
+        
         const canceledOrders = await CancelOrder.find({})
             .sort({ createdAt: -1 })
-            .populate('userId', 'name email') // Populate user details
-            .populate('orderId') // Populate order details if required
-            .populate('canceledItems.productId', 'productName'); // Populate product name for canceled items
+            .populate('userId', 'name email') 
+            .populate('orderId') 
+            .populate('canceledItems.productId', 'productName'); 
         
-        // Modify the refundStatus field based on the conditions
+        
         for (const order of canceledOrders) {
             if (order.paymentMethod) {
                 if (order.action === 'cancel' && order.paymentMethod.toLowerCase() === 'cod') {
-                    order.refundStatus = 'No Refund'; // Set refundStatus to 'No Refund' for COD cancel action
+                    order.refundStatus = 'No Refund'; 
                 } else {
-                    order.refundStatus = ''; // Clear refundStatus for other cases
+                    order.refundStatus = ''; 
                 }
 
-                // Save the updated order only if the paymentMethod exists
-                await order.save(); // Save the updated refundStatus
+                
+                await order.save(); 
             } else {
                 console.warn(`Order ${order._id} does not have a paymentMethod.`);
             }
 
-            // Add product details (name and quantity) to each canceled item
+            
             order.canceledItems.forEach(item => {
                 if (item.productId) {
-                    item.productName = item.productId.productName; // Add product name to the item
+                    item.productName = item.productId.productName; 
                 }
                 console.log("...........",item.productName)
-                item.productQuantity = item.quantity; // Add product quantity to the item
+                item.productQuantity = item.quantity; 
             });
         }
 
@@ -140,37 +140,6 @@ const loadCancelPage = async (req, res) => {
     }
 };
 
-// const approveOrder=async(req,res)=>{
-//     try {
-//         const { orderId } = req.params;
-//         console.log("......./",orderId)
-
-//         // Find the cancel order by its ID
-//         const cancelOrder = await CancelOrder.findById(orderId);
-//         console.log("can",cancelOrder)
-
-//         if (!cancelOrder) {
-//             return res.status(404).json({ success: false, message: 'Cancel/Return order not found' });
-//         }
-
-//         // Update the status of the order to 'Approved'
-//         cancelOrder.status = 'Approved'; // You can use a different status like 'Completed' if needed
-//         await cancelOrder.save();
-
-//         console.log("helloo",cancelOrder)
-//         console.log("lkjhgfdsasdfghjk")
-
-//         // Update the original order's status
-//         const order = await Order.findById(cancelOrder.orderId);
-//         order.orderStatus = cancelOrder.action === 'return' ? 'Returned' : 'Approved';
-//         await order.save();
-
-//         res.json({ success: true, message: 'Order has been approved successfully' });
-//     } catch (error) {
-//         console.error('Error approving order:', error);
-//         res.status(500).json({ success: false, message: 'Internal server error' });
-//     }
-// }
 
 
 
@@ -178,17 +147,17 @@ const approveOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
 
-        // Find the cancel order by its ID
+        
         const cancelOrder = await CancelOrder.findById(orderId).populate('userId');
         if (!cancelOrder) {
             return res.status(404).json({ success: false, message: 'Cancel/Return order not found' });
         }
 
-        // Update the status of the cancel order to 'Approved'
+       
         cancelOrder.status = 'Approved';
         await cancelOrder.save();
 
-        // Update the original order's status
+        
         const order = await Order.findById(cancelOrder.orderId);
         if (!order) {
             return res.status(404).json({ success: false, message: 'Original order not found' });
@@ -196,12 +165,12 @@ const approveOrder = async (req, res) => {
         order.orderStatus = cancelOrder.action === 'return' ? 'Returned' : 'Approved';
         await order.save();
 
-        // Add refund amount to user's wallet
+        
         let wallet = await Wallet.findOne({ userId: cancelOrder.userId });
         const refundAmount = cancelOrder.totalRefund;
 
         if (!wallet) {
-            // If wallet doesn't exist, create a new wallet for the user
+           
             wallet = new Wallet({
                 userId: cancelOrder.userId,
                 balance: refundAmount,
@@ -212,7 +181,7 @@ const approveOrder = async (req, res) => {
                 }],
             });
         } else {
-            // If wallet exists, update balance and add transaction
+            
             wallet.balance += refundAmount;
             wallet.transactions.push({
                 amount: refundAmount,
@@ -249,20 +218,20 @@ const rejectOrder=async(req,res)=>{
     try {
         const { orderId } = req.params;
 
-        // Find the cancel order by its ID
+       
         const cancelOrder = await CancelOrder.findById(orderId);
 
         if (!cancelOrder) {
             return res.status(404).json({ success: false, message: 'Cancel/Return order not found' });
         }
 
-        // Update the status of the order to 'Rejected'
+        
         cancelOrder.status = 'Rejected';
         await cancelOrder.save();
 
-        // Optionally, update the original order status to 'Rejected' or 'Pending' if needed
+        
         const order = await Order.findById(cancelOrder.orderId);
-        order.orderStatus = 'Failed'; // You can set this to another appropriate status
+        order.orderStatus = 'Failed'; 
         await order.save();
 
         res.json({ success: true, message: 'Order has been rejected successfully' });

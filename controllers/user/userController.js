@@ -665,7 +665,7 @@ const viewAllProductsPage = async (req, res) => {
                 { description: { $regex: query, $options: 'i' } }
             ]
         };
-
+        const category=await Category.find({})
         // Fetch products with pagination and sorting
         const products = await Product.find(baseQuery)
             .sort(sortCriteria)
@@ -687,7 +687,8 @@ const viewAllProductsPage = async (req, res) => {
             hasPrevPage: page > 1,
             nextPage: page + 1,
             prevPage: page - 1,
-            lastPage: totalPages
+            lastPage: totalPages,
+            category
         });
 
     } catch (error) {
