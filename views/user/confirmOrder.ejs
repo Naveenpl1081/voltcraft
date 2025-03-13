@@ -1,4 +1,3 @@
-
 <%- include('../user/layout/userHeader.ejs') %>
 <!DOCTYPE html>
 <html lang="en">
@@ -84,6 +83,7 @@
       justify-content: space-between;
       padding: 15px 0;
       border-bottom: 1px solid #ddd;
+      align-items: center;
     }
 
     .cart-item img {
@@ -225,808 +225,677 @@
       background-color: #d02f2f;
     }
 
-    body, h1, h2, h3, p, form, input, button, table, th, td {
-      margin: 0;
-      padding: 0;
-      font-family: 'Arial', sans-serif;
-    }
-
-    /* Layout and Styling */
-    body {
-      background-color: #f5f5f5;
-      color: #333;
+    .coupon-section {
+      max-width: 600px;
+      margin: 20px auto;
       padding: 20px;
-    }
-
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-gap: 30px;
-      background-color: white;
+      border: 1px solid #ddd;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      max-width: 1000px;
-      margin: 0 auto;
+      background-color: #f9f9f9;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      font-family: Arial, sans-serif;
     }
 
-    .billing-details, .payment-summary {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .billing-details h2, .payment-summary h2 {
-      color: #333;
-      font-size: 1.5rem;
+    .coupon-section h2 {
       margin-bottom: 20px;
-    }
-
-    .billing-details input, .billing-details select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    .billing-details input:focus, .billing-details select:focus {
-      border-color: #e53935;
-      outline: none;
-    }
-
-    .cart-summary {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .cart-summary h2 {
-      margin-bottom: 15px;
+      font-size: 24px;
       color: #333;
     }
 
-    .cart-items {
-      display: flex;
-      flex-direction: column;
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .cart-item {
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .coupon-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .coupon-list h4 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: #555;
+    }
+
+    .coupon-list div {
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       display: flex;
       justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .cart-item img {
-      width: 80px;
-      height: auto;
-      margin-right: 15px;
-    }
-
-    .cart-item-details {
-      flex-grow: 1;
-    }
-
-    .cart-item-price, .cart-item-quantity, .cart-item-total {
-      text-align: right;
-    }
-
-    .cart-summary table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-
-    .cart-summary th, .cart-summary td {
-      padding: 12px;
-      text-align: left;
-      font-size: 1rem;
-    }
-
-    .cart-summary th {
-      background-color: #f9f9f9;
-      font-weight: normal;
-    }
-
-    .cart-summary td {
-      background-color: #fafafa;
-    }
-
-    .cart-summary tfoot th, .cart-summary tfoot td {
-      font-weight: bold;
-    }
-
-    .payment-methods input[type="radio"] {
-      margin-right: 10px;
-    }
-
-    .payment-methods label {
-      margin-bottom: 10px;
-      display: block;
-      font-size: 1rem;
-    }
-
-    .coupon-section {
-      display: flex;
-      margin-top: 20px;
       align-items: center;
     }
 
-    .coupon-section input {
-      width: 70%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-right: 10px;
+    .coupon-list p {
+      margin: 0;
+      font-size: 16px;
+      color: #333;
     }
 
-    .coupon-section button {
-      background-color: #e53935;
+    .coupon-list button {
+      background-color: #28a745;
       color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .coupon-list button:hover {
+      background-color: #218838;
+    }
+
+    #new-address-form button {
+      background-color: #e72e2e;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-
-    .coupon-section button:hover {
-      background-color: #c92727;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-    }
-
-    .actions button {
-      background-color: #e53935;
-      color: white;
-      border: none;
-      padding: 14px 30px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
       transition: background-color 0.3s ease;
     }
 
-    .actions button:hover {
-      background-color: #d32f2f;
+    #new-address-form button:hover {
+      background-color: #ce3c3c;
     }
 
-    .save-info {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
+    #new-address-form button:active {
+      background-color: #1e7e34;
     }
 
-    .save-info label {
-      font-size: 0.9rem;
-      margin-left: 8px;
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        grid-gap: 20px;
+      }
+
+      .billing-details h2, .payment-summary h2 {
+        font-size: 1.25rem;
+      }
+
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .cart-item img {
+        width: 60px;
+        margin-bottom: 10px;
+      }
+
+      .cart-item-details {
+        width: 100%;
+      }
+
+      .cart-item-price, .cart-item-quantity, .cart-item-total {
+        text-align: left;
+        margin-top: 5px;
+      }
+
+      .coupon-section {
+        flex-direction: column;
+        padding: 15px;
+        max-width: 100%;
+      }
+
+      .coupon-section input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+
+      .coupon-section button {
+        width: 100%;
+        padding: 10px;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .actions button {
+        width: 100%;
+        padding: 12px;
+      }
+
+      .cart-summary table {
+        font-size: 0.9rem;
+      }
+
+      .cart-summary th, .cart-summary td {
+        padding: 8px;
+      }
+
+      .billing-details input, .billing-details select, #new-address-form button {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+
+      .address-select {
+        padding: 12px;
+      }
+
+      .confirm-address {
+        padding: 10px;
+      }
     }
 
-    .address-select {
-      width: 100%;
-      padding: 15px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #fafafa;
-      box-sizing: border-box;
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      .billing-details h2, .payment-summary h2 {
+        font-size: 1.1rem;
+      }
+
+      .cart-summary h2 {
+        font-size: 1rem;
+      }
+
+      .cart-item img {
+        width: 50px;
+      }
+
+      .billing-details input, .billing-details select, #new-address-form button {
+        font-size: 0.85rem;
+        padding: 8px;
+      }
+
+      .address-select {
+        padding: 10px;
+      }
+
+      .cart-summary th, .cart-summary td {
+        font-size: 0.85rem;
+        padding: 6px;
+      }
+
+      .payment-methods label {
+        font-size: 0.9rem;
+      }
+
+      .coupon-section h2 {
+        font-size: 1.25rem;
+      }
+
+      .coupon-list h4 {
+        font-size: 1rem;
+      }
+
+      .coupon-list p {
+        font-size: 0.9rem;
+      }
+
+      .coupon-list button {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+
+      .actions button {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
     }
-
-    .address-select:focus {
-      border-color: #e53935;
-      outline: none;
-    }
-
-    .confirm-address {
-      background-color: #e53935;
-      color: white;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-top: 15px;
-      width: 100%;
-    }
-
-    .confirm-address:hover {
-      background-color: #d02f2f;
-    }
-    .coupon-section {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-
-  .coupon-section h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-  }
-
-  .btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .btn-primary {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-
-  .coupon-list {
-    margin-top: 20px;
-    text-align: left;
-  }
-
-  .coupon-list h4 {
-    margin-bottom: 10px;
-    font-size: 20px;
-    color: #555;
-  }
-
-  .coupon-list div {
-    padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .coupon-list p {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-  }
-
-  .coupon-list button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .coupon-list button:hover {
-    background-color: #218838;
-  }
-  
-  #new-address-form button {
-    background-color: #e72e2e; /* Prosperous green color */
-    color: white; /* Text color */
-    font-size: 16px; /* Text size */
-    font-weight: bold; /* Bold text */
-    padding: 10px 20px; /* Padding around the button */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth transition */
-  }
-
-  #new-address-form button:hover {
-    background-color: #ce3c3c; /* Darker green on hover */
-  }
-
-  #new-address-form button:active {
-    background-color: #1e7e34; /* Even darker green on click */
-  }
-
-
-    
   </style>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-
-    <div class="container">
-      <!-- Billing Details Section -->
-      <div class="billing-details">
-        <h2>Billing Details</h2>
-        <!-- Address Selector -->
-        <select class="address-select" name="selectedAddressId" id="addressSelect">
-          <option value="" disabled selected>Select a Saved Address</option>
-          <% userAddress.forEach(address => { %>
-            <option value="<%= address._id %>">
-              <strong><%= address.fullName %></strong><br>
-              <span><%= address.phone %></span><br>
-              <span><%= address.addressLine1 %>, <%= address.addressLine2 %></span><br>
-              <span><%= address.city %>, <%= address.state %> - <%= address.country %></span><br>
-              <span><%= address.email %></span>
-            </option>
-          <% }) %>
-        </select>
-        <h3> Add a New Address</h3>
-        <!-- New Address Fields -->
-        <form id="new-address-form">
-          <input type="text" name="name" placeholder="First Name*" required>
-          <input type="text" name="number" placeholder="Phone Number*" required>
-          <input type="text" name="addressone" placeholder="Street Address*" required>
-          <input type="text" name="addresstwo" placeholder="Apartment (optional)">
-          <input type="text" name="city" placeholder="City*" required>
-          <input type="text" name="state" placeholder="State*" required>
-          <input type="email" name="email" placeholder="Email*" required>
-          <input type="text" name="country" placeholder="Country*" required>
-          <button type="submit">Add Address</button>
-        </form>
-        <div id="error-messages"></div>
-        
-      </div>
-
-      <!-- Payment Method and Cart Summary Section -->
-      <div class="payment-summary">
-        <h2>Payment Method</h2>
-        <div class="payment-methods">
-          <label>
-            <input 
-              type="radio" 
-              name="paymentMethod" 
-              value="cod" 
-              required 
-              <%= disableCOD ? 'disabled' : '' %>
-            > 
-            Cash on Delivery
-          </label>
-          <label>
-            <input type="radio" name="paymentMethod" value="paypal" required> PayPal
-          </label>
-          <label>
-            <input type="radio" name="paymentMethod" value="creditCard" required> Credit Card
-          </label>
-          <label>
-            <input type="radio" name="paymentMethod" value="wallet" required> Wallet
-          </label>
-        </div>
-        <% if (disableCOD) { %>
-        <p style="color: red;">Cash on Delivery is not available for orders above ₹100,000.</p>
-        <% } %>
-        
-        
-        <div class="coupon-section">
-          <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code">
-          <button type="button" id="applyCouponButton">Apply Coupon</button>
-          <p id="couponSuccessMessage" style="display: none;"></p>
-        </div>
-        <div class="coupon-section">
-         
-          <button type="button" id="showCouponsButton" class="btn btn-primary">Show All Coupons</button>
-          <div id="availableCoupons" class="coupon-list"></div>
-        </div>
-        
-        
-        <div>
-          <p id="discountAmount"></p>
-          <p id="updatedTotal"></p>
-      </div>
-        
-
-        <div class="cart-summary">
-          <h2>Cart Summary</h2>
-          <div class="cart-items">
-            <% cart.items.forEach((item, index) => { %>
-              <div class="cart-item" data-product-id="<%= item.productId._id %>" data-quantity="<%= item.quantity %>" data-price="<%= item.productId.salePrice %>">
-                <input type="hidden" name="items[<%= index %>][productId]" value="<%= item.productId._id %>">
-                <input type="hidden" name="items[<%= index %>][quantity]" value="<%= item.quantity %>">
-                <input type="hidden" name="items[<%= index %>][price]" value="<%= item.productId.salePrice %>">
-                <img src="/uploads/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
-                <strong><%= item.productId.productName %></strong>
-                <span>Quantity: <%= item.quantity %></span>
-                <span>Price: ₹<%= item.productId.salePrice %></span>
-              </div>
-            <% }) %>
-          </div>
-        </div>
-
-          <!-- Cart Summary and Pricing -->
-          <div class="cart-summary-container">
-            <div class="cart-summary" id="cartSummary">
-                <div class="cart-summary-pricing">
-                    <table>
-                        <tfoot>
-                            <!-- Subtotal Row -->
-                            <tr>
-                                <th>Subtotal:</th>
-                                <td>₹<%= cart.totalPrice %></td>
-                            </tr>
-                            <!-- Shipping Row -->
-                            <tr>
-                                <th>Shipping:</th>
-                                <td>₹100</td>
-                            </tr>
-                            <tr>
-                                <th>GST(18%):</th>
-                                <td>₹<%= cart.totalPrice * (18 / 100) %></td>
-                            </tr>
-                            <!-- Total Row -->
-                            <tr>
-                                <th>Total:</th>
-                                <td>₹<%= cart.totalPrice + cart.totalPrice * (18 / 100) + 100 %></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-            <!-- Coupon Applied Details -->
-            <div class="cart-summary" id="cartSummary">
-            <div class="applied-coupon-summary" id="appliedCouponSummary" style="display: none;">
-              <div class="cart-summary-pricing">
-                <table>
-                    <tfoot>
-                        <!-- Discount Row -->
-                        <tr>
-                            <th>Discount:</th>
-                            <td id="discountAmountDisplay">₹0</td>
-                        </tr>
-                        <!-- Shipping Row -->
-                        <tr>
-                            <th>Shipping:</th>
-                            <td>₹100</td>
-                        </tr>
-                        <!-- GST Row -->
-                        <tr>
-                            <th>GST(18%):</th>
-                            <td>₹<%= cart.totalPrice * (18 / 100) %></td>
-                        </tr>
-                        <!-- Updated Total Row -->
-                        <tr>
-                            <th>Updated Total:</th>
-                            <td id="updatedTotalDisplay">₹0</td>
-                        </tr>
-                    </tfoot>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-              <!-- <p id="discountAmount">Discount: $0.00</p>
-              <p id="updatedTotal">Updated Total: $0.00</p> -->
-          </div>
-            <div class="actions">
-              <!-- Return to Shop Button -->
-              <button type="button" onclick="window.location.href='/shop'">
-                Return to Shop
-              </button>
-          
-              <!-- Place Order Button -->
-              <button id="placeOrderButton" type="button">
-                Place Order
-              </button>
-            </div>
-          </div>
-          
-
-       
-      </div>
+  <div class="container">
+    <!-- Billing Details Section -->
+    <div class="billing-details">
+      <h2>Billing Details</h2>
+      <!-- Address Selector -->
+      <select class="address-select" name="selectedAddressId" id="addressSelect">
+        <option value="" disabled selected>Select a Saved Address</option>
+        <% userAddress.forEach(address => { %>
+          <option value="<%= address._id %>">
+            <strong><%= address.fullName %></strong><br>
+            <span><%= address.phone %></span><br>
+            <span><%= address.addressLine1 %>, <%= address.addressLine2 %></span><br>
+            <span><%= address.city %>, <%= address.state %> - <%= address.country %></span><br>
+            <span><%= address.email %></span>
+          </option>
+        <% }) %>
+      </select>
+      <h3>Add a New Address</h3>
+      <!-- New Address Fields -->
+      <form id="new-address-form">
+        <input type="text" name="name" placeholder="First Name*" required>
+        <input type="text" name="number" placeholder="Phone Number*" required>
+        <input type="text" name="addressone" placeholder="Street Address*" required>
+        <input type="text" name="addresstwo" placeholder="Apartment (optional)">
+        <input type="text" name="city" placeholder="City*" required>
+        <input type="text" name="state" placeholder="State*" required>
+        <input type="email" name="email" placeholder="Email*" required>
+        <input type="text" name="country" placeholder="Country*" required>
+        <button type="submit">Add Address</button>
+      </form>
+      <div id="error-messages"></div>
     </div>
 
-    <script>
-     document.getElementById("placeOrderButton").addEventListener("click", async () => {
-  try {
-    const selectedAddressId = document.getElementById("addressSelect").value;
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-    const appliedCouponCode = document.getElementById("couponCodeInput").value.trim();
-    console.log("sel", selectedAddressId);
-    console.log("payment", paymentMethod);
-    console.log("cou",appliedCouponCode)
+    <!-- Payment Method and Cart Summary Section -->
+    <div class="payment-summary">
+      <h2>Payment Method</h2>
+      <div class="payment-methods">
+        <label>
+          <input 
+            type="radio" 
+            name="paymentMethod" 
+            value="cod" 
+            required 
+            <%= disableCOD ? 'disabled' : '' %>
+          > 
+          Cash on Delivery
+        </label>
+        <label>
+          <input type="radio" name="paymentMethod" value="paypal" required> PayPal
+        </label>
+        <label>
+          <input type="radio" name="paymentMethod" value="creditCard" required> Credit Card
+        </label>
+        <label>
+          <input type="radio" name="paymentMethod" value="wallet" required> Wallet
+        </label>
+      </div>
+      <% if (disableCOD) { %>
+        <p style="color: red;">Cash on Delivery is not available for orders above ₹100,000.</p>
+      <% } %>
+      
+      <div class="coupon-section">
+        <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code">
+        <button type="button" id="applyCouponButton">Apply Coupon</button>
+        <p id="couponSuccessMessage" style="display: none;"></p>
+      </div>
+      <div class="coupon-section">
+        <button type="button" id="showCouponsButton" class="btn btn-primary">Show All Coupons</button>
+        <div id="availableCoupons" class="coupon-list"></div>
+      </div>
+      
+      <div>
+        <p id="discountAmount"></p>
+        <p id="updatedTotal"></p>
+      </div>
 
+      <div class="cart-summary">
+        <h2>Cart Summary</h2>
+        <div class="cart-items">
+          <% cart.items.forEach((item, index) => { %>
+            <div class="cart-item" data-product-id="<%= item.productId._id %>" data-quantity="<%= item.quantity %>" data-price="<%= item.productId.salePrice %>">
+              <input type="hidden" name="items[<%= index %>][productId]" value="<%= item.productId._id %>">
+              <input type="hidden" name="items[<%= index %>][quantity]" value="<%= item.quantity %>">
+              <input type="hidden" name="items[<%= index %>][price]" value="<%= item.productId.salePrice %>">
+              <img src="/uploads/<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>">
+              <strong><%= item.productId.productName %></strong>
+              <span>Quantity: <%= item.quantity %></span>
+              <span>Price: ₹<%= item.productId.salePrice %></span>
+            </div>
+          <% }) %>
+        </div>
+      </div>
 
+      <!-- Cart Summary and Pricing -->
+      <div class="cart-summary-container">
+        <div class="cart-summary" id="cartSummary">
+          <div class="cart-summary-pricing">
+            <table>
+              <tfoot>
+                <tr>
+                  <th>Subtotal:</th>
+                  <td>₹<%= cart.totalPrice %></td>
+                </tr>
+                <tr>
+                  <th>Shipping:</th>
+                  <td>₹100</td>
+                </tr>
+                <tr>
+                  <th>GST(18%):</th>
+                  <td>₹<%= cart.totalPrice * (18 / 100) %></td>
+                </tr>
+                <tr>
+                  <th>Total:</th>
+                  <td>₹<%= cart.totalPrice + cart.totalPrice * (18 / 100) + 100 %></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <!-- Coupon Applied Details -->
+        <div class="cart-summary" id="cartSummary">
+          <div class="applied-coupon-summary" id="appliedCouponSummary" style="display: none;">
+            <div class="cart-summary-pricing">
+              <table>
+                <tfoot>
+                  <tr>
+                    <th>Discount:</th>
+                    <td id="discountAmountDisplay">₹0</td>
+                  </tr>
+                  <tr>
+                    <th>Shipping:</th>
+                    <td>₹100</td>
+                  </tr>
+                  <tr>
+                    <th>GST(18%):</th>
+                    <td>₹<%= cart.totalPrice * (18 / 100) %></td>
+                  </tr>
+                  <tr>
+                    <th>Updated Total:</th>
+                    <td id="updatedTotalDisplay">₹0</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div class="actions">
+        <button type="button" onclick="window.location.href='/shop'">Return to Shop</button>
+        <button id="placeOrderButton" type="button">Place Order</button>
+      </div>
+    </div>
+  </div>
 
-    
+  <script>
+    document.getElementById("placeOrderButton").addEventListener("click", async () => {
+      try {
+        const selectedAddressId = document.getElementById("addressSelect").value;
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        const appliedCouponCode = document.getElementById("couponCodeInput").value.trim();
+        console.log("sel", selectedAddressId);
+        console.log("payment", paymentMethod);
+        console.log("cou", appliedCouponCode);
 
+        if (!selectedAddressId || !paymentMethod) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select an address and payment method!',
+          });
+          return;
+        }
 
-    if (!selectedAddressId || !paymentMethod) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please select an address and payment method!',
-      });
-      return;
-    }
+        const cartItems = Array.from(document.querySelectorAll('.cart-item')).map(item => ({
+          productId: item.dataset.productId,
+          quantity: parseInt(item.dataset.quantity, 10),
+          price: parseFloat(item.dataset.price),
+        }));
+        console.log("//", cartItems);
 
-    const cartItems = Array.from(document.querySelectorAll('.cart-item')).map(item => ({
-      productId: item.dataset.productId,
-      quantity: parseInt(item.dataset.quantity, 10),
-      price: parseFloat(item.dataset.price),
-    }));
-    console.log("//", cartItems);
+        if (cartItems.length === 0) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Cart is empty',
+            text: 'Please add items to your cart before placing an order.',
+          });
+          return;
+        }
 
-    if (cartItems.length === 0) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Cart is empty',
-        text: 'Please add items to your cart before placing an order.',
-      });
-      return;
-    }
+        const orderData = {
+          selectedAddressId,
+          paymentMethod,
+          cartItems,
+          couponCode: appliedCouponCode || null,
+        };
 
+        if (paymentMethod === "paypal") {
+          console.log("hello");
+          const response = await fetch('/createPayPalPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData),
+          });
 
-    const orderData = {
-      selectedAddressId,
-      paymentMethod,
-      cartItems,
-      couponCode: appliedCouponCode || null, // Include coupon code if applied
-    };
+          const result = await response.json();
+          console.log("result", result);
+          if (response.ok) {
+            console.log("re", result.approvalUrl);
+            window.location.href = result.approvalUrl;
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: result.error || 'Failed to initiate PayPal payment.',
+            });
+          }
+        } else {
+          const response = await fetch('/placeOrder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData),
+          });
 
-    if (paymentMethod === "paypal") {
-      // Start PayPal payment process
-      console.log("hello");
-      const response = await fetch('/createPayPalPayment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData),
-      });
-
-      const result = await response.json();
-      console.log("result",result);
-      if (response.ok) {
-        // Redirect to PayPal approval URL
-        console.log("re",result.approvalUrl)
-        window.location.href = result.approvalUrl;
-      } else {
+          const result = await response.json();
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Order placed!',
+              text: result.message,
+            }).then(() => {
+              window.location.href = "/orderSuccess";
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: result.error || 'Failed to place the order.',
+            });
+          }
+        }
+      } catch (err) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: result.error || 'Failed to initiate PayPal payment.',
+          text: 'An error occurred. Please try again.',
         });
+        console.error("Error placing order:", err);
       }
-    } else {
-      // Handle other payment methods (like COD)
-      const response = await fetch('/placeOrder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData ),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Order placed!',
-          text: result.message,
-        }).then(() => {
-          window.location.href = "/orderSuccess";
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: result.error || 'Failed to place the order.',
-        });
-      }
-    }
-  } catch (err) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'An error occurred. Please try again.',
     });
-    console.error("Error placing order:", err);
-  }
-});
 
-document.getElementById('applyCouponButton').addEventListener('click', async () => {
-    const couponCode = document.getElementById('couponCodeInput').value.trim();
-    const cartTotal = 500; // Example cart total, replace with actual cart total
-    const shippingCharge = 100;
-    const gstRate = 18 / 100;
+    document.getElementById('applyCouponButton').addEventListener('click', async () => {
+      const couponCode = document.getElementById('couponCodeInput').value.trim();
+      const cartTotal = 500; // Example cart total, replace with actual cart total
+      const shippingCharge = 100;
+      const gstRate = 18 / 100;
 
-    let removeButton = document.getElementById('removeCouponButton');
-    if (!removeButton) {
-        // Create the remove button
+      let removeButton = document.getElementById('removeCouponButton');
+      if (!removeButton) {
         removeButton = document.createElement('button');
         removeButton.id = 'removeCouponButton';
         removeButton.textContent = 'Remove Coupon';
         removeButton.type = 'button';
-
-        // Append the remove button below the coupon section
         document.querySelector('.coupon-section').appendChild(removeButton);
-
-        // Add event listener to refresh the page when the remove button is clicked
         removeButton.addEventListener('click', () => {
-            location.reload();
+          location.reload();
         });
-    }
+      }
 
-    if (!couponCode) {
+      if (!couponCode) {
         Swal.fire({
-            icon: 'warning',
-            title: 'No Coupon Code',
-            text: 'Please enter a coupon code.',
+          icon: 'warning',
+          title: 'No Coupon Code',
+          text: 'Please enter a coupon code.',
         }).then(() => {
-            location.reload();
+          location.reload();
         });
         return;
-    }
+      }
 
-    try {
+      try {
         const response = await fetch('/applycoupon', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                couponCode: couponCode,
-                cartTotal: cartTotal,
-            }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            couponCode: couponCode,
+            cartTotal: cartTotal,
+          }),
         });
 
         const result = await response.json();
 
         if (response.ok) {
-            const discount = result.discount;
-            const discountedTotal = result.discountedTotal;
+          const discount = result.discount;
+          const discountedTotal = result.discountedTotal;
 
-            // Update applied coupon summary details
-            document.getElementById('discountAmountDisplay').textContent = `₹${discount}`;
-            
-            document.getElementById('updatedTotalDisplay').textContent = `₹${discountedTotal}`;
+          document.getElementById('discountAmountDisplay').textContent = `₹${discount}`;
+          document.getElementById('updatedTotalDisplay').textContent = `₹${discountedTotal}`;
 
-            // Hide original cart summary and show applied coupon summary
-            document.getElementById('cartSummary').style.display = 'none';
-            document.getElementById('appliedCouponSummary').style.display = 'block';
+          document.getElementById('cartSummary').style.display = 'none';
+          document.getElementById('appliedCouponSummary').style.display = 'block';
 
-            // Show success message
-            Swal.fire({
-                icon: 'success',
-                title: 'Coupon Applied',
-                text: `Discount: ₹${discount}. Updated Total: ₹${discountedTotal + cartTotal * gstRate + shippingCharge}`,
-            });
+          Swal.fire({
+            icon: 'success',
+            title: 'Coupon Applied',
+            text: `Discount: ₹${discount}. Updated Total: ₹${discountedTotal + cartTotal * gstRate + shippingCharge}`,
+          });
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Coupon Failed',
-                text: result.message || 'Failed to apply coupon.',
-            }).then(() => {
-                location.reload();
-            });
+          Swal.fire({
+            icon: 'error',
+            title: 'Coupon Failed',
+            text: result.message || 'Failed to apply coupon.',
+          }).then(() => {
+            location.reload();
+          });
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Error applying coupon:', error);
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'An error occurred while applying the coupon.',
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred while applying the coupon.',
         });
-    }
-});
-
-
-
-async function fetchAllCoupons() {
-  try {
-    const response = await fetch('/coupons'); // Ensure the URL matches your backend route
-    const data = await response.json();
-
-    if (data.success) {
-      const couponList = document.getElementById('availableCoupons');
-      couponList.innerHTML = '<h4>Available Coupons:</h4>';
-      data.coupons.forEach((coupon) => {
-        const couponDiv = document.createElement('div');
-        couponDiv.innerHTML = `
-          <p>
-            <strong>${coupon.couponName}</strong> (${coupon.couponCode}) - 
-            ${coupon.offerType === 'percentage' ? coupon.offerValue + '%' : '₹' + coupon.offerValue} off
-          </p>
-          <button type="button" class="selectCouponButton" data-coupon="${coupon.couponCode}">
-            Select
-          </button>
-        `;
-        couponList.appendChild(couponDiv);
-      });
-
-      // Add event listeners to all "Select" buttons
-      const selectButtons = document.querySelectorAll('.selectCouponButton');
-      selectButtons.forEach((button) => {
-        button.addEventListener('click', (event) => {
-          const selectedCouponCode = event.target.getAttribute('data-coupon');
-          document.getElementById('couponCodeInput').value = selectedCouponCode;
-
-          // Clear the coupon list after selection
-          couponList.innerHTML = `<p>You selected: <strong>${selectedCouponCode}</strong></p>`;
-        });
-      });
-    } else {
-      alert('Failed to fetch coupons');
-    }
-  } catch (error) {
-    console.error('Error fetching coupons:', error);
-  }
-}
-
-// Attach the event listener to the "Show All Coupons" button
-document.getElementById('showCouponsButton').addEventListener('click', fetchAllCoupons);
-
-
-document.getElementById('new-address-form').addEventListener('submit', async function(event) {
-  event.preventDefault();
-  
-  // Clear previous errors
-  const errorMessagesDiv = document.getElementById('error-messages');
-  errorMessagesDiv.innerHTML = '';
-  
-  const formData = new FormData(this);
-  const formObject = Object.fromEntries(formData.entries());
-  
-  try {
-    const response = await fetch('/addressConfirm', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formObject),
+      }
     });
 
-    const data = await response.json();
-    
-    if (!response.ok) {
-      displayErrors(data.errors);
-    } else {
-      // Success - redirect to confirm order page
-      window.location.href = '/confirmOrder';
+    async function fetchAllCoupons() {
+      try {
+        const response = await fetch('/coupons');
+        const data = await response.json();
+
+        if (data.success) {
+          const couponList = document.getElementById('availableCoupons');
+          couponList.innerHTML = '<h4>Available Coupons:</h4>';
+          data.coupons.forEach((coupon) => {
+            const couponDiv = document.createElement('div');
+            couponDiv.innerHTML = `
+              <p>
+                <strong>${coupon.couponName}</strong> (${coupon.couponCode}) - 
+                ${coupon.offerType === 'percentage' ? coupon.offerValue + '%' : '₹' + coupon.offerValue} off
+              </p>
+              <button type="button" class="selectCouponButton" data-coupon="${coupon.couponCode}">
+                Select
+              </button>
+            `;
+            couponList.appendChild(couponDiv);
+          });
+
+          const selectButtons = document.querySelectorAll('.selectCouponButton');
+          selectButtons.forEach((button) => {
+            button.addEventListener('click', (event) => {
+              const selectedCouponCode = event.target.getAttribute('data-coupon');
+              document.getElementById('couponCodeInput').value = selectedCouponCode;
+              couponList.innerHTML = `<p>You selected: <strong>${selectedCouponCode}</strong></p>`;
+            });
+          });
+        } else {
+          alert('Failed to fetch coupons');
+        }
+      } catch (error) {
+        console.error('Error fetching coupons:', error);
+      }
     }
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    displayErrors(['An unexpected error occurred. Please try again.']);
-  }
-});
 
-function displayErrors(errors) {
-  const errorMessagesDiv = document.getElementById('error-messages');
-  errorMessagesDiv.innerHTML = '';
-  
-  if (errors && errors.length > 0) {
-    const ul = document.createElement('ul');
-    ul.style.listStyle = 'none';
-    ul.style.padding = '0';
-    ul.style.margin = '10px 0';
-    
-    errors.forEach(error => {
-      const li = document.createElement('li');
-      li.style.color = 'red';
-      li.style.marginBottom = '5px';
-      li.textContent = error;
-      ul.appendChild(li);
+    document.getElementById('showCouponsButton').addEventListener('click', fetchAllCoupons);
+
+    document.getElementById('new-address-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const errorMessagesDiv = document.getElementById('error-messages');
+      errorMessagesDiv.innerHTML = '';
+
+      const formData = new FormData(this);
+      const formObject = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('/addressConfirm', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formObject),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          displayErrors(data.errors);
+        } else {
+          window.location.href = '/confirmOrder';
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        displayErrors(['An unexpected error occurred. Please try again.']);
+      }
     });
-    
-    errorMessagesDiv.appendChild(ul);
-  }
-}
 
+    function displayErrors(errors) {
+      const errorMessagesDiv = document.getElementById('error-messages');
+      errorMessagesDiv.innerHTML = '';
 
+      if (errors && errors.length > 0) {
+        const ul = document.createElement('ul');
+        ul.style.listStyle = 'none';
+        ul.style.padding = '0';
+        ul.style.margin = '10px 0';
 
-    </script>
+        errors.forEach(error => {
+          const li = document.createElement('li');
+          li.style.color = 'red';
+          li.style.marginBottom = '5px';
+          li.textContent = error;
+          ul.appendChild(li);
+        });
 
+        errorMessagesDiv.appendChild(ul);
+      }
+    }
+  </script>
 </body>
 </html>
-
 <%- include('../user/layout/userFooter.ejs') %>

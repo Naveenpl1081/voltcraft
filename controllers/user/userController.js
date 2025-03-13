@@ -859,6 +859,14 @@ const updateUserProfile = async (req, res) => {
 };
 
 
+const getAbout=async(req,res)=>{
+    try {
+        res.render("about")
+    } catch (error) {
+        
+    }
+}
+
 module.exports={
     loadHomePage,
     signupPage,
@@ -885,7 +893,8 @@ module.exports={
     searchProducts,
     updateUserProfile,
     viewAllProductsPage,
-    addressverifyy
+    addressverifyy,
+    getAbout
     
 }
 

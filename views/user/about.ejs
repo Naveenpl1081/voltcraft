@@ -1,0 +1,472 @@
+<%- include('../user/layout/userHeader.ejs') %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sigma - About Us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #fff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Our Story Section */
+    .our-story {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 0;
+      gap: 40px;
+    }
+
+    .story-text {
+      flex: 1;
+    }
+
+    .story-text h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .story-text p {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .story-image {
+      flex: 1;
+      text-align: right;
+    }
+
+    .story-image img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Statistics Section */
+    .statistics {
+      padding: 60px 0;
+      background-color: #f9f9f9;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+
+    .stat-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-card.special {
+      background: #e53935;
+      color: #fff;
+    }
+
+    .stat-card .icon {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .stat-card.special .icon {
+      color: #fff;
+    }
+
+    .stat-card h3 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .stat-card p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .stat-card.special p {
+      color: #f0f0f0;
+    }
+
+    /* Team Section */
+    .team {
+      padding: 60px 0;
+      text-align: center;
+    }
+
+    .team h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 40px;
+      color: #333;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .team-member {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+
+    .team-member img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    .team-member h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 15px 0 5px;
+      color: #333;
+    }
+
+    .team-member p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .team-member .social-links {
+      padding: 10px 0;
+      background: #f9f9f9;
+    }
+
+    .team-member .social-links a {
+      color: #666;
+      font-size: 1.2rem;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+
+    .team-member .social-links a:hover {
+      color: #e53935;
+    }
+
+    /* Benefits Section */
+    .benefits {
+      padding: 60px 0;
+      background: #fff;
+      text-align: center;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .benefit-card {
+      padding: 20px;
+    }
+
+    .benefit-card .icon {
+      font-size: 2rem;
+      color: #e53935;
+      margin-bottom: 15px;
+    }
+
+    .benefit-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .benefit-card p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Carousel Dots */
+    .carousel-dots {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .carousel-dots .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .carousel-dots .dot.active {
+      background: #e53935;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .our-story {
+        flex-direction: column;
+        padding: 40px 0;
+        gap: 30px;
+      }
+
+      .story-text h1 {
+        font-size: 2rem;
+      }
+
+      .story-text p {
+        font-size: 0.9rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .team-member img {
+        height: 250px;
+      }
+
+      .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .benefit-card h3 {
+        font-size: 1rem;
+      }
+
+      .benefit-card p {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 15px;
+      }
+
+      .story-text h1 {
+        font-size: 1.5rem;
+      }
+
+      .story-text p {
+        font-size: 0.85rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card h3 {
+        font-size: 1.5rem;
+      }
+
+      .stat-card p {
+        font-size: 0.85rem;
+      }
+
+      .team h2 {
+        font-size: 1.5rem;
+      }
+
+      .team-member img {
+        height: 200px;
+      }
+
+      .team-member h3 {
+        font-size: 1.1rem;
+      }
+
+      .team-member p {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Our Story Section -->
+  <section class="our-story">
+    <div class="container">
+      <div class="story-text">
+        <h1>Our Story</h1>
+        <p>Launched in 2015, Exclusive is South Asia's premier online shopping marketplace with an active presence in Bangladesh. Supported by a wide range of tailored marketing, data, and service solutions, Exclusive has 10,500 sellers and 300 brands and serves 3 million customers across the region.</p>
+        <p>Exclusive has more than 1 million products to offer, growing at a very fast pace. Exclusive offers a diverse assortment in categories ranging from consumer electronics to fashion.</p>
+      </div>
+      <div class="story-image">
+        <img src="/images/shop.jpg.webp" alt="Our Story Image">
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="statistics">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fas fa-users icon"></i>
+          <h3>10.5K</h3>
+          <p>Sellers active on our site</p>
+        </div>
+        <div class="stat-card special">
+          <i class="fas fa-dollar-sign icon"></i>
+          <h3>33K</h3>
+          <p>Monthly product sales</p>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-shopping-cart icon"></i>
+          <h3>45.5K</h3>
+          <p>Customers active on our site</p>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-money-bill-wave icon"></i>
+          <h3>25K</h3>
+          <p>Annual gross sales on our site</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team">
+    <div class="container">
+      <h2>Our Team</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <img src="https://via.placeholder.com/300x300?text=Tom+Cruise" alt="Tom Cruise">
+          <h3>Tom Cruise</h3>
+          <p>Founder & Chairman</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="team-member">
+          <img src="https://via.placeholder.com/300x300?text=Emma+Watson" alt="Emma Watson">
+          <h3>Emma Watson</h3>
+          <p>Managing Director</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="team-member">
+          <img src="https://via.placeholder.com/300x300?text=Will+Smith" alt="Will Smith">
+          <h3>Will Smith</h3>
+          <p>Product Designer</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits">
+    <div class="container">
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <i class="fas fa-truck icon"></i>
+          <h3>Free and Fast Delivery</h3>
+          <p>Free delivery for all orders over $140</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fas fa-headset icon"></i>
+          <h3>24/7 Customer Support</h3>
+          <p>Friendly 24/7 customer support</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fas fa-shield-alt icon"></i>
+          <h3>Money Back Guarantee</h3>
+          <p>We return money within 30 days</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Basic Carousel Functionality (for Team Section)
+    const dots = document.querySelectorAll('.carousel-dots .dot');
+    const teamMembers = document.querySelector('.team-grid');
+    let currentIndex = 0;
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentIndex = index;
+        updateCarousel();
+      });
+    });
+
+    function updateCarousel() {
+      dots.forEach(dot => dot.classList.remove('active'));
+      dots[currentIndex].classList.add('active');
+      // Add logic to slide team members if needed (e.g., translateX for a sliding effect)
+      // For simplicity, this just updates the active dot
+    }
+
+    // Optional: Auto-slide every 5 seconds
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % dots.length;
+      updateCarousel();
+    }, 5000);
+  </script>
+</body>
+</html>
+
+<%- include('../user/layout/userFooter.ejs') %>

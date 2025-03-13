@@ -105,7 +105,7 @@ router.get('/invoice/:orderId', orderController.downloadInvoice);
 
 
 
-
+router.get("/about",userController.getAbout)
 
 
 

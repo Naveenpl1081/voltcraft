@@ -6,10 +6,11 @@ const ifLogout = async(req,res,next)=>{
       if(req.session.admin){
         return next()
       }else{
+        
         res.redirect("/admin/login")
       }
     } catch (error) {
-      console,log(error)
+      console.log(error)
     }
   }
 
@@ -19,6 +20,8 @@ const ifLogout = async(req,res,next)=>{
         if (!req.session.userId) {
             return res.redirect('/login'); // Redirect if not logged in
         }
+
+        console.log("sjdn",req.session.userId)
 
         const user = await User.findById(req.session.userId);
 
@@ -30,6 +33,7 @@ const ifLogout = async(req,res,next)=>{
                 return res.redirect('/login'); // Redirect to login if user is blocked
             });
         }
+        console.log("hello naveen i reached")
 
         next()
     } catch (error) {

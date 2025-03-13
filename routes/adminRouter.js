@@ -96,7 +96,6 @@ router.get('/customDateReport',salesController.generateCustomDateReport)
 
 
 router.get('/cancelPage',orderController.loadCancelPage)
-
 router.put('/approve/:orderId', orderController.approveOrder);
 router.put('/reject/:orderId', orderController.rejectOrder);
 

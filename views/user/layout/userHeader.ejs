@@ -1,364 +1,33 @@
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<style>
-.promo-banner {
-    background-color: black;
-    color: white;
-    text-align: center;
-    padding: 8px 0;
-    font-size: 14px;
-}
-
-.shop-now-btn {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 10px;
-}
-
-.language-selector {
-    float: right;
-    color: white;
-    margin-right: 20px;
-}
-
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    border-bottom: 1px solid #eee;
-}
-
-.logo {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.nav-links {
-    display: flex;
-    gap: 30px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: black;
-}
-
-.auth-buttons {
-    color: #ff4d4d;
-}
-
-.auth-buttons a {
-    text-decoration: none;
-    color: #ff4d4d;
-}
-</style>
-</head>
-<body>
-    <!-- Promotional Banner -->
-    <div class="promo-banner">
-        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! 
-        <a href="#" class="shop-now-btn">ShopNow</a>
-        <span class="language-selector">English ▼</span>
-    </div>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volt Craft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            background-color: #f9f9f9;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #ff4444;
-        }
-
-        .nav-icons {
-            display: flex;
-            gap: 1.2rem;
-            align-items: center;
-        }
-
-        .search-bar {
-            padding: 0.6rem 1.2rem;
-            border-radius: 25px;
-            border: 1px solid #ddd;
-            background: #f0f0f0;
-            width: 200px;
-            outline: none;
-            transition: width 0.3s;
-        }
-
-        .search-bar:focus {
-            width: 300px;
-        }
-
-        .products-section {
-            padding: 3rem 5%;
-        }
-
-        .section-header {
-            margin-bottom: 2.5rem;
-            text-align: center;
-        }
-
-        .section-header p {
-            color: #ff4444;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .section-header h1 {
-            font-size: 2.5rem;
-            color: #333;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .product-card {
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-        }
-
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        .rating {
-            color: #ffd700;
-            margin-bottom: 1rem;
-        }
-
-        .product-price {
-            color: #ff4444;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .add-to-cart {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.8rem 1.2rem;
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .add-to-cart:hover {
-            background: #e03838;
-        }
-
-        footer {
-            background: #333;
-            color: white;
-            padding: 3rem 5%;
-            margin-top: 4rem;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        footer h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: #ff4444;
-        }
-
-        footer p {
-            color: #ccc;
-            font-size: 0.9rem;
-            margin-bottom: 0.8rem;
-        }
-
-        footer input[type="email"] {
-            width: 100%;
-            padding: 0.7rem;
-            border: none;
-            border-radius: 25px;
-            margin-top: 0.5rem;
-        }
-        .logout-button {
-                background: #DB4444;
-                color: white;
-                padding: 12px 24px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 16px;
-            }
-            /* General styling for the search form */
-.search-form {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-}
-
-/* Input group styling */
-.input-group {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-/* Search input field styling */
-.search-input {
-    width: 250px;
-    padding: 8px 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-/* Search button styling */
-.search-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    font-size: 16px;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.search-button:hover {
-    background-color: #0056b3;
-}
-
-/* Clear search button styling */
-.clear-search-button {
-    margin-left: 10px;
-    background-color: #6c757d;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.clear-search-button:hover {
-    background-color: #5a6268;
-}
-.logo {
-        font-family: 'Poppins', sans-serif; /* Modern, clean font */
-        font-size: 24px; /* Medium size for balanced appearance */
-        font-weight: 600; /* Semi-bold for prominence */
-        color: #1a73e8; /* Professional blue tone */
-        letter-spacing: 1px; /* Subtle spacing for refinement */
-        text-transform: uppercase; /* All caps for a bold brand presence */
-        background: linear-gradient(90deg, #1a73e8, #ff5722); /* Gradient effect */
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent; /* Make gradient visible on text */
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-        transition: all 0.3s ease; /* Smooth hover effect */
-    }
-
-    .logo:hover {
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Slight shadow enhancement */
-        transform: scale(1.05); /* Subtle enlargement on hover */
-    }
-
-    * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
 
+        body {
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+
+        /* Promo Banner */
         .promo-banner {
             background: linear-gradient(90deg, #1a1a1a, #2d2d2d);
             color: white;
             text-align: center;
-            padding: 10px 0;
+            padding: 10px 20px;
             font-size: 14px;
             letter-spacing: 0.5px;
+            position: relative;
         }
 
         .shop-now-btn {
@@ -369,13 +38,14 @@
             padding: 5px 15px;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
         .shop-now-btn:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
 
+        /* Navigation */
         nav {
             display: flex;
             justify-content: space-between;
@@ -431,24 +101,26 @@
             width: 100%;
         }
 
+        /* Search Form */
         .search-form {
             position: relative;
-            margin-right: 2rem;
+            width: 300px;
+            margin: 0 2rem;
         }
 
         .search-input {
-            width: 300px;
+            width: 100%;
             padding: 10px 40px 10px 15px;
             border: 2px solid #e5e7eb;
             border-radius: 25px;
             font-size: 14px;
-            transition: all 0.3s ease;
             background: #f9fafb;
+            transition: all 0.3s ease;
         }
 
         .search-input:focus {
             border-color: #ed1010;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 3px rgba(237, 16, 16, 0.1);
             outline: none;
         }
 
@@ -468,15 +140,20 @@
             transform: translateY(-50%);
             color: #6b7280;
             cursor: pointer;
-            opacity: 0.7;
+            opacity: 0;
             transition: opacity 0.3s ease;
-            display: none;
+        }
+
+        .search-input:not(:placeholder-shown) + .clear-search {
+            opacity: 0.7;
         }
 
         .clear-search:hover {
             opacity: 1;
+            color: #ef4444;
         }
 
+        /* Nav Icons */
         .nav-icons {
             display: flex;
             align-items: center;
@@ -487,7 +164,6 @@
             color: #374151;
             font-size: 1.2rem;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .nav-icons a:hover {
@@ -498,12 +174,12 @@
         .logout-button {
             padding: 8px 20px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white !important;
+            color: white;
             border-radius: 20px;
-            font-size: 14px !important;
+            font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s ease;
             text-decoration: none;
+            transition: all 0.3s ease;
         }
 
         .logout-button:hover {
@@ -511,91 +187,101 @@
             box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
         }
 
-
-        .search-form {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-input {
-    width: 100%;
-    padding: 10px 40px 10px 15px;
-    border: 2px solid #e5e7eb;
-    border-radius: 25px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    margin-left: 25px; /* Adjust this value to move it further */
-}
-
-
-        .search-input:focus {
-            border-color: #ee1313;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            outline: none;
-        }
-
-        .clear-search {
-            position: absolute;
-            right: 40px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6b7280;
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
             cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-            z-index: 2;
+            color: #374151;
         }
 
-        .clear-search:hover {
-            opacity: 1;
-            color: #ef4444;
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .search-form {
+                width: 200px;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
         }
 
-        .search-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6b7280;
-            cursor: pointer;
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .search-form {
+                width: 100%;
+                margin: 1rem 0;
+                order: 2;
+            }
+
+            .nav-icons {
+                gap: 1rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                padding: 1rem 3%;
+            }
         }
 
-        /* Added styles for URL parameters display */
-        .current-search {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background: #f3f4f6;
-            border-radius: 15px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
+        @media (max-width: 480px) {
+            .promo-banner {
+                font-size: 12px;
+                padding: 8px;
+            }
 
-        .current-search i {
-            cursor: pointer;
-            color: #6b7280;
-        }
+            .shop-now-btn {
+                margin-left: 10px;
+                padding: 4px 10px;
+            }
 
-        .current-search i:hover {
-            color: #ef4444;
+            .logo {
+                font-size: 20px;
+            }
+
+            .logout-button {
+                padding: 6px 15px;
+                font-size: 12px;
+            }
         }
     </style>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
 </head>
-
 <body>
+    <!-- Promotional Banner -->
+    <div class="promo-banner">
+        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! 
+        <a href="#" class="shop-now-btn">Shop Now</a>
+    </div>
+
+    <!-- Navigation -->
     <nav>
         <div class="logo">Volt Craft</div>
+        <div class="hamburger"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
             <a href="/homePage">Home</a>
             <a href="#">Contact</a>
-            <a href="#">About</a>
+            <a href="/about">About</a>
             <a href="/wallet">Wallet</a>
         </div>
-       
         <form class="search-form" action="/search" method="get">
             <input 
                 type="text" 
@@ -608,82 +294,57 @@
             <i class="fas fa-times clear-search" id="clearSearch"></i>
             <i class="fas fa-search search-icon" id="searchIcon"></i>
         </form>
-            
-            <div class="nav-icons">
-                <a href="/wishlist" aria-label="Wishlist">
-                    <i class="fas fa-heart"></i>
-                </a>
-                <a href="/cart" aria-label="Shopping Cart">
-                    <i class="fas fa-shopping-cart"></i>
-                </a>
-                <a href="/profile" aria-label="User Profile">
-                    <i class="fas fa-user"></i>
-                </a>
-                <a href="/logout" class="logout-button">
-                    Logout
-                </a>
-            </div>
-        
+        <div class="nav-icons">
+            <a href="/wishlist" aria-label="Wishlist"><i class="fas fa-heart"></i></a>
+            <a href="/cart" aria-label="Shopping Cart"><i class="fas fa-shopping-cart"></i></a>
+            <a href="/profile" aria-label="User Profile"><i class="fas fa-user"></i></a>
+            <a href="/logout" class="logout-button">Logout</a>
+        </div>
+    </nav>
 
-        <script>
-          
-          document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('search');
             const clearSearch = document.getElementById('clearSearch');
             const searchIcon = document.getElementById('searchIcon');
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
 
-            // Function to get URL parameters
+            // Toggle mobile menu
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Get URL parameters
             function getQueryParam(param) {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get(param);
             }
 
-            // Initialize search input with URL parameter if it exists
+            // Initialize search input
             const queryParam = getQueryParam('query');
-            if (queryParam) {
-                searchInput.value = queryParam;
-                clearSearch.style.display = 'block';
-            } else {
-                clearSearch.style.display = 'none';
-            }
-
-            // Show/hide clear icon based on input
-            searchInput.addEventListener('input', function() {
-                clearSearch.style.display = this.value ? 'block' : 'none';
-            });
+            if (queryParam) searchInput.value = queryParam;
 
             // Clear search functionality
-            clearSearch.addEventListener('click', function(e) {
-                e.preventDefault(); // Prevent form submission
+            clearSearch.addEventListener('click', (e) => {
+                e.preventDefault();
                 searchInput.value = '';
-                clearSearch.style.display = 'none';
                 window.location.href = '/viewAllProductPage';
             });
 
             // Search icon click handler
-            searchIcon.addEventListener('click', function() {
-                if (searchInput.value.trim()) {
-                    searchInput.form.submit();
-                }
+            searchIcon.addEventListener('click', () => {
+                if (searchInput.value.trim()) searchInput.form.submit();
             });
 
             // Handle form submission
-            searchInput.form.addEventListener('submit', function(e) {
+            searchInput.form.addEventListener('submit', (e) => {
                 if (!searchInput.value.trim()) {
                     e.preventDefault();
                     window.location.href = '/viewAllProductPage';
                 }
             });
-
-            // Handle enter key
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    if (!this.value.trim()) {
-                        e.preventDefault();
-                        window.location.href = '/viewAllProductPage';
-                    }
-                }
-            });
         });
-        </script>
-    </nav>
+    </script>
+</body>
+</html>

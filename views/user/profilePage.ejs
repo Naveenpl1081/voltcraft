@@ -1,324 +1,416 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-        body {
-            background-color: #f5f5f5;
-        }
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
 
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 40px 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+      display: flex;
+      gap: 2rem;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      position: sticky;
+      top: 2rem;
+      height: fit-content;
+    }
 
-        .header a {
-            color: #DB4444;
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
-        }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
 
-        .header div {
-            font-size: 18px;
-            color: #666;
-        }
+    .sidebar-header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #ef4444;
+    }
 
-        .manage-account {
-            display: flex;
-            margin-top: 20px;
-        }
+    .sidebar-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #333;
+    }
 
-        .sidebar {
-            width: 25%;
-            padding: 20px;
-            border-right: 1px solid #ddd;
-        }
+    .sidebar-links {
+      list-style: none;
+    }
 
-        .sidebar-links {
-            list-style: none;
-        }
+    .sidebar-links li {
+      margin-bottom: 1rem;
+    }
 
-        .sidebar-links li {
-            margin-bottom: 12px;
-        }
+    .sidebar-links a {
+      text-decoration: none;
+      color: #555;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: color 0.3s ease;
+    }
 
-        .sidebar-links a {
-            color: #000;
-            text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
+    .sidebar-links a.active, .sidebar-links a:hover {
+      color: #ef4444;
+      font-weight: 500;
+    }
 
-        .sidebar-links a.active,
-        .sidebar-links a:hover {
-            color: #DB4444;
-            font-weight: bold;
-        }
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1rem;
+    }
 
-        .content {
-            width: 75%;
-            padding: 20px;
-        }
+    .content-header {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
 
-        .section-title {
-            font-size: 24px;
-            margin-bottom: 24px;
-            color: #333;
-        }
+    .content-header h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #333;
+    }
 
-        .profile-form {
-            padding: 30px;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .content-header p {
+      color: #666;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
 
-        .form-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
+    .profile-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
 
-        .form-row > div {
-            flex: 1;
-        }
+    .profile-card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
 
-        .profile-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #666;
-        }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
 
-        .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
 
-        .input-field:focus {
-            outline: none;
-            border-color: #DB4444;
-        }
+    .form-group label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
 
-        .gender-field {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+    .form-group input {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
 
-        .gender-field label {
-            font-size: 16px;
-            color: #666;
-        }
+    .form-group input:focus {
+      border-color: #ef4444;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
 
-        .actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 16px;
-            margin-top: 32px;
-        }
+    .form-group input:disabled {
+      background: #f5f5f5;
+      color: #999;
+    }
 
-        .cancel-button,
-        .save-button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
 
-        .cancel-button {
-            background-color: #f5f5f5;
-            color: #666;
-        }
+    .actions button, .actions a {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
 
-        .cancel-button:hover {
-            background-color: #ddd;
-        }
+    .cancel-button {
+      background: #f5f5f5;
+      color: #666;
+    }
 
-        .save-button {
-            background-color: #DB4444;
-            color: #fff;
-        }
+    .cancel-button:hover {
+      background: #e5e5e5;
+    }
 
-        .save-button:hover {
-            background-color: #c83c3c;
-        }
-    </style>
+    .save-button {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .save-button:hover {
+      background: #dc2626;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #333;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        position: relative;
+        padding: 1rem;
+        box-shadow: none;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-links {
+        display: none;
+      }
+
+      .sidebar-links.active {
+        display: block;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .content-header {
+        padding: 1rem;
+      }
+
+      .content-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .content-header h1 {
+        font-size: 1.25rem;
+      }
+
+      .profile-card h2 {
+        font-size: 1.25rem;
+      }
+
+      .form-group input {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+
+      .actions button, .actions a {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <%- include('../user/layout/userHeader.ejs') %>
-    <div class="container">
-        <header class="header">
-            <a href="#">Home</a>
-            <div>Welcome! <%= user.name %></div>
-        </header>
+  <%- include('../user/layout/userHeader.ejs') %>
 
-        <div class="manage-account">
-            <div class="sidebar">
-                <ul class="sidebar-links">
-                    <li><a href="/profile" class="active">My Profile</a></li>
-                    <li><a href="/addressbook">Address Book</a></li>
-                    <li><a href="#">My Payment Options</a></li>
-                    <li><a href="#">Change Password</a></li>
-                    <li><a href="/myorder">My Orders</a></li>
-                    <li><a href="#">My Returns</a></li>
-                    <li><a href="#">My Cancellations</a></li>
-                    <li><a href="#">My Wishlist</a></li>
-                </ul>
-            </div>
-
-            <div class="content">
-                <h2 class="section-title">Edit Your Profile</h2>
-                <div class="profile-form">
-                    <div class="form-row">
-                        <div>
-                            <label for="name">Name</label>
-                            <input type="text" id="name" class="input-field" name="name" value="<%= user.name %>" />
-                        </div>
-                        <div class="form-row">
-                            <div>
-                                <label for="email">Email</label>
-                                <input type="email" id="email" class="input-field" name="email" value="<%= user.email %>" disabled />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div>
-                                <label for="referralCode">Referral Code</label>
-                                <input type="text" id="referralCode" class="input-field" name="referralCode" value="<%= user.referralCode %>" disabled />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="cancel-button">Cancel</button>
-                        <button class="save-button">Save Changes</button>
-                    </div>
-                </div>
-                <div class="actions">
-                    <a href="/newPassword" class="save-button">Create New Password</a>
-                </div>
-            </div>
-            
-        </div>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <img src="https://via.placeholder.com/50" alt="Profile Picture">
+        <h3><%= user.name %></h3>
+      </div>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
+      <ul class="sidebar-links">
+        <li><a href="/profile" class="active"><i class="fas fa-user"></i> My Profile</a></li>
+        <li><a href="/addressbook"><i class="fas fa-address-book"></i> Address Book</a></li>
+        <li><a href="#"><i class="fas fa-credit-card"></i> My Payment Options</a></li>
+        <li><a href="#"><i class="fas fa-lock"></i> Change Password</a></li>
+        <li><a href="/myorder"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+        <li><a href="#"><i class="fas fa-undo"></i> My Returns</a></li>
+        <li><a href="#"><i class="fas fa-ban"></i> My Cancellations</a></li>
+        <li><a href="#"><i class="fas fa-heart"></i> My Wishlist</a></li>
+      </ul>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Content -->
+    <div class="content">
+      <div class="content-header">
+        <h1>Welcome, <%= user.name %>!</h1>
+        <p>Manage your profile and account settings below.</p>
+      </div>
 
+      <div class="profile-card">
+        <h2>Edit Your Profile</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" value="<%= user.name %>" class="input-field">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<%= user.email %>" disabled class="input-field">
+          </div>
+          <div class="form-group">
+            <label for="referralCode">Referral Code</label>
+            <input type="text" id="referralCode" name="referralCode" value="<%= user.referralCode %>" disabled class="input-field">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="cancel-button">Cancel</button>
+          <button class="save-button">Save Changes</button>
+        </div>
+      </div>
+      <div class="actions mt-4">
+        <a href="/newPassword" class="save-button">Create New Password</a>
+      </div>
+    </div>
+  </div>
 
+  <%- include('../user/layout/userFooter.ejs') %>
 
-    <script>
-      document.querySelector('.save-button').addEventListener('click', async (event) => {
-    event.preventDefault();
+  <script>
+    // Hamburger Menu Toggle
+    document.querySelector('.hamburger').addEventListener('click', () => {
+      document.querySelector('.sidebar-links').classList.toggle('active');
+    });
 
-    const name = document.getElementById('name').value;
+    // Save Profile Changes
+    document.querySelector('.save-button').addEventListener('click', async (event) => {
+      event.preventDefault();
 
-    // Client-side validation
-    if (!name || name.trim().length < 3) {
+      const name = document.getElementById('name').value;
+
+      // Client-side validation
+      if (!name || name.trim().length < 3) {
         Swal.fire({
-            icon: 'error',
-            title: 'Invalid Name',
-            text: 'Please enter a valid name with at least 3 characters.',
-            confirmButtonText: 'OK',
+          icon: 'error',
+          title: 'Invalid Name',
+          text: 'Please enter a valid name with at least 3 characters.',
+          confirmButtonText: 'OK',
         });
         return;
-    }
-    if (!/^[A-Za-z]+$/.test(name)) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Invalid Name',
-        text: 'Name can only contain letters and should not start with a space or include numbers.',
-        confirmButtonText: 'OK',
-    });
-    return;
-}
+      }
+      if (!/^[A-Za-z\s]+$/.test(name)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Name',
+          text: 'Name can only contain letters and spaces.',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
 
-
-    // Show a confirmation dialog
-    Swal.fire({
+      Swal.fire({
         title: 'Are you sure?',
         text: 'Do you want to save these changes?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, Save it!',
         cancelButtonText: 'Cancel',
-    }).then(async (result) => {
+      }).then(async (result) => {
         if (result.isConfirmed) {
-            try {
-                const response = await fetch('/updateProfile', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name }),
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Profile Updated!',
-                        text: 'Your profile has been updated successfully.',
-                        confirmButtonText: 'OK',
-                    }).then(() => {
-                        location.reload(); // Reload the page to reflect changes
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Update Failed',
-                        text: result.message || 'Failed to update profile.',
-                        confirmButtonText: 'Try Again',
-                    });
-                }
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred. Please try again later.',
-                    confirmButtonText: 'OK',
-                });
-            }
-        } else {
-            // Handle the cancel action if needed
-            Swal.fire({
-                icon: 'info',
-                title: 'Cancelled',
-                text: 'Your changes were not saved.',
-                confirmButtonText: 'OK',
+          try {
+            const response = await fetch('/updateProfile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name }),
             });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated!',
+                text: 'Your profile has been updated successfully.',
+                confirmButtonText: 'OK',
+              }).then(() => location.reload());
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: result.message || 'Failed to update profile.',
+                confirmButtonText: 'Try Again',
+              });
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred. Please try again later.',
+              confirmButtonText: 'OK',
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Cancelled',
+            text: 'Your changes were not saved.',
+            confirmButtonText: 'OK',
+          });
         }
+      });
     });
-});
-
-
-    </script>
-    
+  </script>
 </body>
 </html>
-<%- include('../user/layout/userFooter.ejs') %>

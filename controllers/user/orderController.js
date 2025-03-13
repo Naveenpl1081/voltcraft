@@ -255,6 +255,7 @@ const myOrder = async (req, res) => {
 
     // Count total orders for pagination
     const totalOrders = await Order.countDocuments({ userId });
+    const user=await User.findById({_id:userId})
 
     // Fetch paginated orders for the user
     let orders = await Order.find({ userId })
@@ -280,6 +281,7 @@ const myOrder = async (req, res) => {
     // Render the orders page
     res.render("myOrder", {
       order: orders,
+      user,
       userId,
       currentPage: page,
       totalPages,

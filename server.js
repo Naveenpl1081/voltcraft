@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(session({
@@ -63,12 +64,3 @@ app.listen(port,()=>{
     console.log(`server running on http://localhost:${port}`)
 })
 
-// app.post('/login', async (req, res) => {
-//     const user = await User.findOne({ email: req.body.email }); // Assuming a User model
-//     if (user && user.password === req.body.password) {
-//         req.session.user = user._id; // Store user ID in the session
-//         res.redirect('/addressbook');
-//     } else {
-//         res.status(401).send('Invalid credentials');
-//     }
-// });
