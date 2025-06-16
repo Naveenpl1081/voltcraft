@@ -102,7 +102,7 @@ const loadCancelPage = async (req, res) => {
             .populate('userId', 'name email') 
             .populate('orderId') 
             .populate('canceledItems.productId', 'productName'); 
-        
+        console.log("canceledOrders",canceledOrders)
         
         for (const order of canceledOrders) {
             if (order.paymentMethod) {

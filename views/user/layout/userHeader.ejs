@@ -263,6 +263,22 @@
                 font-size: 12px;
             }
         }
+        .cart-link {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -296,7 +312,10 @@
         </form>
         <div class="nav-icons">
             <a href="/wishlist" aria-label="Wishlist"><i class="fas fa-heart"></i></a>
-            <a href="/cart" aria-label="Shopping Cart"><i class="fas fa-shopping-cart"></i></a>
+            <a href="/cart" aria-label="Shopping Cart" class="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
             <a href="/profile" aria-label="User Profile"><i class="fas fa-user"></i></a>
             <a href="/logout" class="logout-button">Logout</a>
         </div>

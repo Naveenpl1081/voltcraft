@@ -59,6 +59,9 @@ app.use(nocache());
 app.use("/",userRouter);
 app.use("/admin",adminRouter)
 app.use(checkUserBlocked)
+app.use((req,res,next)=>{
+    res.status(404).render("404Page",{message:"invalid route"})
+})
 
 app.listen(port,()=>{
     console.log(`server running on http://localhost:${port}`)

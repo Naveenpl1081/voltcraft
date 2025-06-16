@@ -609,6 +609,7 @@ const viewAllProduct = async (req, res) => {
     try {
         // Fetch all products
         const products = await Product.find({});
+        console.log("product for teach",products)
 
         // Fetch sold products sorted by 'sold' field and populate 'category'
         const sold = await Product.find({}).sort({ sold: -1 }).populate('category');
